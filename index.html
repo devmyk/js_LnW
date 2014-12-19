@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>index</title>
+	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
+	<link rel="stylesheet" href="demos/css/themes/default/jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="demos/_assets/css/jqm-demos.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
+	<script src="jquery.js"></script>
+	<!-- script src="demo/_assets/js/index.js"></script -->
+	<script src="jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+<div data-role="page" class="jqm-demos jqm-home">
+
+	<div data-role="header" class="jqm-header" style="min-height:48px;">
+		<p>&nbsp;</p>
+		<a href="#leftpanel" class="jqm-navmenu-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+		<a href="#rightpanel" class="jqm-search-link ui-btn ui-btn-icon-notext ui-corner-all ui-icon-search ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content jqm-content">
+		<h1>Demos</h1>
+	</div><!-- /content -->
+
+    <div data-role="panel" id="leftpanel" class="jqm-navmenu-panel" data-position="left" data-display="overlay" data-theme="a">
+		<ul class="jqm-list ui-alt-icon ui-nodisc-icon ui-listview">
+<li data-filtertext="demos homepage" data-icon="home" class="ui-first-child"><a href="./index.html" class="ui-btn ui-btn-icon-right ui-icon-home">Home</a></li>
+<li data-filtertext="introduction overview getting started"><a href="intro/index.html" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Introduction</a></li>
+<li data-role="collapsible" data-enhanced="true" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-iconpos="right" data-inset="false" class="ui-collapsible ui-collapsible-themed-content ui-collapsible-collapsed ui-li-static ui-body-inherit">
+	<h3 class="ui-collapsible-heading ui-collapsible-heading-collapsed">
+		<a href="#" class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-right ui-btn-inherit ui-icon-carat-d">
+			Events<span class="ui-collapsible-heading-status"> click to expand contents</span>
+		</a>
+	</h3>
+	<div class="ui-collapsible-content ui-body-inherit ui-collapsible-content-collapsed" aria-hidden="true">
+		<ul class="ui-listview">
+			<li data-filtertext="swipe to delete list items listviews swipe events" class="ui-first-child"><a href="swipe-list/index.html" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Swipe list items</a></li>
+			<li data-filtertext="swipe to navigate swipe page navigation swipe events" class="ui-last-child"><a href="swipe-page/index.html" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Swipe page navigation</a></li>
+		</ul>
+	</div>
+</li>
+		</ul>
+	</div>
+</li>
+	</div>
+	<!-- /panel -->
+
+    <div data-role="panel" id="rightpanel" class="jqm-search-panel" data-position="right" data-display="overlay" data-theme="a">
+		<input type="text" />
+	</div><!-- /panel -->
+
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="jqm-footer">
+		<p>jQuery Mobile Demos version <span class="jqm-version"></span></p>
+		<p>Copyright 2014 The jQuery Foundation</p>
+	</div><!-- /footer -->
+
+</div><!-- /page -->
+
+</body>
+</html>
