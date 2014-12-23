@@ -7,8 +7,9 @@
 	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
 	<link rel="stylesheet" href="demos/css/themes/default/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="style.css">
-	<script src="jquery.js"></script>
-	<script src="jquery.mobile-1.4.5.min.js"></script>
+	<script language="javascript"  src="jquery.js"></script>
+	<script language="javascript"  src="jquery.mobile-1.4.5.min.js"></script>
+	<script language="javascript" src="../soundmanager2-js.min.js"></script>
 	<script>
 		$(document).one("pagebeforecreate",function(){
 			$.get("left.html", function(data) {
@@ -19,7 +20,7 @@
 	</script>
 </head>
 <body>
-<div data-role="page" class="ui-page-theme-b">
+<div data-role="page" class="ui-page-theme-b" id="page">
 
 	<div data-role="header" class="header">
 		<p>&nbsp;</p>
@@ -34,13 +35,6 @@
 
 
     <div data-role="panel" id="leftpanel" class="navmenu-panel" data-position="left" data-display="overlay" data-theme="b">
-		<!-- left panel 
-		<ul class="ui-alt-icon ui-nodisc-icon ui-listview">
-			<li data-filtertext="homepage" data-icon="home" class="ui-first-child"><a href="#" class="ui-btn ui-btn-icon-right ui-icon-home" url="main.html">Home</a></li>
-			<li data-icon="carat-d" data-iconpos="right"><a href="1001_ch02.html" class="ui-btn ui-btn-icon-right ui-icon-carat-d">1001 <span class="no">[18]</span></a>	</li>
-			<li data-icon="carat-d" data-iconpos="right"><a href="#" class="ui-btn ui-btn-icon-right ui-icon-carat-d">TED</a></li>
-		</ul>
-		-->
 	</div><!-- /left panel -->
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false">
