@@ -18,3 +18,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 .*.swo
 *.mp3
 *.mp4
+demos

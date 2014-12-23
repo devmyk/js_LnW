@@ -1,6 +1,46 @@
 /* JQM Demos custom CSS */
 
 /* Header */
+body {
+	background: #000;
+}
+.header {
+	background: rgba(255,255,255,0.15);
+	min-height: 50px;
+}
+.header .title {
+	padding: .4em 0 .1em;
+	margin: 0 3em;
+}
+.header p {
+	position: absolute;
+	bottom: -2em;
+	left: 1em;
+	margin: 0;
+	color: #666;
+	font-family: 'Consolas', sans-serif;
+	font-weight: 300;
+	text-transform: uppercase;
+}
+
+.header .ui-btn {
+	width: 2em;
+	height: 2em;
+	background: #fff;
+	border: 0;
+	top: 50%;
+	margin-top: -1em;
+	-webkit-border-radius: .3125em;
+	border-radius: .3125em;
+	opacity: .4;
+	filter: alpha(opacity=50);
+}
+
+
+
+
+
+
 .jqm-demos .jqm-header {
 	background: #fff;
 	border-top: 4px solid #3eb249;
@@ -29,7 +69,7 @@
 	left: 1em;
 	margin: 0;
 	color: #666;
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Consolas',sans-serif;
 	font-weight: 300;
 	text-transform: uppercase;
 }
@@ -43,7 +83,7 @@
 	-webkit-border-radius: .3125em;
 	border-radius: .3125em;
 	opacity: .4;
-	filter: Alpha(Opacity=40);
+	filter: alpha(opacity=40);
 }
 
 /* Footer */
@@ -58,7 +98,7 @@
 .jqm-demos .jqm-footer p {
 	font-size: .8em;
 	color: #999;
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Consolas',sans-serif;
 	font-weight: 300;
 	margin: 0 1.25em 1.25em;
 }
@@ -79,7 +119,7 @@
 .jqm-demos .jqm-content > p,
 .jqm-demos .jqm-content > ul li,
 .jqm-demos .jqm-content > a {
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Consolas', sans-serif;
 	font-weight: 300;
 }
 .jqm-demos .jqm-content > h1 {
@@ -148,7 +188,7 @@
 	border: 1px solid #eee;
 	-webkit-border-radius: .3125em;
 	border-radius: .3125em;
-	font-family: 'Open Sans', sans-serif;
+	font-family: sans-serif;
 }
 .jqm-block-content h3 {
 	font-size: 1.5em;
@@ -197,7 +237,7 @@
 .jqm-demos .jqm-list .ui-btn,
 .jqm-demos .jqm-list .ui-btn:visited,
 .jqm-demos .jqm-list .ui-li-divider {
-	font-family: 'Open Sans', sans-serif;
+	font-family: sans-serif;
 	font-weight: 300;
 	text-shadow: none !important;
 }
@@ -308,7 +348,7 @@
 .jqm-demos .jqm-content .jqm-view-source-link:hover,
 .jqm-demos .jqm-content .jqm-view-source-link:active {
 	color: #3eb249;
-	font-family: 'Open Sans', sans-serif;
+	font-family: sans-serif;
 	font-weight: 400;
 	margin: 2em 0 1.5em 1em;
 }
@@ -443,7 +483,7 @@
 	margin: 0;
 }
 .jqm-view-source .ui-collapsible-heading .ui-btn {
-	font-family: 'Open Sans', sans-serif;
+	font-family: sans-serif;
 	font-weight: 400;
 }
 .jqm-view-source .ui-collapsible-heading .ui-btn-inner {
