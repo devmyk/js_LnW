@@ -11,8 +11,7 @@
 	<script language="javascript" src="../js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="../js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="1001_ch02.js"></script>
-	<script language="javascript" src="../js/tiny.js"></script>
-	<!-- script language="javascript" src="../js/dictation.js"></script -->
+	<script language="javascript" src="../js/dictation.js"></script>
 	<script>
 		$(document).one("pagebeforecreate",function(){
 			$.get("../left.html", function(data) {
@@ -41,9 +40,7 @@
 				<td style="vertical-align:bottom;width:50%;"><div id="progress" style="text-align:right;color:#999;"></div></td>
 			</tr>
 			<tr><td colspan="2">
-				<div id="fld">
-					<input id="put" type="text" style="font-size:11pt;" onkeydown="check(event, this.value.trim().split(' '));" value="" />
-				</div>
+				<input id="put" type="text" style="font-size:11pt;" onkeydown="check(event, this.value.trim().split(' '));" value="" />
 			</td></tr>
 		</table>
 	</div><!-- /content -->

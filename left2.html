@@ -1,3 +1,23 @@
+<script>
+	$(".test").click(function(e){
+		var url = $(this).attr("url");
+		$.get(url+".html", function(data) {
+			var script   = document.createElement("script");
+			script.type  = "text/javascript";
+			script.src   = url + ".js";
+			document.getElementById("page").appendChild(script);
+			$("#main").remove();
+			$(data).appendTo("#page");
+			var sc2 	= document.createElement("script");
+			sc2.type	= "text/javascript";
+			sc2.src = "../dictation2.js";
+			document.body.appendChild(sc2);
+			$(window).load(function() {
+				init();
+			});
+		}, "html");
+	});
+</script>
 <!-- left panel -->
 <ul class="ui-alt-icon ui-nodisc-icon ui-listview">
 
@@ -12,8 +32,8 @@
 		</h3>
 		<div class="ui-collapsible-content ui-body-inherit ui-collapsible-content-collapsed" aria-hidden="true">
 			<ul class="ui-listview">
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch01</a></li>
-				<li data-filtertext=""><a href="1001/1001_ch02.html" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch02</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r test" url="1001/1001_ch01">ch01</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r test" url="1001/1001_ch02">ch02</a></li>
 				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch03</a></li>
 				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch04</a></li>
 				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch05</a></li>
