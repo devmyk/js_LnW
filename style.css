@@ -1,0 +1,37 @@
+body * { font-family: 'Consolas', 'Arial' ,'나눔고딕', '돋움'; }
+.header .ui-btn {
+	width: 2em;
+	height: 2em;
+	top: 50%;
+	margin-top: -1em;
+	border: 0;
+	-webkit-border-radius: .3125em;
+	border-radius: .3125em;
+}
+.ui-btn-icon-notext.ui-btn-left {
+	left: .7em;
+}
+.ui-btn-icon-notext.ui-btn-right {
+	right: .7em;
+}
+
+.navmenu-panel .ui-listview > li .ui-collapsible-heading {
+	margin: 0;
+}
+.navmenu-panel .ui-collapsible.ui-li-static {
+	padding: 0;
+	border: none !important;
+}
+.navmenu-panel .ui-listview .ui-listview .ui-btn {
+	background-color: #222;
+	padding-left: 2em;
+	color: #999;
+}
+.navmenu-panel .no {
+	color: #999;
+	font-size: small;
+	font-weight: lighter;
+}
+.ui-content td {
+	padding: 0px;
+}

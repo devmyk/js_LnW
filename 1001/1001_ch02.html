@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>1001 ch02</title>
+	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
+	<link rel="stylesheet" href="../jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="../style.css">
+	<script language="javascript" src="../jquery.js"></script>
+	<script language="javascript" src="../jquery.mobile-1.4.5.min.js"></script>
+	<script language="javascript" src="../soundmanager2-js.min.js"></script>
+	<script language="javascript" src="1001_ch02.js"></script>
+	<script language="javascript" src="../dictation.js"></script>
+	<script>
+		$(document).one("pagebeforecreate",function(){
+			$.get("../left.html", function(data) {
+				$(data).prependTo("#leftpanel");
+				$("[data-role=collapsible]").collapsible();
+			}, "html");
+		});
+	</script>
+</head>
+<body onload="init();">
+<div data-role="page" class="ui-page-theme-b">
+
+	<div data-role="header" class="header">
+		<p>&nbsp;</p>
+		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-search ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
+	</div><!-- /header -->
+
+	<div role="main" id="main" class="ui-content">
+		<table id="container" style="text-align:center;width:100%;min-height:50%;">
+			<tr><td style="vertical-align:middle;" colspan="2">
+				<div id="result" style="color:white;padding-bottom:1em;" onclick="play();"></div>
+			</td></tr>
+			<tr>
+				<td style="vertical-align:bottom;width:50%;"><div id="count" style="text-align:left;color:#999;"></div></td>
+				<td style="vertical-align:bottom;width:50%;"><div id="progress" style="text-align:right;color:#999;"></div></td>
+			</tr>
+			<tr><td colspan="2">
+				<input id="put" type="text" style="font-size:11pt;" onkeydown="check(event, this.value.trim().split(' '));" value="" />
+			</td></tr>
+		</table>
+	</div><!-- /content -->
+
+
+    <div data-role="panel" id="leftpanel" class="navmenu-panel" data-position="left" data-display="overlay" data-theme="b">
+	</div><!-- /left panel -->
+
+	<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer">
+		<p>Copyright 2014</p>
+	</div><!-- /footer -->
+
+
+	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-theme="b">
+		<h3>Right Panel: Overlay</h3>
+		<p>This panel is positioned on the right with the overlay display mode. The panel markup is <em>after</em> the header, content and footer in the source order.</p>
+		<p>To close, click off the panel, swipe left or right, hit the Esc key, or use the button below:</p>
+	</div><!-- /rightpanel -->
+
+
+</div><!-- /page -->
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!--
+<script language="javascript" src="1001_ch02.js"></script>
+<script language="javascript" src="../dictation.js"></script>
+-->
+<div role="main" id="main" class="ui-content">
+	<table id="container" style="text-align:center;width:100%;min-height:50%;">
+		<tr><td style="vertical-align:middle;" colspan="2"><div id="result" style="color:white;padding-bottom:1em;" onclick="play();"></div></td></tr>
+		<tr>
+			<td style="vertical-align:bottom;width:50%;"><div id="count" style="text-align:left;color:#999;"></div></td>
+			<td style="vertical-align:bottom;width:50%;"><div id="progress" style="text-align:right;color:#999;"></div></td>
+		</tr>
+		<tr><td colspan="2"><input id="put" type="text" style="font-size:11pt;" onkeydown="check(event, this.value.trim().split(' '));" value="" /></td></tr>
+	</table>
+</div><!-- /content -->
