@@ -8,6 +8,9 @@ body * { font-family: 'Consolas', 'Arial' ,'나눔고딕', '돋움'; }
 	-webkit-border-radius: .3125em;
 	border-radius: .3125em;
 }
+.ui-btn-nomargin {
+	margin: 0;
+}
 .ui-btn-icon-notext.ui-btn-left {
 	left: .7em;
 }
@@ -34,4 +37,10 @@ body * { font-family: 'Consolas', 'Arial' ,'나눔고딕', '돋움'; }
 }
 .ui-content td {
 	padding: 0px;
+}
+.custom-label-flipswitch.ui-flipswitch .ui-btn.ui-flipswitch-on {
+	text-indent: -3.4em;
+}
+.custom-label-flipswitch.ui-flipswitch .ui-flipswitch-off {
+	text-indent: 0.5em;
 }
