@@ -12,6 +12,7 @@
 	<script language="javascript" src="../js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="1001_ch02.js"></script>
 	<script language="javascript" src="../js/dictation.js"></script>
+	<!-- script language="javascript" src="../js/dictation.js"></script -->
 	<script>
 		$(document).one("pagebeforecreate",function(){
 			$.get("../left.html", function(data) {
@@ -26,12 +27,21 @@
 
 	<div data-role="header" class="header">
 		<p>&nbsp;</p>
-		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
-		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-search ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
+		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-back ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->
 
 	<div role="main" id="main" class="ui-content">
 		<table id="container" style="text-align:center;width:100%;min-height:50%;">
+			<tr>
+				<td style="width:50%;vertical-align:top;text-align:left;">
+					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="changeMode(this);"/>
+				</td>
+				<td style="width:50%;vertical-align:top;text-align:right;" class="ui-nodisc-icon">
+					<a class="ui-btn ui-icon-star ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changestar(this);">star</a>
+					<a class="ui-btn ui-icon-refresh ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="init();">refresh</a>
+				</td>
+			</tr>
 			<tr><td style="vertical-align:middle;" colspan="2">
 				<div id="result" style="color:white;padding-bottom:1em;" onclick="play();"></div>
 			</td></tr>
@@ -40,7 +50,9 @@
 				<td style="vertical-align:bottom;width:50%;"><div id="progress" style="text-align:right;color:#999;"></div></td>
 			</tr>
 			<tr><td colspan="2">
-				<input id="put" type="text" style="font-size:11pt;" onkeydown="check(event, this.value.trim().split(' '));" value="" />
+				<input id="put" type="text" style="font-size:11pt;" onkeydown="check(event, this);" value="" />
+				<div id="fld">
+				</div>
 			</td></tr>
 		</table>
 	</div><!-- /content -->

@@ -1,4 +1,10 @@
-body * { font-family: 'Consolas', 'Arial' ,'나눔고딕', '돋움'; }
+body, input, select, textarea, button, .ui-btn { font-family: 'Consolas', 'Arial' ,'나눔고딕', '돋움'; }
+
+.header span {
+	color: #999;
+	font-size: smaller;
+	font-weight: lighter;
+}
 .header .ui-btn {
 	width: 2em;
 	height: 2em;
@@ -44,3 +50,13 @@ body * { font-family: 'Consolas', 'Arial' ,'나눔고딕', '돋움'; }
 .custom-label-flipswitch.ui-flipswitch .ui-flipswitch-off {
 	text-indent: 0.5em;
 }
+#result {
+	cursor: pointer;
+}
+.by {
+	color: #999;
+	font-size: smaller;
+	font-weight: lighter;
+	padding-right: 0.5em;
+}
+
