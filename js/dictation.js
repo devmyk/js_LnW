@@ -89,16 +89,17 @@ function init() {
 		}
 	}
 
-	if (sm) play();
+	if (sm && ! isMobile) play();
 }
 
-function play() {
+function play(o) {
 	sm.stop("sm_" + data[curr].fn);
-	if(data[curr].to) {
-		sm.play({from: data[curr].from,	to:data[curr].to});
-	} else {
-		sm.play();
-	}
+
+	if (typeof(o) == "undefined") o = {};
+	if (data[curr].from) o.from = data[curr].from;
+	if (data[curr].to) o.to = data[curr].to;
+
+	sm.play(o);
 }
 
 function specialCharRemove(v) {
@@ -148,10 +149,8 @@ function check2(o) {  // 값 비교
 			var dt = new Date();
 			data[curr].timestamp = dt.getTime();
 			document.getElementById("result").innerHTML = data[curr].script;
-			sm.stop();
-			sm.play({ onfinish : function() {
-				if ((curr+1) < sum){ curr++; init(); }
-			}});
+
+			play({onfinish : function() { if ((curr+1) < sum) { curr++; init(); } } });
 		}
 	}
 
@@ -189,13 +188,8 @@ function check(e, o) {  // 값 비교
 			data[curr].timestamp = dt.getTime();
 			data[curr].correct = (pass ? 0 : 1);
 			document.getElementById("result").innerHTML = data[curr].script;
-			sm.stop();
-			var obj = { onfinish : function() {	if ((curr+1) < sum) { curr++; init(); }	} };
-			if (data[curr].to) {
-				obj.from = data[curr].from;
-				obj.to = data[curr].to;
-			}
-			sm.play(obj);
+
+			play({ onfinish : function() {	if ((curr+1) < sum) { curr++; init(); }	} });
 		}
 	}
 }
