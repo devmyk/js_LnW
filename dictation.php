@@ -27,6 +27,7 @@
 	<script language="javascript" src="/js/common.js"></script>
 	<script language="javascript" src="/data/<?=$dir?>/<?=$file?>.js"></script>
 	<script language="javascript" src="/js/dictation.js"></script>
+	<script> path = "/data/<?=$dir?>/"; </script>
 </head>
 <body onload="init();">
 <div data-role="page" class="ui-page-theme-b">
@@ -34,7 +35,7 @@
 	<div data-role="header" class="header">
 		<h1><span>[<?=$dir?>]</span> <?=$file?></h1>
 		<a href="/index.html" rel="external" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-back ui-nodisc-icon ui-alt-icon ui-btn-left">Back</a>
-		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
+		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bullets ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->
 
 	<div role="main" id="main" class="ui-content">
@@ -78,12 +79,20 @@
 		<div id="bar" style="position:absolute; background-color:#38c; width:10px;"></div>
 	</div><!-- /footer -->
 
-	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-theme="b">
-		<h3>Right Panel: Overlay</h3>
-		<p>This panel is positioned on the right with the overlay display mode. The panel markup is <em>after</em> the header, content and footer in the source order.</p>
-		<p>To close, click off the panel, swipe left or right, hit the Esc key, or use the button below:</p>
+	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-position-fixed="true" data-theme="b">
+		<div style="text-align:center;padding:0;">
+			<a href="#" class="ui-btn ui-btn-inline listbtn">1</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">2</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">3</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">4</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">5</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">6</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">7</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">8</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">9</a>
+			<a href="#" class="ui-btn ui-btn-inline listbtn">10</a>
+		</div>
 	</div><!-- /rightpanel -->
-
 
 </div><!-- /page -->
 

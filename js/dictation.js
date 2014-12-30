@@ -50,11 +50,12 @@ function init() {
 		$("#btnNext").removeClass("ui-state-disabled");
 	}
 
+
 	// 원래 sm 의 파일명과 같으면 생략
 	if (!sm) {
-		sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: "mp3/" + data[curr].fn + ".mp3"});
+		sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
 	} else if (sm.id != "sm_" + data[curr].fn) {
-		sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: "mp3/" + data[curr].fn + ".mp3"});
+		sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
 	}
 
 	// view script hidden
@@ -68,13 +69,16 @@ function init() {
 			btn.href = "#";
 			btn.setAttribute("id", "btn"+i);
 			btn.setAttribute("class","ui-btn ui-corner-all ui-btn-inline ui-btn-b ui-mini");
-			btn.setAttribute("seq",i);
-			var value = specialCharRemove(sc[i]);
-			btn.innerHTML = (value=="i") ? "I" : value;
+			var value = specialCharRemove(sc[i], true);
+			btn.innerHTML = value;
 			arr[i].obj = btn;
 		}
 	}
 	document.getElementById("result").innerHTML = result;
+	document.getElementById("result").style.backgroundRepeat = "no-repeat";
+	document.getElementById("result").style.backgroundSize = "contain";
+	document.getElementById("result").style.backgroundPosition = "center";
+	document.getElementById("result").style.backgroundImage = "url('/images/icons-svg/sm_pause.svg')";
 
 	// attach words
 	if (mode == "words") {
@@ -84,28 +88,44 @@ function init() {
 			return a.text < b.text ? -1 : a.text > b.text ? 1 : 0;
 		});
 		for(var i=0; i < arr.length ; i++) {
-			$(arr[i].obj).click(function() { check2($(this)); });
+			$(arr[i].obj).click(function() { check2(this); });
 			$("#fld").append(arr[i].obj);
 		}
 	}
 
-	if (sm && ! isMobile) play();
+	if (sm && (!isMobile)) play();
 }
 
 function play(o) {
+	var res = document.getElementById("result");
+
 	sm.stop("sm_" + data[curr].fn);
 
 	if (typeof(o) == "undefined") o = {};
 	if (data[curr].from) o.from = data[curr].from;
 	if (data[curr].to) o.to = data[curr].to;
+	if (! o.onfinish) {
+		o.onfinish = function() {
+			res.style.backgroundImage = "url('/images/icons-svg/sm_pause.svg')";
+		};
+	}
 
+//		var bg = (correct ? "correct" : "wrong");
+//		document.getElementById("result").style.backgroundImage = "url('/images/icons-svg/sm_"+bg+".svg')";
+	res.style.backgroundImage = "url('/images/icons-svg/sm_play.svg')";
 	sm.play(o);
 }
 
-function specialCharRemove(v) {
+function specialCharRemove(v, isHTML) {
 	if (typeof(v) != "string") return "";
-	v = v.toLowerCase();
+
+//	if (v != "i" && v.indexOf("i'") == -1) 
+//		v = v.toLowerCase();
+
 	var re = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\(\=]/gi;
+	if (isHTML)
+		re = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\"\\(\=]/gi;
+
 	return v.replace(re, "");
 }
 
@@ -116,7 +136,6 @@ function stringFill(x, n) {
 }
 
 function check2(o) {  // 값 비교
-	var seq = $(o).attr("seq")
 	var correct = false;
 	var pass = false;
 
@@ -127,11 +146,9 @@ function check2(o) {  // 값 비교
 	if (arr[data[curr].curr].count >= max) {
 		pass = true;
 		data[curr].correct = false;
-	} else if (data[curr].curr == seq) {
+	} else if (specialCharRemove(sc[data[curr].curr]) == specialCharRemove(o.innerText)) {
+		// seq 는 다르지만 text 가 같은 경우도 있으므로 text 비교
 		correct = true;
-	} else {
-		// seq 는 다르지만 text 가 같은 경우도 있음
-		// 같은 텍스트를 배열로 가져와서 비교해야겠구만
 	}
 
 	if (pass || correct) {
@@ -181,6 +198,7 @@ function check(e, o) {  // 값 비교
 			}
 			document.getElementById("result").innerHTML = result;
 		}
+
 
 		if (correct || pass) {
 			document.getElementById("put").disabled = 'disabled';

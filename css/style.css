@@ -59,4 +59,17 @@ body, input, select, textarea, button, .ui-btn { font-family: 'Consolas', 'Arial
 	font-weight: lighter;
 	padding-right: 0.5em;
 }
+#rightpanel .ui-panel-inner {
+	padding: .4em;
+}
+.listbtn {
+	width: 2.7em;
+	height: 2.2em;
+	border: 0;
+	padding: 0;
+	margin: .5em 0 0 0;
+	line-height: 2.4em;
+	-webkit-border-radius: .3125em;
+	border-radius: .3125em;
+}
 

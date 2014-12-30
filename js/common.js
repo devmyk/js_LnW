@@ -11,6 +11,7 @@ var sm;
 var timeout;
 */
 
+var path = "";
 var isMobile = isMobile();
 var data = [];
 function setData() {
