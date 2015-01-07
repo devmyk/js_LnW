@@ -41,6 +41,8 @@ body, input, select, textarea, button, .ui-btn { font-family: 'Consolas', 'Arial
 	font-size: small;
 	font-weight: lighter;
 }
+
+/* content */
 .ui-content td {
 	padding: 0px;
 }
@@ -59,17 +61,34 @@ body, input, select, textarea, button, .ui-btn { font-family: 'Consolas', 'Arial
 	font-weight: lighter;
 	padding-right: 0.5em;
 }
-#rightpanel .ui-panel-inner {
-	padding: .4em;
+
+/* rightpanel */
+#rightpanel .ui-controlgroup-controls {
+	float: none; 
+	display: block;
+	width: 100%;
 }
+#rightpanel .ui-radio{
+width: 33.33%;
+}
+#rightpanel .ui-radio label{
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* rightpanel list */
 .listbtn {
-	width: 2.7em;
-	height: 2.2em;
-	border: 0;
+	width: 3em;
+	height: 3em;
 	padding: 0;
-	margin: .5em 0 0 0;
-	line-height: 2.4em;
-	-webkit-border-radius: .3125em;
-	border-radius: .3125em;
+	margin: .3em;
+	line-height: 3.2em;
 }
+.listbtn-marked {
+	background-image: url("/images/icons-svg/sm_star.svg");
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+}
+
 

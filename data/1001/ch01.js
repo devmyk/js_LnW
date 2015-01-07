@@ -2,9 +2,9 @@ var list = "01_0001	1250		time flies like an arrow./\
 01_0002	1250		Our school stands on the hill./\
 01_0003	1250		Once there lived a man named Robin Hood./\
 01_0004	1250		Our world is changing rapidly./\
-01_0005	1250		A greate challenge lies ahead for our team./\
+01_0005	1250		A great challenge lies ahead for our team./\
 01_0006	1250		Age dosen’t marrer in love./\
-01_0007	1250		These polls will work for you./\
+01_0007	1250		These pills will work for you./\
 01_0008	1250		Honesty will pay in the end./\
 01_0009	1250		Every vote counts in an election./\
 01_0010	1250		There is no royal road to learning./\
@@ -13,7 +13,7 @@ var list = "01_0001	1250		time flies like an arrow./\
 01_0013	1250		This ring looks too tight for your finger./\
 01_0014	1250		Today is the first day of the rest of your life./\
 01_0015	1250		Nothing remains unchanged forever./\
-01_0016	1250		Romor do not always prove to be true./\
+01_0016	1250		Rumor do not always prove to be true./\
 01_0017	1250		At the touch of love, every one becomes a poet./\
 01_0018	1250		My dream came true after all./\
 01_0019	1250		Good medicine tastes bitter./\
