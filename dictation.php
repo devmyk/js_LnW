@@ -11,7 +11,6 @@
 		header("Location: /index.html");
 		exit();
 	}
-
 ?>
 <html>
 <head>
@@ -31,7 +30,7 @@
 		path = "/data/<?=$dir?>/";
 	</script>
 </head>
-<body onload="init();attachList();">
+<body onload="init();attachRightList();">
 <div data-role="page" class="ui-page-theme-b">
 
 	<div data-role="header" class="header">

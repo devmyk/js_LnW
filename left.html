@@ -1,8 +1,9 @@
 <!-- left panel -->
-<ul class="ui-alt-icon ui-nodisc-icon ui-listview">
+<ul id="leftListView" data-role="listview" class="ui-alt-icon ui-nodisc-icon ui-listview" data-theme="b" data-divider-theme="b">
 
-	<li data-filtertext="homepage" data-icon="home" class="ui-first-child"><a href="#" class="ui-btn ui-btn-icon-right ui-icon-home" onclick="location.reload();">Home</a></li>
-	<!-- /home -->
+	<li data-filtertext="homepage" data-icon="home" class="ui-first-child"><a href="#login" class="ui-btn ui-btn-icon-right ui-icon-home">Home</a></li>
+	<li data-filtertext="setting" data-icon="gear" class="ui-first-child"><a href="#rightpanelsetting" class="ui-btn ui-btn-icon-right ui-icon-gear">Setting</a></li>
+	<li data-role="list-divider">English</li>
 
 	<li data-role="collapsible" data-enhanced="true" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-iconpos="right" data-inset="false" class="ui-collapsible ui-collapsible-themed-content ui-collapsible-collapsed ui-li-static ui-body-inherit">
 		<h3 class="ui-collapsible-heading ui-collapsible-heading-collapsed">
@@ -12,42 +13,42 @@
 		</h3>
 		<div class="ui-collapsible-content ui-body-inherit ui-collapsible-content-collapsed" aria-hidden="true">
 			<ul class="ui-listview">
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch01</a></li>
-				<li data-filtertext=""><a href="1001/1001_ch02.html" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch02</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch03</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch04</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch05</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch06</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch07</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch08</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch09</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch10</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch11</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch12</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch13</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch14</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch15</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch16</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch17</a></li>
-				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">ch18</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch01.js');" >ch01</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch02.js');" >ch02</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch03.js');" >ch03</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch04.js');" >ch04</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch05.js');" >ch05</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch06.js');" >ch06</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch07.js');" >ch07</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch08.js');" >ch08</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch09.js');" >ch09</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch10.js');" >ch10</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch11.js');" >ch11</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch12.js');" >ch12</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch13.js');" >ch13</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch14.js');" >ch14</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch15.js');" >ch15</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch16.js');" >ch16</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch17.js');" >ch17</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch18.js');" >ch18</a></li>
 			</ul>
 		</div>
-	</li>
-	<!-- /1001 -->
+	</li><!-- /1001 -->
 
-
-	<li data-filtertext="introduction overview getting started"><a href="intro/index.html" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Introduction</a></li>
 	<li data-role="collapsible" data-enhanced="true" data-collapsed-icon="carat-d" data-expanded-icon="carat-u" data-iconpos="right" data-inset="false" class="ui-collapsible ui-collapsible-themed-content ui-collapsible-collapsed ui-li-static ui-body-inherit">
 		<h3 class="ui-collapsible-heading ui-collapsible-heading-collapsed">
 			<a href="#" class="ui-collapsible-heading-toggle ui-btn ui-btn-icon-right ui-btn-inherit ui-icon-carat-d">
-				Events<span class="ui-collapsible-heading-status"> click to expand contents</span>
+				TED
 			</a>
 		</h3>
 		<div class="ui-collapsible-content ui-body-inherit ui-collapsible-content-collapsed" aria-hidden="true">
 			<ul class="ui-listview">
-				<li data-filtertext="swipe to delete list items listviews swipe events" class="ui-first-child"><a href="swipe-list/index.html" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Swipe list items</a></li>
-				<li data-filtertext="swipe to navigate swipe page navigation swipe events" class="ui-last-child"><a href="swipe-page/index.html" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">Swipe page navigation</a></li>
+				<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/ted/','30days.js');" >
+					<!-- <span class="by">[Matt Cutts]</span>Try something new for 30 days<span class="ui-li-count">36</span> -->
+					Try something new for 30 days<span class="ui-li-count">36</span>
+				</a></li>
 			</ul>
 		</div>
-	</li>
+	</li><!-- ted -->
+
 </ul>

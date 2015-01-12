@@ -2,7 +2,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>1001 ch02</title>
+	<title>1001 ch01</title>
 	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
 	<link rel="stylesheet" href="../../css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="../../css/style.css">
@@ -10,15 +10,14 @@
 	<script language="javascript" src="../../js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="../../js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="../../js/common.js"></script>
-	<script language="javascript" src="ch02.js"></script>
 	<script language="javascript" src="../../js/dictation.js"></script>
+	<script language="javascript" src="left.js"></script>
 </head>
-<body onload="init();attachRightList();">
+<body onload="set();">
 <div data-role="page" class="ui-page-theme-b">
-
 	<div data-role="header" class="header">
-		<h1><span>1001</span>ch02 <span>[54~120]</span></h1>
-		<a href="../../index.html" rel="external" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-back ui-nodisc-icon ui-alt-icon ui-btn-left">Back</a>
+		<h1><span>1001</span>ch01 <span>[1~53]</span></h1>
+		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bullets ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->
 
@@ -70,7 +69,7 @@
 		<p id="progress" style="text-align:center;"></p>
 	</div><!-- /footer -->
 
-	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-position-fixed="true" data-theme="b">
+	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay">
 		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
 			<input type="radio" name="sort" id="sort1" value="asc" checked="checked" onclick="changeSort('asc');"/>
 			<label for="sort1">asc</label>
@@ -81,6 +80,17 @@
 		</fieldset>
 		<div id="list"  style="text-align:left;"></div>
 	</div><!-- /rightpanel -->
+
+	<div data-role="panel" id="leftpanel" class="navmenu-panel" data-position="left" data-display="overlay">
+		<ul data-role="listview" id="leftListView" data-inset="true" data-mini="true">
+		</ul>
+		<!--
+		<ul data-role="listview" id="leftListView" data-filter="true" data-inset="true" data-mini="true">
+			<li><a href="../../index.html" class="ui-btn ui-btn-icon-right ui-icon-home">Home</a></li>
+			<li data-role="divider">1001 basic</li>
+		</ul>
+		-->
+	</div>
 
 </div><!-- /page -->
 

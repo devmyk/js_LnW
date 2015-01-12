@@ -1,5 +1,22 @@
 body, input, select, textarea, button, .ui-btn { font-family: 'Consolas', 'Arial' ,'나눔고딕', '돋움'; }
 
+body::-webkit-scrollbar {
+	width: 6px;
+	background-color: #000;
+}
+body::-webkit-scrollbar-thumb {
+	background-color: #aaa;
+	border-radius: 3px;
+}
+div::-webkit-scrollbar {
+	width: 6px;
+	background-color: #000;
+}
+div::-webkit-scrollbar-thumb {
+	background-color: #aaa;
+	border-radius: 3px;
+}
+
 .header span {
 	color: #999;
 	font-size: smaller;
@@ -91,4 +108,16 @@ width: 33.33%;
 	background-position: center;
 }
 
+.controlgroup-textinput {
+	padding-top: .22em;
+	padding-bottom: .22em;
+	width: 85%;
+}
+.ui-controlgroup-controls {
+	width: 100%;
+}
 
+#btnSubmit {
+	-webkit-border-radius: .3125em;
+	border-radius: .3125em;
+}

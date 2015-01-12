@@ -2,12 +2,12 @@ soundManager.setup({});
 
 var sum = 0;
 var curr = 0;
-var max = 5;
+var max = 3;
 var sm;
 var timeout;
 var sc = [];
 var arr = [];
-var mode = "words"; // full, tiny
+var mode = "full"; // full, tiny
 var order = "asc";
 
 function init() {
@@ -18,8 +18,8 @@ function init() {
 	arr = [];
 	clearTimeout(timeout);
 
-	document.getElementById("count").innerHTML = "[0/" + max + "]";
-	document.getElementById("progress").innerHTML = "[" + (curr+1) + "/" + sum + "]";
+	document.getElementById("count").innerHTML = "[ 0 / " + max + " ]";
+	document.getElementById("progress").innerHTML = "[ " + (curr+1) + " / " + sum + " ]";
 	document.getElementById("fld").innerHTML = "";
 	if (mode == "full") {
 		document.getElementById("put").style.display = "";
@@ -113,6 +113,13 @@ function init() {
 	if (sm && autoplay) play();
 }
 
+function refresh() {
+	data[curr].correct = 0;
+	data[curr].pass = 0;
+	data[curr].timestamp = 0;
+	init();
+}
+
 function play(o) {
 //	if (sm.playState != 0) return;
 
@@ -159,7 +166,7 @@ function check2(o) {  // 값 비교
 
 	// arr 의 count 증가
 	arr[data[curr].curr].count++;
-	document.getElementById("count").innerHTML = "[" + arr[data[curr].curr].count + "/" + max + "]";
+	document.getElementById("count").innerHTML = "[ " + arr[data[curr].curr].count + " / " + max + " ]";
 	// arr 의 count 체크
 	if (arr[data[curr].curr].count >= max) {
 		pass = true;
@@ -178,13 +185,14 @@ function check2(o) {  // 값 비교
 				if (i < data[curr].curr) result += sc[i] + " ";
 				else result += stringFill("_", sc[i].length) + " ";
 			}
-			document.getElementById("count").innerHTML = "[0/" + max + "]";
+			document.getElementById("count").innerHTML = "[ 0 / " + max + " ]";
 			document.getElementById("result").innerHTML = result;
 		} else { // 완료
 			var dt = new Date();
 			data[curr].try = 1;
 			data[curr].timestamp = dt.getTime();
 			document.getElementById("result").innerHTML = data[curr].script;
+			document.getElementById("list"+curr).style.backgroundColor = (data[curr].correct ? "#38c" : "#c33");
 
 			play({onfinish : function() { if ((curr+1) < sum) { curr++; init(); } } });
 		}
@@ -193,12 +201,13 @@ function check2(o) {  // 값 비교
 }
 
 function check_full() {
+	if (data[curr].correct || data[curr].pass) return;
 	var o = document.getElementById("put");
 	var correct = false;
 	var pass = false;
 
 	data[curr].count++;
-	document.getElementById("count").innerHTML = "[" + data[curr].count + "/" + max + "]";
+	document.getElementById("count").innerHTML = "[ " + data[curr].count + " / " + max + "] ";
 
 	if (data[curr].count >= max){
 		pass = true;
@@ -208,11 +217,11 @@ function check_full() {
 	if (!pass) {
 		correct = true;
 		var result = "";
-		var v = specialCharRemove(o.value.trim(), "check");
-		var s = specialCharRemove(data[curr].script, "check");
+//		var v = specialCharRemove(o.value.trim(), "check");
+//		var s = specialCharRemove(data[curr].script, "check");
 
 		for(var i=0; i < sc.length ; i++) {
-			if (specialCharRemove(sc[i]) == specialCharRemove(va[i])) result += sc[i] + " ";
+			if (specialCharRemove(sc[i], "check") == specialCharRemove(va[i], "check")) result += sc[i] + " ";
 			else {
 				result += stringFill("_", sc[i].length) + " ";
 				/*
@@ -238,11 +247,12 @@ function check_full() {
 	if (correct || pass) {
 		document.getElementById("put").disabled = 'disabled';
 		var dt = new Date();
+		data[curr].try = 1;
 		data[curr].timestamp = dt.getTime();
 		data[curr].correct = (pass ? 0 : 1);
 		data[curr].mark = (pass? 1 : 0);
 		document.getElementById("result").innerHTML = data[curr].script;
-		document.getElementById("list"+curr).style.backgroundColor = (correct ? "#38c" : "#c33");
+		document.getElementById("list"+curr).style.backgroundColor = (data[curr].correct ? "#38c" : "#c33");
 //		play({ onfinish : function() {	if ((curr+1) < sum) { curr++; init(); }	} });
 		play();
 	}
@@ -250,7 +260,8 @@ function check_full() {
 
 function check(e, o) {  // 값 비교
 	if (e.which == 13 || e.keyCode == 13) {
-		play();
+		if (isMobile) play();
+		else check_full();
 	}
 }
 
@@ -324,25 +335,28 @@ function changeSort(v) {
 	} else if (v == "shuffle" && order != "shuffle") {
 		order = v;
 		data.shuffle();
-		changeCurr(0);
 	} else {
 		return;
 	}
-	attachList();
+	attachRightList();
+	changeCurr(0);
 }
 
-function attachList() {
+function attachRightList() {
 	document.getElementById("list").innerHTML = "";
 	for(var i=0; i < data.length ; i++) {
 		var btn = document.createElement("a");
 		var cls = "ui-btn ui-corner-all ui-btn-inline ui-btn-b ui-mini listbtn";
 		if (data[i].mark) cls += " listbtn-marked";
+		if (data[i].timestamp != 0) {
+			btn.style.backgroundColor = (data[i].correct ? "#38c" : "#c33");
+		}
 		btn.href = "#";
 		btn.setAttribute("id", "list"+data[i].seq);
 		btn.setAttribute("data-rel", "close");
 		btn.setAttribute("class",cls);
 		btn.setAttribute("onclick", "changeCurr("+i+");$('[data-role=panel]').panel('close');");
-		btn.innerHTML = (data[i].seq+1);
+		btn.innerHTML = (data[i].seq+1+startSeq);
 		$("#list").append(btn);
 	}
 }

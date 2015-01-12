@@ -1,3 +1,4 @@
+startSeq = 53;
 var list = "02_0054	1250		To express feelings is good for your mental health./\
 02_0055	1250		Starting the day actively with morning exercise is the key to losing weight./\
 02_0056	1250		To know is one thing, to teach is another./\

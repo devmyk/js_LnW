@@ -1,3 +1,4 @@
+startSeq = 0;
 var list = "01_0001	1250		time flies like an arrow./\
 01_0002	1250		Our school stands on the hill./\
 01_0003	1250		Once there lived a man named Robin Hood./\
