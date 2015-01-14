@@ -21,3 +21,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 demos
 data/1001/*.html
 data/1001/*.js
+.user.dat

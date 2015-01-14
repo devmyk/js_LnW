@@ -41,6 +41,8 @@ div::-webkit-scrollbar-thumb {
 	right: .7em;
 }
 
+
+/*
 .navmenu-panel .ui-listview > li .ui-collapsible-heading {
 	margin: 0;
 }
@@ -53,6 +55,7 @@ div::-webkit-scrollbar-thumb {
 	padding-left: 2em;
 	color: #999;
 }
+*/
 .navmenu-panel .no {
 	color: #999;
 	font-size: small;
@@ -72,6 +75,9 @@ div::-webkit-scrollbar-thumb {
 #result {
 	cursor: pointer;
 }
+#result span {
+	background-color: #c33;
+}
 .by {
 	color: #999;
 	font-size: smaller;
@@ -80,17 +86,38 @@ div::-webkit-scrollbar-thumb {
 }
 
 /* rightpanel */
+#rightpanelSetting .ui-panel-inner {
+	padding: 0;
+}
+#rightpanelSetting .ui-listview > .ui-li-static {
+	padding: 0 1em;
+}
+#rightpanelSetting li table {
+	width: 100%;
+}
+#rightpanelSetting li table .td40 {
+	width: 40%;
+	text-align: right;
+}
+#rightpanelSetting li table .td50 {
+	width: 50%;
+	text-align: center;
+}
+
 #rightpanel .ui-controlgroup-controls {
 	float: none; 
 	display: block;
 	width: 100%;
 }
 #rightpanel .ui-radio{
-width: 33.33%;
+width: 25%;
 }
 #rightpanel .ui-radio label{
 	text-align: center;
 	white-space: nowrap;
+	font-size: smaller;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 /* rightpanel list */

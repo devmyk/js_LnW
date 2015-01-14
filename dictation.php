@@ -1,22 +1,27 @@
 <?
+	require_once(getcwd()."/common.php");
+	checkSession("uid");
+	checkSession("dir", "logout.php");
+
 	$dir = $_REQUEST['dir'];
 	$file = $_REQUEST['file'];
+	$is_summary = ( empty($dir) && empty($file) ) ? 1 : 0;
 
-	if (empty($dir) || empty($file)) {
-		header("Location: /index.html");
-		exit();
+	if (! $is_summary && (! is_dir(getcwd()."/data/{$dir}") || ! is_file(getcwd()."/data/{$dir}/{$file}.js"))) {
+		$is_summary = 1;
 	}
 
-	if (! is_dir(getcwd()."/data/{$dir}") || ! is_file(getcwd()."/data/{$dir}/{$file}.js")) {
-		header("Location: /index.html");
+	if ($is_summary) {
+		echo "<script>document.location.replace('summary.php');</script>";
 		exit();
 	}
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>dictation : <?="{$dir} {$file}"?></title>
+	<title>DICTATION : <?="[{$dir}] {$file}"?></title>
 	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
 	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="/css/style.css">
@@ -28,18 +33,22 @@
 	<script language="javascript" src="/js/dictation.js"></script>
 	<script>
 		path = "/data/<?=$dir?>/";
+		max = <?=$_SESSION['set'][0];?>;
+		autoplay = <?=$_SESSION['set'][1];?>;
+		autopass = <?=$_SESSION['set'][2];?>;
+		mode = "<?=$_SESSION['set'][3];?>";
 	</script>
 </head>
 <body onload="init();attachRightList();">
-<div data-role="page" class="ui-page-theme-b">
 
+<div id="dictation" data-role="page" class="ui-page-theme-b">
 	<div data-role="header" class="header">
 		<h1><span>[<?=$dir?>]</span> <?=$file?></h1>
-		<a href="/index.php" rel="external" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-back ui-nodisc-icon ui-alt-icon ui-btn-left">Back</a>
+		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bullets ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->
 
-	<div role="main" id="main" class="ui-content">
+	<div role="main" class="ui-content">
 		<table id="container" style="text-align:center;width:100%;min-height:50%;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
@@ -93,12 +102,15 @@
 			<label for="sort1">asc</label>
 			<input type="radio" name="sort" id="sort2" value="marked" onclick="changeSort('marked');"/>
 			<label for="sort2">marked</label>
-			<input type="radio" name="sort" id="sort3" value="shuffle" onclick="changeSort('shuffle');"/>
-			<label for="sort3">shuffle</label>
+			<input type="radio" name="sort" id="sort3" value="incorrected" onclick="changeSort('incorrected');"/>
+			<label for="sort3">incorr</label>
+			<input type="radio" name="sort" id="sort4" value="shuffle" onclick="changeSort('shuffle');"/>
+			<label for="sort4">shuffle</label>
 		</fieldset>
 		<div id="list"  style="text-align:left;"></div>
 	</div><!-- /rightpanel -->
-
+	
+	<? require_once(getcwd()."/left.php"); ?>
 </div><!-- /page -->
 
 </body>

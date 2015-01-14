@@ -14,14 +14,16 @@ var timeout;
 var isRecycle = 0;
 var startSeq = 0;
 var path = "";
-var _js = "data/1001/ch01.js";
+var _js = "data/ted/30days.js";
 var isMobile = isMobile();
 var autoplay = (isMobile ? 0 : 1);
+var autopass = 0;
 var data = [];
 
 function set(p, js) {
 	if (p) path = p;
 	if (js) _js = path + js;
+	data = [];
 
 	var oe = document.getElementById("scriptJs");
 	if (oe) {
@@ -120,4 +122,9 @@ NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
 			this[i].parentElement.removeChild(this[i]);
 		}
 	}
+}
+
+function trim(s) {
+	if (typeof(s) == "undefined") return "";
+	return s.replace(/^[\r\n\t ]+/, "").replace(/[\r\n\t ]+$/, "");
 }
