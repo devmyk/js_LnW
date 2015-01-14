@@ -19,6 +19,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.mp3
 *.mp4
 demos
-data/1001/*.html
-data/1001/*.js
+data/1001
 .user.dat
