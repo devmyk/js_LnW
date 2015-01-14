@@ -1,9 +1,9 @@
 <?
 session_start();
 
-function checkSession($k, $url) {
-	if (! isset($_SESSION[$k])) {
-		if (empty($url)) $url = "index.php";
+function checkSession($k, $url = "index.php") {
+	$bool = !(isset($_SESSION) && isset($_SESSION[$k]));
+	if ($bool) {
 		printf("<script>document.location.replace('%s');</script>", $url);
 		exit();
 	}

@@ -3,12 +3,12 @@
 	checkSession("uid");
 	checkSession("dir", "logout.php");
 
-	$dir = $_REQUEST['dir'];
-	$file = $_REQUEST['file'];
-	$is_summary = ( empty($dir) && empty($file) ) ? 1 : 0;
+	$dir = (isset($_REQUEST['dir']) ? $_REQUEST['dir'] : "");
+	$file = (isset($_REQUEST['file']) ? $_REQUEST['file'] : "");
+	$is_summary = ((empty($dir)||empty($file)) ? 1 : 0);
 
-	if (! $is_summary && (! is_dir(getcwd()."/data/{$dir}") || ! is_file(getcwd()."/data/{$dir}/{$file}.js"))) {
-		$is_summary = 1;
+	if (! $is_summary) {
+		$is_summary = (! is_dir(getcwd()."/data/{$dir}") || ! is_file(getcwd()."/data/{$dir}/{$file}.js")) ? 1 : 0;
 	}
 
 	if ($is_summary) {
@@ -16,7 +16,6 @@
 		exit();
 	}
 ?>
-<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -41,23 +40,23 @@
 </head>
 <body onload="init();attachRightList();">
 
-<div id="dictation" data-role="page" class="ui-page-theme-b">
+<div id="dictation" data-role="page" data-theme="b" class="ui-page-theme-b">
 	<div data-role="header" class="header">
 		<h1><span>[<?=$dir?>]</span> <?=$file?></h1>
 		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
-		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bullets ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
+		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-grid ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
 		<table id="container" style="text-align:center;width:100%;min-height:50%;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
-					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="changeMode(this);"/>
+					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="changeMode(this);" />
 				</td>
 				<td style="vertical-align:top;text-align:right;" class="ui-nodisc-icon">
 					<a id="btnAuto" class="ui-btn ui-icon-audio ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeAuto();">autoplay</a>
 					<a id="btnMark" class="ui-btn ui-icon-star ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeMark();">mark</a>
-					<a class="ui-btn ui-icon-refresh ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="init();">refresh</a>
+					<a class="ui-btn ui-icon-refresh ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="refresh();">refresh</a>
 					<a id="btnRecycle" class="ui-btn ui-icon-recycle ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeRecycle();">recycle</a>
 				</td>
 			</tr>
@@ -109,7 +108,7 @@
 		</fieldset>
 		<div id="list"  style="text-align:left;"></div>
 	</div><!-- /rightpanel -->
-	
+
 	<? require_once(getcwd()."/left.php"); ?>
 </div><!-- /page -->
 

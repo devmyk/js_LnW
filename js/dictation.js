@@ -27,9 +27,11 @@ function init() {
 		document.getElementById("put").disabled = '';
 //		document.getElementById("put").focus();
 		document.getElementById("full").style.display = "";
+		document.getElementById("mode").checked = "checked";
 	} else {
 		document.getElementById("put").style.display = "none";
 		document.getElementById("full").style.display = "none";
+		document.getElementById("mode").checked = "";
 	}
 
 	// book mark
@@ -60,7 +62,6 @@ function init() {
 	}
 
 	// 원래 sm 의 파일명과 같으면 생략
-	// 이 부분 때문에 오류 나는 것 같기도 하고..?
 	if (!sm) {
 		sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
 	} else if (sm.id != "sm_" + data[curr].fn) {

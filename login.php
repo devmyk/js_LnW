@@ -2,8 +2,8 @@
 session_start();
 
 $url = "index.php";
-$uid = trim(htmlspecialchars($_POST['id']));
-$upw = trim(htmlspecialchars($_POST['pw']));
+$uid = (isset($_POST['id']) ? trim(htmlspecialchars($_POST['id'])) : "");
+$upw = (isset($_POST['pw']) ? trim(htmlspecialchars($_POST['pw'])) : "");
 
 if (empty($uid) || empty($upw)) {
 	session_unset();

@@ -1,7 +1,7 @@
 <?
 	require_once(getcwd()."/common.php");
 	if (isset($_SESSION['uid']) && !empty($_SESSION['uid']) ) {	// 로그인 상태니까 리스트 보이도록
-		echo "<script>document.location.replace('dictation.php');</script>";
+		echo "<script>document.location.replace('summary.php');</script>";
 		exit();
 	}
 ?>
