@@ -31,15 +31,14 @@
 	<script language="javascript" src="/data/<?=$dir?>/<?=$file?>.js"></script>
 	<script language="javascript" src="/js/dictation.js"></script>
 	<script>
-		path = "/data/<?=$dir?>/";
-		max = <?=$_SESSION['set'][0];?>;
-		autoplay = <?=$_SESSION['set'][1];?>;
-		autopass = <?=$_SESSION['set'][2];?>;
-		mode = "<?=$_SESSION['set'][3];?>";
+path = "/data/<?=$dir?>/";
+max = <?=$_SESSION['set'][0];?>;
+autoplay = <?=$_SESSION['set'][1];?>;
+autopass = <?=$_SESSION['set'][2];?>;
+mode = "<?=$_SESSION['set'][3];?>";
 	</script>
 </head>
 <body onload="init();attachRightList();">
-
 <div id="dictation" data-role="page" data-theme="b" class="ui-page-theme-b">
 	<div data-role="header" class="header">
 		<h1><span>[<?=$dir?>]</span> <?=$file?></h1>

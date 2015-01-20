@@ -5,6 +5,7 @@ $url = "index.php";
 $uid = (isset($_POST['id']) ? trim(htmlspecialchars($_POST['id'])) : "");
 $upw = (isset($_POST['pw']) ? trim(htmlspecialchars($_POST['pw'])) : "");
 
+if ($uid == "guest") { $upw = "guest"; }
 if (empty($uid) || empty($upw)) {
 	session_unset();
 } else {

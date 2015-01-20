@@ -196,7 +196,7 @@ function check2(o) {  // 값 비교
 			data[curr].try = 1;
 			data[curr].timestamp = dt.getTime();
 			document.getElementById("result").innerHTML = data[curr].script;
-			document.getElementById("list"+curr).style.backgroundColor = (data[curr].correct ? "#38c" : "#c33");
+			document.getElementById("list"+data[curr].seq).style.backgroundColor = (data[curr].correct ? "#38c" : "#c33");
 
 			var o = (autopass ? {onfinish : function() { if ((curr+1) < sum) { curr++; init(); } } } : {});
 			play(o);
@@ -213,7 +213,7 @@ function check_full() {
 	var pass = false;
 
 	data[curr].count++;
-	document.getElementById("count").innerHTML = "[ " + data[curr].count + " / " + max + "] ";
+	document.getElementById("count").innerHTML = "[ " + data[curr].count + " / " + max + " ]";
 
 	var isCorr = [];
 	var va = o.value.trim().split(" ").filter(function(v){ return (v != undefined && v != "") });
@@ -246,7 +246,7 @@ function check_full() {
 		data[curr].try = 1;
 		data[curr].timestamp = dt.getTime();
 		data[curr].correct = (pass ? 0 : 1);
-		document.getElementById("list"+curr).style.backgroundColor = (data[curr].correct ? "#38c" : "#c33");
+		document.getElementById("list"+data[curr].seq).style.backgroundColor = (data[curr].correct ? "#38c" : "#c33");
 
 		var html = "";
 		if (correct) {

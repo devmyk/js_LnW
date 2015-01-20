@@ -17,16 +17,21 @@
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
 	<script>
-		function login() {
-			var f = document.result;
+function login() {
+	var f = document.result;
 
-			var id = f.inputID.value.trim();
-			var pw = f.inputPW.value.trim();
-			if (id == "") { alert("input email."); return false; }
-			if (pw == "") { alert("input password."); return false; }
+	var id = f.inputID.value.trim();
+	var pw = f.inputPW.value.trim();
+	if (id == "") { alert("input email."); return false; }
+	if (pw == "") { alert("input password."); return false; }
 
-			f.submit();
-		}
+	f.submit();
+}
+function guest() {
+	var f = document.result;
+	f.inputID.value = "guest";
+	f.submit();
+}
 	</script>
 </head>
 <body>
@@ -42,6 +47,7 @@
 			<label for="inputPW" class="ui-hidden-accessible">Password:</label>
 			<input type="password" name="pw" id="inputPW" in="inputPW" value="" placeholder="password">
 			<a href="#" rel="external" class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-power" onclick="login();">LOGIN</a>
+			<a href="#" rel="external" class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-user" onclick="guest();">GUEST</a>
 		</form>
 	</div><!-- /main -->
 </div><!-- /page -->

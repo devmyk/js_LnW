@@ -7,7 +7,7 @@
 	</ul>
 
 	<!-- English collapsibleset -->
-	<div data-role="collapsibleset" data-theme="b" data-content-theme="b" data-inset="false">
+	<div id="collapsivlesetE" data-role="collapsibleset" data-theme="b" data-content-theme="b" data-inset="false">
 	<?
 	foreach ($_SESSION['dir'] as $d) {
 		$files = getFileListInDir($d);
@@ -17,7 +17,7 @@
 		<h2><?=$d?></h2>
 		<ul data-role="listview" data-divider-theme="b">
 			<? foreach($files as $f) { ?>
-			<li><a href="dictation.php?dir=<?=$d?>&file=<?=$f?>" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon navlist"><?=$f?></a></li>
+			<li><a href="summary.php?dir=<?=$d?>&file=<?=$f?>" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon"><?=$f?></a></li>
 			<? } ?>
 		</ul>
 		</div>

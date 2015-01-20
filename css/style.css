@@ -17,6 +17,11 @@ div::-webkit-scrollbar-thumb {
 	border-radius: 3px;
 }
 
+.ui-icon-play:after {
+	background-image: url("../images/icons-svg/sm_play.svg");
+	background-size: contain;
+}
+
 .header span {
 	color: #999;
 	font-size: smaller;
@@ -42,20 +47,13 @@ div::-webkit-scrollbar-thumb {
 }
 
 
-/*
-.navmenu-panel .ui-listview > li .ui-collapsible-heading {
-	margin: 0;
+/* left pannel nav menu*/
+#collapsivlesetE .ui-collapsible-content .ui-listview li a {
+	 background-color: #2a2a2a;
 }
-.navmenu-panel .ui-collapsible.ui-li-static {
-	padding: 0;
-	border: none !important;
+#collapsivlesetE .ui-collapsible-content .ui-listview li a:hover {
+	 background-color: #2f2f2f;
 }
-.navmenu-panel .ui-listview .ui-listview .ui-btn {
-	background-color: #222;
-	padding-left: 2em;
-	color: #999;
-}
-*/
 .navmenu-panel .no {
 	color: #999;
 	font-size: small;
@@ -85,7 +83,7 @@ div::-webkit-scrollbar-thumb {
 	padding-right: 0.5em;
 }
 
-/* rightpanel */
+/* right panel */
 #rightpanelSetting .ui-panel-inner {
 	padding: 0;
 }

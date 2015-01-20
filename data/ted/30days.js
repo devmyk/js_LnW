@@ -1,14 +1,14 @@
 var list = "ted_30days_MattCutts	1	4000	A few years ago, I felt like I was stuck in a rut,/\
 ted_30days_MattCutts	4000	9600	so I decided to follow in the footsteps of the great American philosopher, Morgan Spurlock,/\
-ted_30days_MattCutts	9600	13000	and try something new for 30 days./\
-ted_30days_MattCutts	13000	15000	The idea is actually pretty simple./\
+ted_30days_MattCutts	9600	12800	and try something new for 30 days./\
+ted_30days_MattCutts	12800	15000	The idea is actually pretty simple./\
 ted_30days_MattCutts	15000	18000	Think about something you\'ve always wanted to add to your life/\
 ted_30days_MattCutts	18000	21000	and try it for the next 30 days./\
 ted_30days_MattCutts	21000	29800	It turns out, 30 days is just about the right amount of time to add a new habit or subtract a habit like watching the news from your life./\
 ted_30days_MattCutts	29800	33800	There\'s a few things I learned while doing these 30-day challenges./\
 ted_30days_MattCutts	33800	40900	The first was, instead of the months flying by, forgotten, the time was much more memorable./\
-ted_30days_MattCutts	40900	45000	This was part of a challenge I did to take a picture every day for a month./\
-ted_30days_MattCutts	45000	50000	And I remember exactly where I was and what I was doing that day./\
+ted_30days_MattCutts	40900	44600	This was part of a challenge I did to take a picture every day for a month./\
+ted_30days_MattCutts	44600	50000	And I remember exactly where I was and what I was doing that day./\
 ted_30days_MattCutts	50000	56500	I also noticed that as I started to do more and harder 30-day challenges, my self-confidence grew./\
 ted_30days_MattCutts	56500	63600	I went from desk-dwelling computer nerd to the kind of guy who bikes to work for fun./\
 ted_30days_MattCutts	63600	69000	Even last year, I ended up hiking up Mt. Kilimanjaro, the highest mountain in Africa./\
