@@ -25,4 +25,11 @@ function getFileListInDir($dir) {
 	return $files;
 }
 
+function debug($v) {
+	$args = func_get_args();
+	print "<xmp>";
+	foreach ($args as $arg) var_dump($arg);
+	print "</xmp>";
+}
+
 ?>

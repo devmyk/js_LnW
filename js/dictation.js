@@ -258,6 +258,23 @@ function check_full() {
 			}
 		}
 		document.getElementById("result").innerHTML = html;
+		
+		// log 남기기
+		$.ajax({
+			type: "POST",
+			url : "/log.php",
+			data : {
+				correct	: (correct ? 1 : 0),
+				dir		: dir,
+				file	: file,
+				seq		: data[curr].seq,
+				input	: data[curr].answer
+			},
+			dataType: "text",
+			error: function(xhr, textStatus, errorThrown) {
+				console.log(testStatus);
+			}
+		});
 
 		var o = (autopass ? { onfinish : function() {	if ((curr+1) < sum) { curr++; init(); }	} } : {});
 		play(o);

@@ -1,7 +1,6 @@
 <?
 	require_once(getcwd()."/common.php");
 	checkSession("uid");
-	checkSession("dir", "logout.php");
 
 	$dir = (isset($_REQUEST['dir']) ? $_REQUEST['dir'] : "");
 	$file = (isset($_REQUEST['file']) ? $_REQUEST['file'] : "");
@@ -21,13 +20,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>DICTATION : <?="[{$dir}] {$file}"?></title>
-	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
 	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 	<style>
 .header .ui-btn { top: .35em; margin-top:0; }
 #contain td { border-bottom: 1px dotted #aaa; padding: .5em 0; }
-#justlist td { border-bottom: 1px dotted #aaa; padding: .5em 0; }
 #rightpanel li table { width : 100% }
 	</style>
 	<script language="javascript" src="/js/jquery.js"></script>
@@ -93,48 +90,15 @@ autopass = <?=$_SESSION['set'][2];?>;
 			</li>
 			<li>
 				<table><tr> <!-- 어차피 둘 중 하나만 실행하니까 radio 로 바꿔야겠다 -->
-					<td width="33%"><a href="#" class="ui-btn ui-mini" onclick="playloop('all',true);">All</a></td>
-					<td width="33%"><a href="#" class="ui-btn ui-mini" onclick="playloop('marked',true);">Marked</a></td>
-					<td width="33%"><a href="#" class="ui-btn ui-mini" onclick="playloop('shuffle',true);">shuffle</a></td>
+					<td width="33%"><a href="#" class="ui-btn ui-btn-icon-left ui-mini ui-icon-audio" onclick="playloop('all',true);">All</a></td>
+					<td width="33%"><a href="#" class="ui-btn ui-btn-icon-left ui-mini ui-icon-star" onclick="playloop('marked',true);">Marked</a></td>
+					<td width="33%"><a href="#" class="ui-btn ui-btn-icon-left ui-mini ui-icon-recycle" onclick="playloop('shuffle',true);">shuffle</a></td>
 				</tr></table>
-			</li>
-			<li>
-				<table style="text-align:center;"><tr>
-					<td width="20%"><input type="text" name="playCount" id="mark_from" value="" /></td>
-					<td width="10%">~</td>
-					<td width="20%"><input type="text" name="playCount" id="mark_to" value="" /></td>
-					<td width="50%"><a href="#" class="ui-btn ui-btn-icon-left ui-mini ui-icon-check" onclick="changeMarks();">Marking</a></td>
-				</tr></table>
-			</li>
-			<li>
-				<a href="#list" class="ui-btn ui-btn-icon-left ui-mini ui-icon-bars">Just List</a></td>
 			</li>
 		</ul>
 	</div><!-- /rightpanel -->
+
 	<? require_once(getcwd()."/left.php"); ?>
-</div><!-- /page -->
-
-<div id="list" data-role="page" data-theme="b" class="ui-page-theme-b">
-	<div data-role="header" class="header" data-position="fixed">
-		<h1><span>[<?=$dir?>]</span> <?=$file?></h1>
-		<a href="#dialog" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-carat-l ui-nodisc-icon ui-alt-icon ui-btn-left">Back</a>
-	</div><!-- /header -->
-
-	<div role="main" class="ui-content">
-		<table id="justlist" style="text-align:center;width:100%;">
-			<tr style="background-color:#1d1d1d;color:#999;">
-				<td>script</td>
-			</tr>
-		</table>
-	</div><!-- /content -->
-
-	<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer">
-		<table style="width:100%;text-align:center;"><tr>
-			<td ><a href="#" class="ui-btn ui-btn-icon-left ui-mini ui-icon-audio" onclick="playloop('all',true);">All</a></td>
-			<td ><a href="#" class="ui-btn ui-btn-icon-left ui-mini ui-icon-star" onclick="playloop('marked',true);">Marked</a></td>
-			<td ><a href="#" class="ui-btn ui-btn-icon-left ui-mini ui-icon-recycle" onclick="playloop('shuffle',true);">shuffle</a></td>
-		</tr></table>
-	</div><!-- /footer -->
 </div><!-- /page -->
 
 </body>

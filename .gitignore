@@ -20,4 +20,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.mp4
 demos
 data/1001
+logs
 .user.dat

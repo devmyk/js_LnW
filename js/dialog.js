@@ -7,7 +7,10 @@ var sm;
 var order = "asc";
 
 function init() {
+	sum = data.length;
 	attachDialogList();
+	attachDialogList2();
+	sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
 }
 
 function attachDialogList() {
@@ -19,23 +22,143 @@ function attachDialogList() {
 		var no = parseInt(data[i].seq) + startSeq + 1;
 		tr.innerHTML = '<td><a id="btnMark'+data[i].seq+'" class="ui-btn ui-icon-star ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin ui-nodisc-icon" onclick="changeMark('+data[i].seq+');">mark</a></td>';
 		tr.innerHTML += '<td>'+no+'</td>';
-		tr.innerHTML += '<td style="text-align:left;padding-top:0.5em;">'+data[i].script+'</td>';
+		tr.innerHTML += '<td style="text-align:left;padding:0.5em 0.25em;"><span class="scripts" id="scripts'+data[i].seq + '">' + data[i].script + '</span></td>';
 		$("#contain").append(tr);
+	}
+}
+
+function attachDialogList2() {
+	if (data.length <= 0) return;
+	var table = document.getElementById("justlist");
+	if (!table) return;
+	for (var i=0; i<data.length; i++) {
+		var tr = document.createElement("tr");
+		tr.innerHTML += '<td style="text-align:left;padding:0.5em 0.25em;"><span class="scripts" name="scripts'+data[i].seq + '">' + data[i].script + '</span></td>';
+		$("#justlist").append(tr);
 	}
 }
 
 function changeMark(i) {
 	var ol = document.getElementById("btnMark"+i);
-	var o = document.getElementById("btnMark");
-	if (data[curr].mark) {
-		data[curr].mark = 0;
-		if (o) o.style.backgroundColor = "";
+	if (data[i].mark) {
+		data[i].mark = 0;
 		if (ol) ol.style.backgroundColor = "";
-		$("#list"+data[curr].seq).removeClass("listbtn-marked");
+		$("#list"+data[i].seq).removeClass("listbtn-marked");
 	} else {
-		data[curr].mark = 1;
-		if (o) o.style.backgroundColor = "#38c";
-		if (ol) ol.style.backgroundColor = "#38c";
-		$("#list"+data[curr].seq).addClass("listbtn-marked");
+		data[i].mark = 1;
+		if (ol) ol.style.backgroundColor = colorBlue;
+		$("#list"+data[i].seq).addClass("listbtn-marked");
 	}
+}
+
+function changeMarks() {
+	var from = document.getElementById("mark_from").value;
+	var to = document.getElementById("mark_to").value;
+	// 예외처리 해야 하는데 귀찮네..
+	for (var i=0; i<data.length; i++) {
+		var ol = document.getElementById("btnMark"+i);
+		if (i >= from && i <= to) {
+			data[i].mark = 1;
+			if (ol) ol.style.backgroundColor = colorBlue;
+			$("#list"+data[i].seq).removeClass("listbtn-marked");
+		} else {
+			data[i].mark = 0;
+			if (ol) ol.style.backgroundColor = "";
+			$("#list"+data[i].seq).addClass("listbtn-marked");
+		}
+	}
+}
+
+var loopcount = 0;
+var stop = 0;
+var playIdx = 0;
+var playArr = new Array();
+function playloop(mode, reset) {
+	if (reset) {
+		stop = sm.playState;
+		loopcount = 0;
+		playIdx = 0;
+		playArr = [];
+	}
+	if (stop) return;
+	$(".scripts").css("background-color", "");
+	if (playArr.length == 0) {
+		if (typeof(mode) == "undefined") {
+			playArr.push({key:curr, seq:data[curr].seq});
+		} else {
+			for (var i=0; i<sum; i++) {
+				if (mode == "marked") {
+					if (data[i].mark) {
+						playArr.push({key:i, seq:data[i].seq});
+					}
+				} else if (mode == "all" || mode == "shuffle") {
+					playArr.push({key:i, seq:data[i].seq});
+				}
+			}
+			if (mode == "shuffle") {
+				playArr.shuffle();
+			}
+		}
+	}
+	if (playArr.length == 0) {
+		playIdx = 0;
+		return;
+	}
+
+	var n = parseInt(document.getElementById("playCount").value); // 나중에 max 로 변경해야 함
+	loopcount++;
+
+	if (curr != playArr[playIdx].key) {
+		curr = playArr[playIdx].key;
+		sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
+	}
+	var o = {};
+	var func = function() {
+		if (loopcount < n) { playloop(mode); }
+		else {
+			loopcount = 0;
+			if (playIdx+1 < playArr.length) {
+				if (mode) {
+						playIdx++;
+						curr = playArr[playIdx].key;
+						document.getElementById("currentNo").innerHTML = "No. "+playArr[playIdx].seq;
+						sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
+						playloop(mode);
+				}
+			} else {
+				playArr = [];
+				playIdx = 0;
+				$(".scripts").css("background-color", "");
+			}
+		}
+	};
+	if (data[playArr[playIdx].key].to) o.onstop = func;
+	else o.onfinish = func;
+
+	if (stop != 1) {
+		play(o);
+		stop = 0;
+	}
+}
+
+function play(o) {
+//	if (sm.playState != 0) return;
+
+	sm.stop("sm_" + data[curr].fn);
+	var e = document.getElementById("scripts"+data[curr].seq);
+	if (e) {
+		e.style.backgroundColor = colorBlue;
+		$("span[name=scripts" + data[curr].seq + "]").css("backgroundColor", colorBlue);
+//		$('body').scrollTo($(e));
+	}
+
+	if (typeof(o) == "undefined") o = {};
+	if (data[curr].from) o.from = data[curr].from;
+	if (data[curr].to) o.to = data[curr].to;
+//	if (! o.onfinish) {
+//		o.onfinish = function() {
+//		};
+//	}
+
+	sm.play(o);
 }

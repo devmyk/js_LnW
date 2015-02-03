@@ -31,6 +31,8 @@
 	<script language="javascript" src="/data/<?=$dir?>/<?=$file?>.js"></script>
 	<script language="javascript" src="/js/dictation.js"></script>
 	<script>
+dir = "<?=$dir?>";
+file = "<?=$file?>";
 path = "/data/<?=$dir?>/";
 max = <?=$_SESSION['set'][0];?>;
 autoplay = <?=$_SESSION['set'][1];?>;

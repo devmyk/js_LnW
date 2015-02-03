@@ -14,11 +14,15 @@ var timeout;
 var isRecycle = 0;
 var startSeq = 0;
 var path = "";
+var dir = "";
+var file = "";
 var _js = "data/ted/30days.js";
 var isMobile = isMobile();
 var autoplay = (isMobile ? 0 : 1);
 var autopass = 0;
 var data = [];
+var colorBlue = "#38c";
+var colorRed = "#c33";
 
 function set(p, js) {
 	if (p) path = p;
@@ -128,3 +132,4 @@ function trim(s) {
 	if (typeof(s) == "undefined") return "";
 	return s.replace(/^[\r\n\t ]+/, "").replace(/[\r\n\t ]+$/, "");
 }
+
