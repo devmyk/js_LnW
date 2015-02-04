@@ -35,11 +35,14 @@ function init() {
 	}
 
 	// book mark
+	getRecord();
+	/*
 	if (data[curr].mark == 1) {
 		document.getElementById("btnMark").style.backgroundColor = "#38c";
 	} else {
 		document.getElementById("btnMark").style.backgroundColor = "";
 	}
+	*/
 
 	// auto play
 	if (autoplay) {
@@ -275,6 +278,24 @@ function check_full() {
 				console.log(testStatus);
 			}
 		});
+		
+		// 결과 기록
+		$.ajax({
+			type: "POST",
+			url : "/record.php",
+			data : {
+				dir		: dir,
+				file	: file,
+				type	: "set",
+				seq		: data[curr].seq,
+				mark	: data[curr].mark,
+			 	correct	: (correct ? 1 : 0)
+			},
+			dataType: "text",
+			success: function(data) {
+				console.log(data);
+			}
+		});
 
 		var o = (autopass ? { onfinish : function() {	if ((curr+1) < sum) { curr++; init(); }	} } : {});
 		play(o);
@@ -404,3 +425,21 @@ function attachRightList() {
 	}
 }
 
+function getRecord() {
+	$.ajax({
+		type: "POST",
+		url : "/record.php",
+		data : {dir:dir, file:file, type:"get", seq: data[curr].seq},
+		dataType: "text",
+		success : function(result){
+			if (result.trim() == "") return;
+			var res = result.trim().split("\t"); // 0seq/1mark/2correct/3try
+			data[curr].mark = parseInt(res[1]);
+			if (data[curr].mark == 1) {
+				document.getElementById("btnMark").style.backgroundColor = "#38c";
+			} else {
+				document.getElementById("btnMark").style.backgroundColor = "";
+			}
+		}
+	});
+}

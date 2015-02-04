@@ -26,5 +26,4 @@
 		fwrite($fp, $msg);
 		fclose($fp);
 	}
-	debug($msg);
 ?>

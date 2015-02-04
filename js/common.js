@@ -21,29 +21,9 @@ var isMobile = isMobile();
 var autoplay = (isMobile ? 0 : 1);
 var autopass = 0;
 var data = [];
+var logs = [];
 var colorBlue = "#38c";
 var colorRed = "#c33";
-
-function set(p, js) {
-	if (p) path = p;
-	if (js) _js = path + js;
-	data = [];
-
-	var oe = document.getElementById("scriptJs");
-	if (oe) {
-		oe.remove();
-	}
-	var e = document.createElement('script');
-	e.setAttribute("type","text/javascript");
-	e.setAttribute("src", _js);
-	e.setAttribute("id", "scriptJs");
-	document.getElementsByTagName("head")[0].appendChild(e);
-	$("#scriptJs").load(function() {
-		init();
-		if(!js) attachLeftList();
-		attachRightList();
-	});
-}
 
 function setData() {
 	var tmp = list.split("/");
@@ -62,18 +42,6 @@ function setData() {
 	}
 }
 
-function attachLeftList() {
-	var leftpanel = document.getElementById("leftpanel");
-	if (!leftpanel) return;
-	if (document.getElementById("leftListView")) return;
-	document.getElementById("defaultListView").remove();
-
-	$.get("left.html", function(template) {
-		$(template).prependTo("#leftpanel");
-		$("[data-role=listview]").listview();
-		$("[data-role=collapsible]").collapsible();
-	}, "html");
-}
 
 function isMobile() {
 	ua = window.navigator.userAgent;
