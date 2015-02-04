@@ -9,31 +9,9 @@
 	<script language="javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="js/common.js"></script>
-	<script language="javascript" src="js/dictation.js"></script>
+	<script language="javascript" src="js/dictation_for_html.js"></script>
 </head>
 <body>
-
-<div id="login" data-role="page" data-theme="b" class="ui-page-theme-b">
-	<div data-role="header" class="header">
-		<h1>HTML LOGIN</span></h1>
-		<!--
-		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
-		-->
-		<a href="#rightpanel2" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-gear ui-nodisc-icon ui-alt-icon ui-btn-right" onclick="console.log(1);">Setting</a>
-	</div><!-- /header -->
-	<div role="main" class="ui-content">
-		<form>
-			<div style="padding-top:4em;padding-bottom:.8em;">
-				<label for="inputEmail" class="ui-hidden-accessible">User Email:</label>
-				<input type="text" name="user" in="inputEmail" value="" placeholder="email">
-				<label for="inputPW" class="ui-hidden-accessible">Password:</label>
-				<input type="text" name="pw" in="inputPW" value="" placeholder="password">
-				<a href="#" class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-power">LOGIN</a>
-			</div>
-		</form>
-		<a href="#dictation" class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-user" onclick="set('data/ted/');">GUEST</a>
-	</div>
-</div>
 
 <div id="dictation" data-role="page" data-theme="b" class="ui-page-theme-b">
 	<div data-role="header" class="header">
@@ -43,7 +21,7 @@
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<table id="container" style="text-align:center;width:100%;min-height:50%;">
+		<table id="container" style="text-align:center;width:100%;min-height:50%;display:none;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
 					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" checked="checked" onchange="changeMode(this);"/>
@@ -74,12 +52,6 @@
 				<td style="vertical-align:bottom;" colspan="2"><div id="count" style="text-align:left;color:#999;"></div></td>
 			</tr>
 			<tr><td colspan="2">
-<!--
-				<div id="full" data-role="controlgroup" data-type="horizontal">
-					<input id="put" name="put" type="text" data-wrapper-class="controlgroup-textinput ui-btn" onkeydown="check(event, this);" value="" />
-					<button id="btnSubmit" class="ui-btn ui-btn-icon-notext ui-icon-action ui-nodisc-icon ui-btn-inline" onclick="check_full();">Enter</button>
-				</div>
--->
 				<div id="full">
 					<a href="#" id="btnSubmit" class="ui-btn ui-btn-icon-notext ui-icon-action ui-nodisc-icon ui-btn-inline" style="width:2.5em;height:2em;float:right;margin:.55em 0;" onclick="check_full();">enter</a>
 					<div style="overflow:hidden; padding:0 0.4em;">
@@ -97,16 +69,6 @@
 	</div><!-- /footer -->
 
 	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay">
-<!--
-		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
-			<input type="radio" name="sound" id="sound1" value="all" checked="checked" onclick="console.log('all');"/>
-			<label for="sound1">all</label>
-			<input type="radio" name="sound" id="sound2" value="marked" onclick="console.log('marked');"/>
-			<label for="sound2">marked</label>
-			<input type="radio" name="sound" id="sound3" value="incorrected" onclick="console.log('incorrected');"/>
-			<label for="sound3">incorr</label>
-		</fieldset>
--->
 		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
 			<input type="radio" name="sort" id="sort1" value="asc" checked="checked" onclick="changeSort('asc');"/>
 			<label for="sort1">asc</label>
@@ -120,17 +82,54 @@
 		<div id="list"  style="text-align:left;"></div>
 	</div><!-- /rightpanel -->
 
-	<div data-role="panel" id="rightpanelSetting" data-position="right" data-display="overlay">
+	<div data-role="panel" id="rightSetting" data-position="right" data-display="overlay">
 		<p>setting...</p>
 	</div>
 
 	<div data-role="panel" id="leftpanel" data-position="left" data-display="overlay" class="navmenu-panel">
-		<!-- left panel -->
-		<ul id="defaultListView" data-role="listview" class="ui-alt-icon ui-nodisc-icon ui-listview" data-theme="b" data-divider-theme="b">
-			<li data-filtertext="homepage" data-icon="home" class="ui-first-child"><a href="#login" class="ui-btn ui-btn-icon-right ui-icon-home">Home</a></li>
-			<li data-filtertext="setting" data-icon="gear" class="ui-first-child"><a href="#rightpanelSetting" class="ui-btn ui-btn-icon-right ui-icon-gear">Setting</a></li>
+		<!-- left panel menu -->
+		<ul data-role="listview" data-divider-theme="b" style="margin-bottom:-0.5em;">
+			<li><a href="#rightSetting" class="ui-btn ui-btn-icon-left ui-icon-gear">Setting</a></li>
+			<li data-role="list-divider">English</li>
 		</ul>
-	</div>
+		<!-- English collapsibleset -->
+		<div id="collapsivlesetE" data-role="collapsibleset" data-theme="b" data-content-theme="b" data-inset="false">
+			<div data-role="collapsible">
+				<h2>1001</h2>
+				<ul data-role="listview" data-divider-theme="b">
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch01.js');" >ch01</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch02.js');" >ch02</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch03.js');" >ch03</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch04.js');" >ch04</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch05.js');" >ch05</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch06.js');" >ch06</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch07.js');" >ch07</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch08.js');" >ch08</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch09.js');" >ch09</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch10.js');" >ch10</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch11.js');" >ch11</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch12.js');" >ch12</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch13.js');" >ch13</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch14.js');" >ch14</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch15.js');" >ch15</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch16.js');" >ch16</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch17.js');" >ch17</a></li>
+					<li data-filtertext=""><a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/1001/','ch18.js');" >ch18</a></li>
+				</ul>
+			</div><!-- 1001 -->
+			<div data-role="collapsible">
+				<h2>TED</h2>
+				<ul data-role="listview" data-divider-theme="b">
+					<li data-filtertext="">
+						<a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/ted/','30days.js');" >
+						<!-- <span class="by">[Matt Cutts]</span>Try something new for 30 days<span class="ui-li-count">36</span> -->
+						Try something new for 30 days<span class="ui-li-count">36</span>
+						</a>
+					</li>
+				</ul>
+			<div><!-- TED -->
+		</div><!-- English collapsibleset -->
+	</div><!-- left panel menu -->
 </div><!-- /page -->
 
 </body>

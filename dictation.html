@@ -10,30 +10,17 @@
 	<script language="javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="js/common.js"></script>
-	<script language="javascript" src="js/dictation.js"></script>
+	<script language="javascript" src="js/dictation_for_html.js"></script>
 </head>
 <body>
-
-<div id="summary" data-role="page" data-theme="b" class="ui-page-theme-b">
-	<div data-role="header" class="header">
-		<h1>SUMMARY</span></h1>
-		<!--
-		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
-		-->
-		<a href="#rightpanel2" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-gear ui-nodisc-icon ui-alt-icon ui-btn-right" onclick="console.log(1);">Setting</a>
-	</div><!-- /header -->
-	<div role="main" id="summary" class="ui-content">
-	</div>
-</div>
-
 <div id="dictation" data-role="page" data-theme="b" class="ui-page-theme-b">
 	<div data-role="header" class="header">
-		<h1 id="title"><span>guest</span> TEST</h1>
+		<h1 id="title">DICTATION</h1>
 		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-grid ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->
 
-	<div role="main" id="main" class="ui-content">
+	<div role="main" class="ui-content">
 		<table id="container" style="text-align:center;width:100%;min-height:50%;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
@@ -65,12 +52,6 @@
 				<td style="vertical-align:bottom;" colspan="2"><div id="count" style="text-align:left;color:#999;"></div></td>
 			</tr>
 			<tr><td colspan="2">
-<!--
-				<div id="full" data-role="controlgroup" data-type="horizontal">
-					<input id="put" name="put" type="text" data-wrapper-class="controlgroup-textinput ui-btn" onkeydown="check(event, this);" value="" />
-					<button id="btnSubmit" class="ui-btn ui-btn-icon-notext ui-icon-action ui-nodisc-icon ui-btn-inline" onclick="check_full();">Enter</button>
-				</div>
--->
 				<div id="full">
 					<a href="#" id="btnSubmit" class="ui-btn ui-btn-icon-notext ui-icon-action ui-nodisc-icon ui-btn-inline" style="width:2.5em;height:2em;float:right;margin:.55em 0;" onclick="check_full();">enter</a>
 					<div style="overflow:hidden; padding-right:.1em;">
@@ -87,17 +68,7 @@
 		<p id="progress" style="text-align:center;"></p>
 	</div><!-- /footer -->
 
-	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay">
-	<!--
-		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
-			<input type="radio" name="sound" id="sound1" value="all" checked="checked" onclick="console.log('all');"/>
-			<label for="sound1">all</label>
-			<input type="radio" name="sound" id="sound2" value="marked" onclick="console.log('marked');"/>
-			<label for="sound2">marked</label>
-			<input type="radio" name="sound" id="sound3" value="incorrected" onclick="console.log('incorrected');"/>
-			<label for="sound3">incorrected</label>
-		</fieldset>
-	-->
+	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-position-fixed="true" data-theme="b">
 		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
 			<input type="radio" name="sort" id="sort1" value="asc" checked="checked" onclick="changeSort('asc');"/>
 			<label for="sort1">asc</label>

@@ -2,13 +2,37 @@ soundManager.setup({});
 
 var sum = 0;
 var curr = 0;
-var max = 3;
+var max = 1;
 var sm;
 var timeout;
 var sc = [];
 var arr = [];
 var mode = "full"; // full, words
 var order = "asc";
+
+// dir, js file name
+function set(p, js) {
+	if (p) path = p;
+	if (js) _js = path + js;
+	data = [];
+
+	var oe = document.getElementById("scriptJs");
+	if (oe) {
+		oe.remove();
+	}
+	var e = document.createElement('script');
+	e.setAttribute("type","text/javascript");
+	e.setAttribute("src", _js);
+	e.setAttribute("id", "scriptJs");
+	document.getElementsByTagName("head")[0].appendChild(e);
+	$("#scriptJs").load(function() {
+		var ec = document.getElementById("container");
+		if (ec) ec.style.display = "";
+		attachRightList();
+		curr = 0;
+		init();
+	});
+}
 
 function init() {
 	sum = data.length;
@@ -35,14 +59,11 @@ function init() {
 	}
 
 	// book mark
-	getRecord();
-	/*
 	if (data[curr].mark == 1) {
 		document.getElementById("btnMark").style.backgroundColor = "#38c";
 	} else {
 		document.getElementById("btnMark").style.backgroundColor = "";
 	}
-	*/
 
 	// auto play
 	if (autoplay) {
@@ -261,41 +282,6 @@ function check_full() {
 			}
 		}
 		document.getElementById("result").innerHTML = html;
-		
-		// log 남기기
-		$.ajax({
-			type: "POST",
-			url : "/log.php",
-			data : {
-				correct	: (correct ? 1 : 0),
-				dir		: dir,
-				file	: file,
-				seq		: data[curr].seq,
-				input	: data[curr].answer
-			},
-			dataType: "text",
-			error: function(xhr, textStatus, errorThrown) {
-				console.log(testStatus);
-			}
-		});
-		
-		// 결과 기록
-		$.ajax({
-			type: "POST",
-			url : "/record.php",
-			data : {
-				dir		: dir,
-				file	: file,
-				type	: "set",
-				seq		: data[curr].seq,
-				mark	: data[curr].mark,
-			 	correct	: (correct ? 1 : 0)
-			},
-			dataType: "text",
-			success: function(data) {
-				console.log(data);
-			}
-		});
 
 		var o = (autopass ? { onfinish : function() {	if ((curr+1) < sum) { curr++; init(); }	} } : {});
 		play(o);
@@ -444,21 +430,15 @@ function attachRightList() {
 	}
 }
 
-function getRecord() {
-	$.ajax({
-		type: "POST",
-		url : "/record.php",
-		data : {dir:dir, file:file, type:"get", seq: data[curr].seq},
-		dataType: "text",
-		success : function(result){
-			if (result.trim() == "") return;
-			var res = result.trim().split("\t"); // 0seq/1mark/2correct/3try
-			data[curr].mark = parseInt(res[1]);
-			if (data[curr].mark == 1) {
-				document.getElementById("btnMark").style.backgroundColor = "#38c";
-			} else {
-				document.getElementById("btnMark").style.backgroundColor = "";
-			}
-		}
-	});
+function attachLeftList() {
+	var leftpanel = document.getElementById("leftpanel");
+	if (!leftpanel) return;
+	if (document.getElementById("leftListView")) return;
+	document.getElementById("defaultListView").remove();
+
+	$.get("left.html", function(template) {
+		$(template).prependTo("#leftpanel");
+		$("[data-role=listview]").listview();
+		$("[data-role=collapsible]").collapsible();
+	}, "html");
 }
