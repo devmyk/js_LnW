@@ -3,9 +3,12 @@ soundManager.setup({});
 var sum = 0;
 var curr = 0;
 var max = 3;
+var maxWord = 3;
+var maxFull = 3;
 var sm;
 var timeout;
 var sc = [];
+var sa = []; // isCorr 와 같은 기능
 var arr = [];
 var mode = "full"; // full, words
 var order = "asc";
@@ -15,6 +18,7 @@ function init() {
 	data[curr].curr = 0;
 	data[curr].sum = 0;
 	sc = [];
+	sa = [];
 	arr = [];
 	clearTimeout(timeout);
 
@@ -35,14 +39,12 @@ function init() {
 	}
 
 	// book mark
-	getRecord();
-	/*
+	getRecords();
 	if (data[curr].mark == 1) {
 		document.getElementById("btnMark").style.backgroundColor = "#38c";
 	} else {
 		document.getElementById("btnMark").style.backgroundColor = "";
 	}
-	*/
 
 	// auto play
 	if (autoplay) {
@@ -79,14 +81,17 @@ function init() {
 		document.getElementById("put").disabled = 'disabled';
 	} else {
 		for(var i=0; i < sc.length ; i++) {
+			sa[i] = 0;
 			result += stringFill("_", sc[i].length) + " ";
 			if (mode == "words") {
 				arr[i] = { count:0, pass:0, correct:0, seq:i, obj:undefined, text: specialCharRemove(sc[i]) };
 				var btn = document.createElement("a");
 				btn.href = "#";
 				btn.setAttribute("id", "btn"+i);
+//				btn.setAttribute("seq", i);
 				btn.setAttribute("class","ui-btn ui-corner-all ui-btn-inline ui-btn-b ui-mini");
-				var value = specialCharRemove(sc[i], "innerHTML");
+				var value = sc[i];
+//				var value = specialCharRemove(sc[i], "innerHTML");
 				btn.innerHTML = value;
 				arr[i].obj = btn;
 			}
@@ -106,7 +111,8 @@ function init() {
 			return a.text < b.text ? -1 : a.text > b.text ? 1 : 0;
 		});
 		for(var i=0; i < arr.length ; i++) {
-			$(arr[i].obj).click(function() { check2(this); });
+//			arr[i].obj.setAttribute("ak", i);
+			$(arr[i].obj).click(function() { check_words(this); });
 			$("#fld").append(arr[i].obj);
 		}
 	}
@@ -166,8 +172,8 @@ function stringFill(x, n) {
 	return s; 
 }
 
-
-function check2(o) {  // 값 비교
+// mode 가 words 일 때 값 비교
+function check_words(o) {
 	var correct = false;
 	var pass = false;
 
@@ -185,11 +191,15 @@ function check2(o) {  // 값 비교
 
 	if (pass || correct) {
 		$(document.getElementById('btn'+data[curr].curr)).remove();
+		sa[data[curr].curr] = correct;
 		data[curr].curr++;
 		if (data[curr].curr < data[curr].sum) { // 미완료
 			var result = "";
-			for(var i=0; i < sc.length ; i++) {
-				if (i < data[curr].curr) result += sc[i] + " ";
+			for(var i=0; i < sc.length; i++) {
+				if (i < data[curr].curr) {
+					if (sa[i]) result += sc[i] + " ";
+					else result += "<span>" + sc[i] + "</span> ";
+				}
 				else result += stringFill("_", sc[i].length) + " ";
 			}
 			document.getElementById("count").innerHTML = "[ 0 / " + max + " ]";
@@ -206,6 +216,14 @@ function check2(o) {  // 값 비교
 		}
 	}
 
+}
+
+// mode 가 full 일 때 mobile 여부 판단하여 check
+function check(e, o) {  // 값 비교
+	if (e.which == 13 || e.keyCode == 13) {
+		if (isMobile) play();
+		else check_full();
+	}
 }
 
 function check_full() {
@@ -321,18 +339,13 @@ function getResultText(script, answer, type) {
 	return result;
 }
 
-function check(e, o) {  // 값 비교
-	if (e.which == 13 || e.keyCode == 13) {
-		if (isMobile) play();
-		else check_full();
-	}
-}
-
 function changeMode(o) {
 	if (o.checked) {
 		mode = "full";
+		max = maxFull;
 	} else {
 		mode = "words";
+		max = maxWord;
 	}
 	init();
 }
@@ -374,10 +387,21 @@ function changeRecycle() {
 	if (isRecycle) {
 		isRecycle = 0;
 		if (o) o.style.backgroundColor = "";
+		sm.pause();
+		sm.stop();
 	} else {
 		isRecycle = 1;
 		if (o) o.style.backgroundColor = "#38c";
+		playloop();
 	}
+}
+
+function playloop() {
+	var func = function() {
+		playloop();
+	}
+	var o = {onfinish: func};
+	play(o);
 }
 
 function changeCurr(to) {
@@ -386,13 +410,19 @@ function changeCurr(to) {
 	init();
 }
 
-// asc, marked, incorrected, shuffle
+// asc, desc, marked, incorrected, shuffle
 function changeSort(v) {
 	console.log(v);
+	sm.stop();
 	if (v == "asc" && order != "asc") {
 		order = v;
 		data.sort(function(a,b) {
 			return a.seq < b.seq ? -1 : a.seq > b.seq ? 1 : 0;
+		});
+	} else if (v == "desc" && order != "desc") {
+		order = v;
+		data.sort(function(a,b) {
+			return a.seq > b.seq ? -1 : a.seq < b.seq ? 1 : 0;
 		});
 	} else if (v == "marked" && order != "marked") {
 		order = v;
@@ -444,20 +474,31 @@ function attachRightList() {
 	}
 }
 
-function getRecord() {
+function getRecords() {
+	if (isGetRecord) return;
+	for(var i=0; i<sum; i++) {
+		getRecord(i);
+	}
+	isGetRecord = 1;
+}
+
+function getRecord(i) {
 	$.ajax({
 		type: "POST",
 		url : "/record.php",
-		data : {dir:dir, file:file, type:"get", seq: data[curr].seq},
+		data : {dir:dir, file:file, type:"get", seq: data[i].seq},
 		dataType: "text",
 		success : function(result){
 			if (result.trim() == "") return;
-			var res = result.trim().split("\t"); // 0seq/1mark/2correct/3try
-			data[curr].mark = parseInt(res[1]);
-			if (data[curr].mark == 1) {
-				document.getElementById("btnMark").style.backgroundColor = "#38c";
+			var res = result.trim().split("\t"); // 0:seq/1:mark/2:correct/3:try
+			data[i].mark = parseInt(res[1]);
+			var eb = document.getElementById("btnMark"+data[i].seq);
+			if (data[i].mark == 1) {
+				if (eb) e.style.backgroundColor = "#38c";
+				$("#list"+data[i].seq).addClass("listbtn-marked");
 			} else {
-				document.getElementById("btnMark").style.backgroundColor = "";
+				if (eb) e.style.backgroundColor = "";
+				$("#list"+data[i].seq).removeClass("listbtn-marked");
 			}
 		}
 	});

@@ -10,12 +10,12 @@
 	<script language="javascript" src="js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="js/common.js"></script>
 	<script language="javascript" src="js/dictation_for_html.js"></script>
+	<script language="javascript" src="js/record_for_html.js"></script>
 </head>
 <body>
-
 <div id="dictation" data-role="page" data-theme="b" class="ui-page-theme-b">
 	<div data-role="header" class="header">
-		<h1 id="title"><span>guest</span> TEST</h1>
+		<h1 id="title">DICTATION <span>for html</span></h1>
 		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-grid ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->
@@ -24,7 +24,7 @@
 		<table id="container" style="text-align:center;width:100%;min-height:50%;display:none;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
-					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" checked="checked" onchange="changeMode(this);"/>
+					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" checked="checked" onchange="changeMode(this);" />
 				</td>
 				<td style="vertical-align:top;text-align:right;" class="ui-nodisc-icon">
 					<a id="btnAuto" class="ui-btn ui-icon-audio ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeAuto();">autoplay</a>
@@ -80,6 +80,11 @@
 			<label for="sort4">shuffle</label>
 		</fieldset>
 		<div id="list"  style="text-align:left;"></div>
+
+		<table width="100%"><tr>
+			<td width="50%"><a href="#" class="ui-btn ui-btn-icon-left ui-icon-refresh" onclick="record('');">GET</a></td>
+			<td width="50%"><a href="#" class="ui-btn ui-btn-icon-left ui-icon-check" onclick="record('set');">SEND</a></td>
+		</tr></table>
 	</div><!-- /rightpanel -->
 
 	<div data-role="panel" id="rightSetting" data-position="right" data-display="overlay">

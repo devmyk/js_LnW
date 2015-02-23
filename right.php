@@ -10,6 +10,12 @@
 </li>
 <li>
 	<table><tr>
+		<td><label for="playCount" style="margin:0;">Play Count :</label></td>
+		<td class="td40"><input type="text" name="playCount" id="playCount" value="<?=(empty($_SESSION['set'][4]) ? "1" : $_SESSION['set'][4]);?>" /></td>
+	</tr></table>
+</li>
+<li>
+	<table><tr>
 		<td><label for="autoPlay" style="margin:0;">Auto Play :</label></td>
 		<td class="td40">
 		<input type="checkbox" data-role="flipswitch" name="autoPlay" id="autoPlay" data-on-text="on" data-off-text="off" data-wrapper-class="custom-label-flipswitch" onchange="changeAuto();" <?=(empty($_SESSION['set'][1]) ? "" : "checked=\"true\"");?> />

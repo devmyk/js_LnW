@@ -37,10 +37,14 @@
 	<script language="javascript" src="/data/<?=$dir?>/<?=$file?>.js"></script>
 	<script language="javascript" src="/js/dialog.js"></script>
 	<script>
+dir = "<?=$dir?>";
+file = "<?=$file?>";
 path = "/data/<?=$dir?>/";
 max = <?=$_SESSION['set'][0];?>;
 autoplay = <?=$_SESSION['set'][1];?>;
 autopass = <?=$_SESSION['set'][2];?>;
+mode = <?=$_SESSION['set'][3];?>;
+playCount = <?=empty($_SESSION['set'][4]) ? 1 : $_SESSION['set'][4];?>;
 	</script>
 </head>
 <body onload="init();">
@@ -48,6 +52,7 @@ autopass = <?=$_SESSION['set'][2];?>;
 	<div data-role="header" class="header" data-position="fixed">
 		<h1><span>[<?=$dir?>]</span> <?=$file?></h1>
 		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
+		<a href="#list" class="ui-btn ui-btn-icon-notext ui-nodisc-icon ui-alt-icon ui-corner-all ui-icon-bars ui-btn-right" style="right:3.4em;">Just List</a>
 		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-gear ui-nodisc-icon ui-alt-icon ui-btn-right">Option</a>
 	</div><!-- /header -->
 
@@ -63,11 +68,17 @@ autopass = <?=$_SESSION['set'][2];?>;
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer">
 		<table style="width:100%;text-align:center;"><tr>
+			<!--
 			<td><span id="currentNo">NO: 1</span></td>
 			<td><a href="#" style="padding:0.5em;" class="ui-btn ui-btn-icon-notext ui-nodisc-icon ui-alt-icon ui-icon-carat-l">Pre</a></td>
 			<td><a href="#" style="padding:0.5em;" style="padding:0.5em;" class="ui-btn ui-btn-icon-notext ui-nodisc-icon ui-alt-icon ui-icon-play" onclick="playloop('marked', true);">Play</a></td>
 			<td><a href="#" style="padding:0.5em;" class="ui-btn ui-btn-icon-notext ui-nodisc-icon ui-alt-icon ui-icon-carat-r">Next</a></td>
-			<td><a href="#" class="ui-btn ui-btn-icon-notext ui-nodisc-icon ui-alt-icon ui-icon-carat-u ui-corner-all">Up</a></td>
+			-->
+			<td><a href="#" class="ui-btn ui-mini" onclick="playloop('all',true);" style="width:4em;">All</a></td>
+			<td><a href="#" class="ui-btn ui-mini" onclick="playloop('marked',true);" style="width:4em;">Marked</a></td>
+			<td><a href="#" class="ui-btn ui-mini" onclick="playloop('shuffle',true);" style="width:4em;">shuffle</a></td>
+			<td><a href="#" class="ui-btn ui-btn-icon-notext ui-nodisc-icon ui-alt-icon ui-icon-carat-d ui-corner-all" onclick="$('body').scrollTop(100000);">Up</a></td>
+			<td><a href="#" class="ui-btn ui-btn-icon-notext ui-nodisc-icon ui-alt-icon ui-icon-carat-u ui-corner-all" onclick="$('body').scrollTop(0);">Up</a></td>
 		</tr></table>
 	</div><!-- /footer -->
 
@@ -87,17 +98,26 @@ autopass = <?=$_SESSION['set'][2];?>;
 			</li>
 			<li>
 				<table><tr>
-					<td><label for="playCount" style="margin:0;">play Count :</label></td>
-					<td width="40%;"><input type="text" name="playCount" id="playCount" value="<?=(empty($_SESSION['set'][0]) ? "1" : $_SESSION['set'][0]);?>" /></td>
+					<td><label for="playCount" style="margin:0;">Play Count :</label></td>
+					<td width="40%"><input type="text" name="playCount" id="playCount" value="<?=(empty($_SESSION['set'][4]) ? "1" : $_SESSION['set'][4]);?>" /></td>
 				</tr></table>
 			</li>
 			<li>
-				<table><tr> <!-- 어차피 둘 중 하나만 실행하니까 radio 로 바꿔야겠다 -->
+				<table><tr>
+					<td><label for="playRecycle" style="margin:0;">Play Recycle :</label></td>
+					<td width="40%">
+					<input type="checkbox" data-role="flipswitch" name="playRecycle" id="playRecycle" data-on-text="on" data-off-text="off" data-wrapper-class="custom-label-flipswitch" onchange="changeRecycle();" />
+				</tr></table>
+			</li>
+			<!--
+			<li>
+				<table><tr>
 					<td width="33%"><a href="#" class="ui-btn ui-mini" onclick="playloop('all',true);">All</a></td>
 					<td width="33%"><a href="#" class="ui-btn ui-mini" onclick="playloop('marked',true);">Marked</a></td>
 					<td width="33%"><a href="#" class="ui-btn ui-mini" onclick="playloop('shuffle',true);">shuffle</a></td>
 				</tr></table>
 			</li>
+			-->
 			<li>
 				<table style="text-align:center;"><tr>
 					<td width="20%"><input type="text" name="playCount" id="mark_from" value="" /></td>
@@ -105,9 +125,6 @@ autopass = <?=$_SESSION['set'][2];?>;
 					<td width="20%"><input type="text" name="playCount" id="mark_to" value="" /></td>
 					<td width="50%"><a href="#" class="ui-btn ui-btn-icon-left ui-mini ui-icon-check" onclick="changeMarks();">Marking</a></td>
 				</tr></table>
-			</li>
-			<li>
-				<a href="#list" class="ui-btn ui-btn-icon-left ui-mini ui-icon-bars">Just List</a></td>
 			</li>
 		</ul>
 	</div><!-- /rightpanel -->

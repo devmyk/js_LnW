@@ -15,7 +15,7 @@ $file = $_REQUEST['file'];
 $type = $_REQUEST['type']; // get, set
 
 if (! is_dir(getcwd()."/data/{$dir}") || ! is_file(getcwd()."/data/{$dir}/{$file}.js")) {
-	echo array();
+	echo "error";
 	exit();
 }
 
@@ -26,7 +26,7 @@ if ($type == "set") {
 }
 
 
-function getMark($req, $bool = false) {
+function getMark($req) {
 	$res = "";
 	$d = sprintf("%s/logs/%s",getcwd(),$_SESSION['uid']);
 	if (! is_dir($d)) {
@@ -36,6 +36,7 @@ function getMark($req, $bool = false) {
 	if (! file_exists($fn)) {
 		return $res;
 	}
+
 	if ($fp = fopen($fn, "r")) {
 		while(! feof($fp)) {
 			$line = trim(fgets($fp, 1024));
@@ -99,9 +100,9 @@ function setMark($req) {
 			$old_list[] = sprintf("%s\t%s\t%s\t%s",$req['seq'],$req['mark'],$req['correct'],"1");
 		}
 	}
-
 	// 파일 다시 쓰기
 	if (isset($old_list)) {
+		sort($old_list); // seq 로 정렬
 		$list = implode("\n", $old_list);
 	} else {
 		$list = $new_line;

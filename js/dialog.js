@@ -2,12 +2,12 @@ soundManager.setup({});
 
 var sum = 0;
 var curr = 0;
-var max = 3;
 var sm;
 var order = "asc";
 
 function init() {
 	sum = data.length;
+	getRecords();
 	attachDialogList();
 	attachDialogList2();
 	sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
@@ -55,6 +55,10 @@ function changeMarks() {
 	var from = document.getElementById("mark_from").value;
 	var to = document.getElementById("mark_to").value;
 	// 예외처리 해야 하는데 귀찮네..
+	if ((from - startSeq - 1) >= 0) {
+		from = from - startSeq - 1;
+		to = to - startSeq - 1;
+	}
 	for (var i=0; i<data.length; i++) {
 		var ol = document.getElementById("btnMark"+i);
 		if (i >= from && i <= to) {
@@ -69,6 +73,19 @@ function changeMarks() {
 	}
 }
 
+function changeRecycle() {
+	var o = document.getElementById("playRecycle");
+	if (isRecycle) {
+		isRecycle = 0;
+		if (o) o.checked = "";
+		sm.pause();
+		sm.stop();
+	} else {
+		isRecycle = 1;
+		if (o) o.checked = "checked";
+	}
+}
+
 var loopcount = 0;
 var stop = 0;
 var playIdx = 0;
@@ -77,7 +94,7 @@ function playloop(mode, reset) {
 	if (reset) {
 		stop = sm.playState;
 		loopcount = 0;
-		playIdx = 0;
+		playidx = 0;
 		playArr = [];
 	}
 	if (stop) return;
@@ -121,14 +138,22 @@ function playloop(mode, reset) {
 				if (mode) {
 						playIdx++;
 						curr = playArr[playIdx].key;
-						document.getElementById("currentNo").innerHTML = "No. "+playArr[playIdx].seq;
+//						document.getElementById("currentNo").innerHTML = "No. "+playArr[playIdx].seq;
 						sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
 						playloop(mode);
 				}
 			} else {
-				playArr = [];
-				playIdx = 0;
-				$(".scripts").css("background-color", "");
+				if (isRecyle) {
+					loopcount = 0;
+					playidx = 0;
+					curr = playArr[playIdx].key;
+					sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
+					playloop(mode);
+				} else {
+					playArr = [];
+					playIdx = 0;
+					$(".scripts").css("background-color", "");
+				}
 			}
 		}
 	};
@@ -161,4 +186,32 @@ function play(o) {
 //	}
 
 	sm.play(o);
+}
+
+function getRecords() {
+	for(var i=0; i<sum; i++) {
+		getRecord(i);
+	}
+}
+
+function getRecord(i) {
+	$.ajax({
+		type: "POST",
+		url : "/record.php",
+		data : {dir:dir, file:file, type:"get", seq: data[i].seq},
+		dataType: "text",
+		success : function(result){
+			if (result.trim() == "") return;
+			var res = result.trim().split("\t"); // 0:seq/1:mark/2:correct/3:try
+			data[i].mark = parseInt(res[1]);
+			var e = document.getElementById("btnMark"+data[i].seq);
+			if (e) {
+				if (data[i].mark == 1) {
+					e.style.backgroundColor = "#38c";
+				} else {
+					e.style.backgroundColor = "";
+				}
+			}
+		}
+	});
 }

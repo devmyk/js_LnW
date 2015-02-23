@@ -38,6 +38,9 @@ max = <?=$_SESSION['set'][0];?>;
 autoplay = <?=$_SESSION['set'][1];?>;
 autopass = <?=$_SESSION['set'][2];?>;
 mode = "<?=$_SESSION['set'][3];?>";
+playCount = <?=empty($_SESSION['set'][4]) ? 1 : $_SESSION['set'][4];?>;
+maxFull = <?=$_SESSION['set'][5];?>;
+maxWord = <?=$_SESSION['set'][6];?>;
 	</script>
 </head>
 <body onload="init();attachRightList();">
@@ -57,8 +60,8 @@ mode = "<?=$_SESSION['set'][3];?>";
 				<td style="vertical-align:top;text-align:right;" class="ui-nodisc-icon">
 					<a id="btnAuto" class="ui-btn ui-icon-audio ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeAuto();">autoplay</a>
 					<a id="btnMark" class="ui-btn ui-icon-star ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeMark();">mark</a>
-					<a class="ui-btn ui-icon-refresh ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="refresh();">refresh</a>
-					<a id="btnRecycle" class="ui-btn ui-icon-recycle ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeRecycle();">recycle</a>
+					<a class="ui-btn ui-icon-refresh ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="refresh();" alt="refresh">refresh</a>
+					<a id="btnRecycle" class="ui-btn ui-icon-recycle ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeRecycle();" alt="recyle">recycle</a>
 				</td>
 			</tr>
 			<tr>
@@ -100,6 +103,8 @@ mode = "<?=$_SESSION['set'][3];?>";
 		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
 			<input type="radio" name="sort" id="sort1" value="asc" checked="checked" onclick="changeSort('asc');"/>
 			<label for="sort1">asc</label>
+			<input type="radio" name="sort" id="sort5" value="desc" onclick="changeSort('desc');"/>
+			<label for="sort5">desc</label>
 			<input type="radio" name="sort" id="sort2" value="marked" onclick="changeSort('marked');"/>
 			<label for="sort2">marked</label>
 			<input type="radio" name="sort" id="sort3" value="incorrected" onclick="changeSort('incorrected');"/>
