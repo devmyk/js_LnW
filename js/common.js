@@ -1,17 +1,3 @@
-/*
-var data = [];
-var arr = [];
-var sc = [];
-var mode = "words"; // full, words
-var list = "";
-var sum = 0;
-var curr = 0;
-var max = 10;
-var maxWord = 3;
-var maxFull = 1;
-var sm;
-var timeout;
-*/
 
 var isRecycle = 0;
 var isGetRecord = 0;

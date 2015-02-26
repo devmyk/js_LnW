@@ -93,14 +93,6 @@ div::-webkit-scrollbar-thumb {
 #rightpanelSetting li table {
 	width: 100%;
 }
-#rightpanelSetting li table .td40 {
-	width: 40%;
-	text-align: right;
-}
-#rightpanelSetting li table .td50 {
-	width: 50%;
-	text-align: center;
-}
 
 #rightpanel .ui-controlgroup-controls {
 	float: none; 

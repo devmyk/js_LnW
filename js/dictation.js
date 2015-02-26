@@ -107,9 +107,7 @@ function init() {
 	if (mode == "words") {
 		data[curr].sum = arr.length;
 		data[curr].correct = true;
-		arr.sort(function(a,b) {
-			return a.text < b.text ? -1 : a.text > b.text ? 1 : 0;
-		});
+		arr.sort(function(a,b) { return a.text < b.text ? -1 : a.text > b.text ? 1 : 0; });
 		for(var i=0; i < arr.length ; i++) {
 //			arr[i].obj.setAttribute("ak", i);
 			$(arr[i].obj).click(function() { check_words(this); });
@@ -416,24 +414,14 @@ function changeSort(v) {
 	sm.stop();
 	if (v == "asc" && order != "asc") {
 		order = v;
-		data.sort(function(a,b) {
-			return a.seq < b.seq ? -1 : a.seq > b.seq ? 1 : 0;
-		});
+		data.sort(function(a,b) { return a.seq - b.seq; });
 	} else if (v == "desc" && order != "desc") {
 		order = v;
-		data.sort(function(a,b) {
-			return a.seq > b.seq ? -1 : a.seq < b.seq ? 1 : 0;
-		});
+		data.sort(function(a,b) { return b.seq - a.seq; });
 	} else if (v == "marked" && order != "marked") {
 		order = v;
-		var t1 = new Array();
-		var t2 = new Array();
-		for (var i = 0; i < data.length; i++) {
-			if (data[i].mark) t1.push(data[i]);
-			else t2.push(data[i]);
-		}
-		data = t1.concat(t2);
-	} else if (v == "incorrected" && order != "incorrected") {
+		data.sort(function(a,b) { return b.mark - a.mark; });
+	} else if (v == "incorrected" && order != "incorrected") { // 오답 > 안함 > 정답
 		order = v;
 		var t1 = new Array();
 		var t2 = new Array();
