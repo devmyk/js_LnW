@@ -20,6 +20,13 @@
 	<script language="javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
 	<script>
 function save() {
+	var f = document.setting;
+
+	if (! parseInt(f.wordsMax.value)) { f.wordsMax.focus(); return; }
+	if (! parseInt(f.fullMax.value)) { f.fullMax.focus(); return; }
+	if (! parseInt(f.playCount.value)) { f.playCount.focus(); return; }
+
+	f.submit();
 }
 	</script>
 </head>
@@ -36,32 +43,38 @@ function save() {
 		<ul data-role="listview" data-divider-theme="b" data-inset="false">
 		<li>
 			<table><tr>
-			<td class="title"><label for="maxCount" style="margin:0;">Max Count :</label></td>
-			<td><input type="text" name="maxCount" id="maxCount" value="<?=(empty($_SESSION['set'][0]) ? "3" : $_SESSION['set'][0]);?>" /></td>
+			<td class="title"><label for="wordsMax" style="margin:0;">Words Max :</label></td>
+			<td><input type="text" name="wordsMax" id="wordsMax" value="<?=$_set['maxword']?>" /></td>
+			</tr></table>
+		</li>
+		<li>
+			<table><tr>
+			<td class="title"><label for="fullMax" style="margin:0;">Full Max :</label></td>
+			<td><input type="text" name="fullMax" id="fullMax" value="<?=$_set['maxfull']?>" /></td>
 			</tr></table>
 		</li>
 		<li>
 			<table><tr>
 			<td class="title"><label for="playCount" style="margin:0;">Play Count :</label></td>
-			<td><input type="text" name="playCount" id="playCount" value="<?=(empty($_SESSION['set'][4]) ? "1" : $_SESSION['set'][4]);?>" /></td>
+			<td><input type="text" name="playCount" id="playCount" value="<?=$_set['playcount']?>" /></td>
 			</tr></table>
 		</li>
 		<li>
 			<table><tr>
 			<td class="title"><label for="autoPlay" style="margin:0;">Auto Play :</label></td>
-			<td><input type="checkbox" data-role="flipswitch" name="autoPlay" id="autoPlay" data-on-text="on" data-off-text="off" data-wrapper-class="custom-label-flipswitch" onchange="changeAuto();" <?=(empty($_SESSION['set'][1]) ? "" : "checked=\"true\"");?> /></td>
+			<td><input type="checkbox" data-role="flipswitch" name="autoPlay" id="autoPlay" data-on-text="on" data-off-text="off" data-wrapper-class="custom-label-flipswitch" <?=(empty($_set['autoplay']) ? "" : "checked=\"true\"");?> /></td>
 			</tr></table>
 		</li>
 		<li>
 			<table><tr>
 			<td class="title"><label for="autoPass" style="margin:0;">Auto Pass :</label></td>
-			<td><input type="checkbox" data-role="flipswitch" name="autoPass" id="autoPass" data-on-text="on" data-off-text="off" data-wrapper-class="custom-label-flipswitch" onchange="changeAutoPass();" <?=(empty($_SESSION['set'][2]) ? "" : "checked=\"true\"");?> /></td>
+			<td><input type="checkbox" data-role="flipswitch" name="autoPass" id="autoPass" data-on-text="on" data-off-text="off" data-wrapper-class="custom-label-flipswitch" <?=(empty($_set['autopass']) ? "" : "checked=\"true\"");?> /></td>
 			</tr></table>
 		</li>
 		<li>
 			<table><tr>
 			<td class="title"><label for="defaultMode" style="margin:0;">Default Mode :</label>
-			<td><input type="checkbox" data-role="flipswitch" name="defaultMode" id="defaultMode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" onchange="changeMode(this);" <?=($_SESSION['set'][3] == "words" ? "" : "checked=\"checked\"");?> />
+			<td><input type="checkbox" data-role="flipswitch" name="defaultMode" id="defaultMode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" <?=($_set['defaultmode'] == "words" ? "" : "checked=\"checked\"");?> />
 			</tr></table>
 		</li>
 

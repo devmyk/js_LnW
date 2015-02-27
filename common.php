@@ -1,6 +1,7 @@
 <?
-require_once("define.php");
+require_once("./define.php");
 session_start();
+$_set = $_SESSION['set'];
 
 function checkSession($k, $url = "index.php") {
 	$bool = !(isset($_SESSION) && isset($_SESSION[$k]));

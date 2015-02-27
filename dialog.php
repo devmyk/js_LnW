@@ -40,11 +40,11 @@
 dir = "<?=$dir?>";
 file = "<?=$file?>";
 path = "/data/<?=$dir?>/";
-max = <?=$_SESSION['set'][0];?>;
-autoplay = <?=$_SESSION['set'][1];?>;
-autopass = <?=$_SESSION['set'][2];?>;
-mode = <?=$_SESSION['set'][3];?>;
-playCount = <?=empty($_SESSION['set'][4]) ? 1 : $_SESSION['set'][4];?>;
+max = <?=$_set['max'];?>;
+autoplay = <?=$_set['autoplay'];?>;
+autopass = <?=$_set['autopass'];?>;
+mode = <?=$_set['defaultmode'];?>;
+playCount = <?=$_set['playcount']?>;
 	</script>
 </head>
 <body onload="init();">
@@ -99,7 +99,7 @@ playCount = <?=empty($_SESSION['set'][4]) ? 1 : $_SESSION['set'][4];?>;
 			<li>
 				<table><tr>
 					<td><label for="playCount" style="margin:0;">Play Count :</label></td>
-					<td width="40%"><input type="text" name="playCount" id="playCount" value="<?=(empty($_SESSION['set'][4]) ? "1" : $_SESSION['set'][4]);?>" /></td>
+					<td width="40%"><input type="text" name="playCount" id="playCount" value="<?=$_set['playcount']?>" /></td>
 				</tr></table>
 			</li>
 			<li>

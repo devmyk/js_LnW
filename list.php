@@ -34,10 +34,10 @@
 	<script language="javascript" src="/data/<?=$dir?>/<?=$file?>.js"></script>
 	<script language="javascript" src="/js/dialog.js"></script>
 	<script>
-path = "/data/<?=$dir?>/";
-max = <?=$_SESSION['set'][0];?>;
-autoplay = <?=$_SESSION['set'][1];?>;
-autopass = <?=$_SESSION['set'][2];?>;
+path = "/data/<?=$dir?>/"
+max = <?=$_set['max'];?>;
+autoplay = <?=$_set['autoplay'];?>;
+autopass = <?=$_set['autopass'];?>;
 	</script>
 </head>
 <body onload="init();">
@@ -85,7 +85,7 @@ autopass = <?=$_SESSION['set'][2];?>;
 			<li>
 				<table><tr>
 					<td><label for="playCount" style="margin:0;">play Count :</label></td>
-					<td width="40%;"><input type="text" name="playCount" id="playCount" value="<?=(empty($_SESSION['set'][0]) ? "1" : $_SESSION['set'][0]);?>" /></td>
+					<td width="40%;"><input type="text" name="playCount" id="playCount" value="<?=$_set['max']?>" /></td>
 				</tr></table>
 			</li>
 			<li>

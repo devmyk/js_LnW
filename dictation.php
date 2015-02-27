@@ -34,13 +34,13 @@
 dir = "<?=$dir?>";
 file = "<?=$file?>";
 path = "/data/<?=$dir?>/";
-max = <?=$_SESSION['set'][0];?>;
-autoplay = <?=$_SESSION['set'][1];?>;
-autopass = <?=$_SESSION['set'][2];?>;
-mode = "<?=$_SESSION['set'][3];?>";
-playCount = <?=empty($_SESSION['set'][4]) ? 1 : $_SESSION['set'][4];?>;
-maxFull = <?=$_SESSION['set'][5];?>;
-maxWord = <?=$_SESSION['set'][6];?>;
+max = <?=$_set['max'];?>;
+autoplay = <?=$_set['autoplay'];?>;
+autopass = <?=$_set['autopass'];?>;
+mode = <?=$_set['defaultmode'];?>;
+playCount = <?=$_set['playcount']?>;
+maxFull = <?=$_set['maxfull'];?>;
+maxWord = <?=$_set['maxword']?>;
 	</script>
 </head>
 <body onload="init();attachRightList();">
