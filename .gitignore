@@ -14,11 +14,15 @@ user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
 /vendor/
 /nbproject/
+
 .*.swp
 .*.swo
 *.mp3
 *.mp4
 demos
 data/1001
+data/*/*.js
+data/*/mp3
 logs
 .user.dat
+define.php

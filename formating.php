@@ -2,7 +2,7 @@
 	require_once(getcwd()."/common.php");
 	checkSession("uid");
 
-	if ($_SESSION['uid'] != "devmyk") {
+	if ($_SESSION['uid'] != $conf['admin']) {
 		echo "<script>document.location.replace('summary.php');</script>";
 		exit();
 	}

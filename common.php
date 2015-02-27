@@ -1,4 +1,5 @@
 <?
+require_once("define.php");
 session_start();
 
 function checkSession($k, $url = "index.php") {
