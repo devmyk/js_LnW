@@ -48,13 +48,15 @@
 soundManager.setup({});
 
 var sm;
-var md = 0; // max duration
+var md = 0; // round(sm.duration/100) // max duration
 var list = [];
+var count_changing_file = 0;
 dir = "<?=$dir?>";
 path = "/data/<?=$dir?>/";
 
+// 단위를 100 msec 로 해야할듯
 function changeRangeMax() {
-	md = sm.duration;
+	md = Math.round(sm.duration/100);
 	var rg1 = document.getElementById("range1");
 	var rg2 = document.getElementById("range2");
 	if (rg1) rg1.max = md;
@@ -69,6 +71,10 @@ function changeRangeMax() {
 function changeFile(v) {
 	if (v.trim() == "") return;
 
+	count_changing_file++;
+	var e_fn = document.getElementById("filename");
+	if (e_fn) e_fn.value = v;
+
 	sm = soundManager.createSound({id:"sm_"+v , url: path+"mp3/"+v+".mp3", autoLoad: true});
 	sm.load({onload : function() {
 		if (this.readyState == 3) {
@@ -78,11 +84,18 @@ function changeFile(v) {
 }
 
 function play() {
-	if (sm) {
-		var rg1 = document.getElementById("range1");
-		var rg2 = document.getElementById("range2");
-		if (rg1 && rg2) sm.play({from: rg1.value, to: rg2.value});
-	}
+	if (! sm) return;
+
+	sm.stop();
+
+	var rg1 = document.getElementById("range1");
+	var rg2 = document.getElementById("range2");
+	if (!rg1 || !rg2) return;
+
+	sm.play({
+		from: (parseInt(rg1.value) * 100),
+		to: (parseInt(rg2.value) * 100)
+	});
 }
 
 function add() {
@@ -97,15 +110,32 @@ function add() {
 	if (script == "") return;
 	e_script.value = "";
 
-	var rg1 = document.getElementById("range1");
-	var rg2 = document.getElementById("range2");
+	var trans = "";
+	var e_trans = document.getElementById("trans");
+	if (e_trans) {
+		trans = e_trans.value.trim();
+		e_trans.value = "";
+	}
+
+	// 가공 특수문자 처리
+	re = /[\{\}\[\]\/;|*~^\-_+┼<>\#&\\=]/g;
+	script = script.replace(re, "");
+	script = script.replace(/\"/g, "\\\"");
+	script = script.replace(/[`\']/g, "\\\'");
+	
+	trans = trans.replace(re, "");
+	trans = trans.replace(/\"/g, "\\\"");
+	trans = trans.replace(/[`\']/g, "\\\'");
+
 	// 만들고
 	var obj = {};
 	obj.fn	 = select.value;
-	obj.from = parseInt(rg1.value);
-	obj.to	 = parseInt(rg2.value);
+	obj.from = parseInt($("#range1").val()) * 100;
+	obj.to	 = parseInt($("#range2").val()) * 100;
 	obj.script = script;
-	obj.trans  = document.getElementById("trans").value.trim();
+	obj.trans  = trans;
+
+	if (obj.from >= 0 && obj.to >= 0) return;
 
 	// list 에 같은 from 이 있는 지 확인하고
 	var bool = false;
@@ -126,16 +156,18 @@ function add() {
 	$("#list").append(tr);
 
 	// 시작위치를 끝위치로 바꾸고 끝위치는 임의의 위치로
-	var rg2_v = parseInt($("#range2").val());
+	var rg2_v = (obj.to/100);
 	$("#range1").val(rg2_v).slider("refresh");
-	$("#range2").val(rg2_v + 4000).slider("refresh");
+	$("#range2").val(rg2_v + 40).slider("refresh");
 }
 
 function save() {
 	// 정렬 여부 묻는 게 좋을듯
 	// list[] 정렬 : fn > from (from sort 후 fn sort 하면 된다)
 	list.sort(function(a,b) { return a.from - b.from; });
-	list.sort(function(a,b) { return a.fn < b.fn ? -1 : a.fn > b.fn ? 1 : 0; });
+	if (count_changing_file != 1) {
+		list.sort(function(a,b) { return a.fn < b.fn ? -1 : a.fn > b.fn ? 1 : 0; });
+	}
 
 	// form 에 추가
 	var e_list = document.getElementById("lists");
@@ -146,13 +178,14 @@ function save() {
 		text += list[i].fn + "\t";
 		text += list[i].from + "\t";
 		text += list[i].to + "\t";
-		text += list[i].script + "\t";	// 특수문자 처리(' ")
-		text += list[i].trans;			// 특수문자 처리(' ")
+		text += list[i].script + "\t";
+		text += list[i].trans;
 		html += "<input name=\"data[]\" type=\"hidden\" value=\"" + text + "\" />";
 	}
 	e_list.innerHTML = html;
 
 	var f = document.edit;
+	if (count_changing_file != 1) { f.filename.value = ""; }
 	f.submit();
 }
 function init() {
@@ -175,6 +208,7 @@ function init() {
 	<? // js 파일이 이미 있으면 읽어오기 해야하나.. ?>
 		<form name="edit" id="edit" method="post" action="formating_save.php">
 			<input type="hidden" name="dir" id="dir" value="<?=$dir?>" />
+			<input type="hidden" name="filename" id="filename" value="" />
 			<select name="select" id="select" data-native-menu="false" data-mini="true" onchange="changeFile(this.value);">
 				<option value="" selected="selected">FILE</option>
 				<? foreach ($files as $f) { echo "<option value=\"{$f}\">{$f}.mp3</option>"; } ?>

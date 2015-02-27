@@ -18,6 +18,8 @@
 
 	$data = $_POST['data'];
 	$fn = "{$dir}.js";
+	if (! empty($_POST['filename'])) $fn = "{$_POST['filename']}.js";
+
 	// 파일 유무 확인
 	// 이미 있으면 기존 파일명을 dir.날짜.js 로 변경
 	if (file_exists("{$path}/{$fn}")) {
