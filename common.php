@@ -30,9 +30,8 @@ function getFileListInDir($dir, $ext = "js") {
 // data 폴더 내 폴더들을 리턴
 function getDirList($dir = "") {
 	$path = "./data".$dir;
-	if (! is_dir($path)) return;
-
 	$dirs = Array();
+	if (! is_dir($path)) return $dirs;
 	if ($dh = opendir($path)) {
 		while(($file = readdir($dh)) !== false) {
 			if (filetype($path."/".$file) == "dir" && substr($file,0,1) != ".") {

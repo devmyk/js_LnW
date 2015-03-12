@@ -64,24 +64,24 @@ function init() {
 
 	// book mark
 	if (data[curr].mark == 1) {
-		document.getElementById("btnMark").style.backgroundColor = "#38c";
+		document.getElementById("btnMark").style.backgroundColor = colorBlue;
 	} else {
 		document.getElementById("btnMark").style.backgroundColor = "";
 	}
 
 	// auto play
 	if (autoplay) {
-		document.getElementById("btnAuto").style.backgroundColor = "#38c";
+		document.getElementById("btnAuto").style.backgroundColor = colorBlue;
 	}
 
 	// button
 	if (sum <= 1) {
 		$("#btnPre").addClass("ui-state-disabled");
 		$("#btnNext").addClass("ui-state-disabled");
-	} else if (curr==0) {
+	} else if (curr == 0) {
 		$("#btnPre").addClass("ui-state-disabled");
 		$("#btnNext").removeClass("ui-state-disabled");
-	} else if (curr+1==sum) {
+	} else if (curr+1 == sum) {
 		$("#btnPre").removeClass("ui-state-disabled");
 		$("#btnNext").addClass("ui-state-disabled");
 	} else {
@@ -113,8 +113,7 @@ function init() {
 				btn.setAttribute("id", "btn"+i);
 //				btn.setAttribute("seq", i);
 				btn.setAttribute("class","ui-btn ui-corner-all ui-btn-inline ui-btn-b ui-mini");
-				var value = sc[i];
-//				var value = specialCharRemove(sc[i], "innerHTML");
+				var value = specialCharRemove(sc[i], "innerHTML");
 				btn.innerHTML = value;
 				arr[i].obj = btn;
 			}
@@ -130,9 +129,7 @@ function init() {
 	if (mode == "words") {
 		data[curr].sum = arr.length;
 		data[curr].correct = true;
-		arr.sort(function(a,b) {
-			return a.text < b.text ? -1 : a.text > b.text ? 1 : 0;
-		});
+		arr.sort(function(a,b) { return a.text < b.text ? -1 : a.text > b.text ? 1 : 0; });
 		for(var i=0; i < arr.length ; i++) {
 //			arr[i].obj.setAttribute("ak", i);
 			$(arr[i].obj).click(function() { check_words(this); });
@@ -162,7 +159,7 @@ function play(o) {
 	var res = document.getElementById("result");
 	sm.stop("sm_" + data[curr].fn);
 
-	if (typeof(o) == "undefined") o = {};
+	if (typeof(o) == "undefined") o = { from: 0 };
 	if (data[curr].from) o.from = data[curr].from;
 	if (data[curr].to) o.to = data[curr].to;
 	if (! o.onfinish) {
@@ -176,7 +173,8 @@ function play(o) {
 }
 
 function specialCharRemove(v, type) {
-	if (typeof(v) != "string") return "";
+	if (typeof(v) == "undefined") return "";
+	else if (typeof(v) != "string") v = String(v);
 
 	var re = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\(\=]/gi;
 
@@ -199,15 +197,16 @@ function stringFill(x, n) {
 function check_words(o) {
 	var correct = false;
 	var pass = false;
+	var ov = o.innerHTML;
 
 	// arr 의 count 증가
 	arr[data[curr].curr].count++;
 	document.getElementById("count").innerHTML = "[ " + arr[data[curr].curr].count + " / " + max + " ]";
 	// arr 의 count 체크
-	if (arr[data[curr].curr].count >= max) {
+	if (arr[data[curr].curr].count > max) {
 		pass = true;
 		data[curr].correct = false;
-	} else if (specialCharRemove(sc[data[curr].curr]) == specialCharRemove(o.innerText)) {
+	} else if (specialCharRemove(sc[data[curr].curr], "check") == specialCharRemove(ov, "check")) {
 		// seq 는 다르지만 text 가 같은 경우도 있으므로 text 비교
 		correct = true;
 	}
@@ -215,24 +214,27 @@ function check_words(o) {
 	if (pass || correct) {
 		$(document.getElementById('btn'+data[curr].curr)).remove();
 		sa[data[curr].curr] = correct;
+		data[curr].answer += ov + " ";
 		data[curr].curr++;
-		if (data[curr].curr < data[curr].sum) { // 미완료
-			var result = "";
-			for(var i=0; i < sc.length; i++) {
-				if (i < data[curr].curr) {
-					if (sa[i]) result += sc[i] + " ";
-					else result += "<span>" + sc[i] + "</span> ";
-				}
-				else result += stringFill("_", sc[i].length) + " ";
+		
+		var result = "";
+		for(var i=0; i < sc.length; i++) {
+			if (i < data[curr].curr) {
+				if (sa[i] == true) result += sc[i] + " ";
+				else result += "<span>" + sc[i] + "</span> ";
 			}
+			else result += stringFill("_", sc[i].length) + " ";
+		}
+		document.getElementById("result").innerHTML = result;
+
+		if (data[curr].curr < data[curr].sum) { // 미완료
 			document.getElementById("count").innerHTML = "[ 0 / " + max + " ]";
-			document.getElementById("result").innerHTML = result;
 		} else { // 완료
 			var dt = new Date();
 			data[curr].try = 1;
 			data[curr].timestamp = dt.getTime();
-			document.getElementById("result").innerHTML = data[curr].script;
-			document.getElementById("list"+data[curr].seq).style.backgroundColor = (data[curr].correct ? "#38c" : "#c33");
+			data[curr].answer = data[curr].answer.trim();
+			document.getElementById("list"+data[curr].seq).style.backgroundColor = (data[curr].correct ? colorBlue : colorRed);
 
 			var o = (autopass ? {onfinish : function() { if ((curr+1) < sum) { curr++; init(); } } } : {});
 			play(o);
@@ -256,16 +258,16 @@ function check_full() {
 	var correct = false;
 	var pass = false;
 
+	if (! o) return;
 	data[curr].count++;
+	data[curr].answer = o.value.trim();
 	document.getElementById("count").innerHTML = "[ " + data[curr].count + " / " + max + " ]";
 
 	var isCorr = [];
 	var va = o.value.trim().split(" ").filter(function(v){ return (v != undefined && v != "") });
-	if (!pass) {
+	if (! pass) {
 		correct = true;
 		var result = "";
-		data[curr].answer = o.value.trim();
-
 		for(var i=0; i < sc.length ; i++) {
 			if (specialCharRemove(sc[i], "check") == specialCharRemove(va[i], "check")) {
 				result += sc[i] + " ";
@@ -290,18 +292,13 @@ function check_full() {
 		data[curr].try = 1;
 		data[curr].timestamp = dt.getTime();
 		data[curr].correct = (pass ? 0 : 1);
-		document.getElementById("list"+data[curr].seq).style.backgroundColor = (data[curr].correct ? "#38c" : "#c33");
 
-		var html = "";
-		if (correct) {
-			html = data[curr].script;
-		} else {
-			for(var i=0; i < sc.length ; i++) {
-				if (isCorr[i]) html += sc[i] + " ";
-				else html += "<span>" + sc[i] + "</span> ";
-			}
-		}
-		document.getElementById("result").innerHTML = html;
+		var e_list = document.getElementById("list"+data[curr].seq);
+		if (e_list) e_list.style.backgroundColor = (data[curr].correct ? colorBlue : colorRed);
+
+		var e_result = document.getElementById("result");
+		if (e_result) e_result.innerHTML = getResultText(data[curr].script, data[curr].answer, "red");
+
 
 		var o = (autopass ? { onfinish : function() {	if ((curr+1) < sum) { curr++; init(); }	} } : {});
 		play(o);
@@ -310,17 +307,17 @@ function check_full() {
 
 function getResultText(script, answer, type) {
 	var result = "";
-	var va = answer.trim().split(" ").filter(function(v){ return (v != undefined && v != "") });
-	var sa = script.trim().split(" ");
+	var arr_a = answer.trim().split(" ").filter(function(v){ return (v != undefined && v != "") });
+	var arr_s = script.trim().split(" ");
 
-	for(var i=0; i < sa.length ; i++) {
-		if (specialCharRemove(sa[i], "check") == specialCharRemove(va[i], "check")) {
-			result += sa[i] + " ";
+	for(var i=0; i < arr_s.length ; i++) {
+		if (specialCharRemove(arr_s[i], "check") == specialCharRemove(arr_a[i], "check")) {
+			result += arr_s[i] + " ";
 		} else {
 			if (type == "red") {
-				result += "<span>" + sa[i] + "</span> ";
+				result += "<span>" + arr_s[i] + "</span> ";
 			} else {
-				result += stringFill("_", sa[i].length) + " ";
+				result += stringFill("_", arr_s[i].length) + " ";
 			}
 		}
 	}
@@ -346,7 +343,7 @@ function changeMark() {
 		$("#list"+data[curr].seq).removeClass("listbtn-marked");
 	} else {
 		data[curr].mark = 1;
-		if (o) o.style.backgroundColor = "#38c";
+		if (o) o.style.backgroundColor = colorBlue;
 		$("#list"+data[curr].seq).addClass("listbtn-marked");
 	}
 }
@@ -358,7 +355,7 @@ function changeAuto() {
 		if (o) o.style.backgroundColor = "";
 	} else {
 		autoplay = 1;
-		if (o) o.style.backgroundColor = "#38c";
+		if (o) o.style.backgroundColor = colorBlue;
 	}
 }
 
@@ -375,13 +372,21 @@ function changeRecycle() {
 	if (isRecycle) {
 		isRecycle = 0;
 		if (o) o.style.backgroundColor = "";
+		sm.pause();
+		sm.stop();
 	} else {
 		isRecycle = 1;
-		if (o) o.style.backgroundColor = "#38c";
+		if (o) o.style.backgroundColor = colorBlue;
+		playloop();
 	}
 }
 
 function playloop() {
+	var func = function() {
+		playloop();
+	}
+	var o = {onfinish: func};
+	play(o);
 }
 
 function changeCurr(to) {
@@ -396,30 +401,21 @@ function changeSort(v) {
 	sm.stop();
 	if (v == "asc" && order != "asc") {
 		order = v;
-		data.sort(function(a,b) {
-			return a.seq < b.seq ? -1 : a.seq > b.seq ? 1 : 0;
-		});
+		data.sort(function(a,b) { return a.seq - b.seq; });
 	} else if (v == "desc" && order != "desc") {
 		order = v;
-		data.sort(function(a,b) {
-			return a.seq > b.seq ? -1 : a.seq < b.seq ? 1 : 0;
-		});
+		data.sort(function(a,b) { return b.seq - a.seq; });
 	} else if (v == "marked" && order != "marked") {
 		order = v;
-		var t1 = new Array();
-		var t2 = new Array();
-		for (var i = 0; i < data.length; i++) {
-			if (data[i].mark) t1.push(data[i]);
-			else t2.push(data[i]);
-		}
-		data = t1.concat(t2);
-	} else if (v == "incorrected" && order != "incorrected") {
+		// 오답 > 안함 > 정답
+		data.sort(function(a,b) { return b.mark - a.mark; });
+	} else if (v == "incorrected" && order != "incorrected") { 
 		order = v;
 		var t1 = new Array();
 		var t2 = new Array();
 		var t3 = new Array();
 		for (var i = 0; i < data.length; i++) {
-			if (!data[i].correct) {
+			if (! data[i].correct) {
 				if (data[i].timestamp) t1.push(data[i]);
 				else t2.push(data[i]);
 			} else t3.push(data[i]);
@@ -442,7 +438,7 @@ function attachRightList() {
 		var cls = "ui-btn ui-corner-all ui-btn-inline ui-btn-b ui-mini listbtn";
 		if (data[i].mark) cls += " listbtn-marked";
 		if (data[i].timestamp != 0) {
-			btn.style.backgroundColor = (data[i].correct ? "#38c" : "#c33");
+			btn.style.backgroundColor = (data[i].correct ? colorBlue : colorRed);
 		}
 		btn.href = "#";
 		btn.setAttribute("id", "list"+data[i].seq);

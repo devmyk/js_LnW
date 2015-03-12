@@ -28,7 +28,6 @@ if (empty($uid) || empty($upw)) {
 				if ($uid == $ud[0] && $upw == $ud[1]) {
 					$_SESSION['uid'] = $uid;
 					$_SESSION['permit'] = $ud[2];
-					$_SESSION['dir'] = explode("/",$ud[4]);
 					// 0autoplay/1autopass/2playcount/3defaultmode/4maxfull/5maxword
 					$set = explode("/",$ud[3]);
 					$_SESSION['set'] = array(
@@ -40,6 +39,7 @@ if (empty($uid) || empty($upw)) {
 						"maxword"	=> $set[5],
 						"max"		=> ($set[3] == "full" ? $set[4] : $set[5])
 					);
+					$_SESSION['dir'] = explode("/",$ud[4]);
 					break;
 				}
 			}

@@ -37,8 +37,9 @@
 	<style>
 .header .ui-btn { top: .35em; margin-top:0; }
 #edit table { width : 100%; border: 0px none; }
-#rightpanel table { width : 100%; border: 0px none; }
+#rightpanel table { width : 100%; border: 0px none; font-size: 0.7em; }
 #rightpanel td { border-bottom: 1px dotted #aaa; padding: .5em 0; }
+#rightpanel .btn { margin: 0; width: 1em; height: 1em; }
 	</style>
 	<script language="javascript" src="/js/jquery.js"></script>
 	<script language="javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
@@ -98,13 +99,50 @@ function play() {
 	});
 }
 
-function add() {
+function list_get(k) {
+	var obj = list[k];
+	$("#range1").val((obj.from/100)).slider("refresh");
+	$("#range2").val((obj.to/100)).slider("refresh");
+	$("#script").html(obj.script);
+	$("#trans").html(obj.trans);
+//	$("#btn_edit").css("display", "");
+//	$("#btn_add").css("display", "none");
+}
+
+function list_del(k) {
+	if (confirm("delete no : "+k)) {
+		alert("수정중");
+	}
+}
+
+function list_edit() {
+//	$("#btn_edit").css("display", "");
+}
+
+function list_play(k) {
+	if (! list[k]) return;
+	sm.stop();
+	if (sm.id != "sm_"+list[k].fn) return;
+	sm.play({
+		from: list[k].from,
+		to: list[k].to
+	});
+}
+
+
+function list_add() {
 	var select = document.getElementById("select");
 	if (! select) return;
-	if (select.value.trim() == "") return;
+	if (select.value.trim() == "") {
+		alert("파일을 선택하지 않았습니다.");
+		return;
+	}
 
 	var e_script = document.getElementById("script");
-	if (! e_script) return;
+	if (! e_script) {
+		alert("스크립트를 넣어주세요.");
+		return;
+	}
 
 	var script = e_script.value.trim();
 	if (script == "") return;
@@ -135,7 +173,12 @@ function add() {
 	obj.script = script;
 	obj.trans  = trans;
 
-	if (obj.from >= 0 && obj.to >= 0) return;
+	if (obj.from < 0 || obj.to < 0 || (obj.from >= obj.to)) {
+		var msg = "영역선택이 잘못되었습니다.\n   from:" + obj.from + " / to :" + obj.to;
+		console.log(msg);
+		alert(msg);
+		return;
+	}
 
 	// list 에 같은 from 이 있는 지 확인하고
 	var bool = false;
@@ -145,14 +188,22 @@ function add() {
 			break;
 		}
 	}
-	if (bool) return;
+	if (bool) {
+		alert("추가하려는 영역이 이미 등록되어 있습니다.");
+		return;
+	}
 
 	// list 에 넣고
 	list.push(obj);
 
 	// right pannel 에 붙이고
 	var tr = document.createElement("tr");
-	tr.innerHTML = "<td>" + list.length + "</td><td>" + script + "</td><td>X</td><td>E</td>";
+	var no = list.length;
+	tr.innerHTML = "<td>" + no + "</td>";
+	tr.innerHTML += "<td>" + script + "</td>";
+	tr.innerHTML += "<td><a href=\"#\" class=\"ui-btn ui-btn-icon-notext ui-corner-all ui-icon-delete btn\" onclick=\"list_del(" + (no-1) + ");\">X</a></td>";
+//	tr.innerHTML += "<td><a href=\"#\" class=\"ui-btn ui-btn-icon-notext ui-corner-all ui-icon-edit btn\" onclick=\"list_get(" + (no-1) + ");\">E</a></td>";
+	tr.innerHTML += "<td><a href=\"#\" class=\"ui-btn ui-btn-icon-notext ui-corner-all ui-icon-audio btn\" onclick=\"list_play(" + (no-1) + ");\">P</a></td>";
 	$("#list").append(tr);
 
 	// 시작위치를 끝위치로 바꾸고 끝위치는 임의의 위치로
@@ -162,6 +213,10 @@ function add() {
 }
 
 function save() {
+	if (list.length <= 0) {
+		alert("정보가 없습니다.");
+		return;
+	}
 	// 정렬 여부 묻는 게 좋을듯
 	// list[] 정렬 : fn > from (from sort 후 fn sort 하면 된다)
 	list.sort(function(a,b) { return a.from - b.from; });
@@ -172,7 +227,9 @@ function save() {
 	// form 에 추가
 	var e_list = document.getElementById("lists");
 	if (! e_list) return;
+
 	var html = "";
+	var top_fn = list[0].fn;
 	for (var i=0; i<list.length; i++) {
 		var text = "";
 		text += list[i].fn + "\t";
@@ -229,8 +286,11 @@ function init() {
 			</table>
 			<table style="margin-bottom:4em;">
 				<tr>
-					<td><input type="button" value="ADD" onclick="add();" /><td/>
-					<td><input type="button" value="PLAY" onclick="play();" /></td>
+					<td>
+						<a href="#" id="btn_add" onclick="list_add();" class="ui-btn ui-corner-all ui-shadow">ADD</a>
+						<a href="#" id="btn_edit" onclick="list_edit();" class="ui-btn ui-corner-all ui-shadow" style="display:none;">EDIT</a>
+					<td/>
+					<td><input type="button" id="btn_play" value="PLAY" onclick="play();" /></td>
 				</tr>
 			</table>
 			<div id="lists"></div>
@@ -249,8 +309,8 @@ function init() {
 			<tr>
 				<td>no</td>
 				<td>script</td>
-				<td>Del</td>
-				<td>Edit</td>
+				<td width="1em">Del</td>
+				<td width="2em">Edit</td>
 			</tr>
 		</table>
 	</div><!-- /rightpanel -->

@@ -37,7 +37,7 @@ path = "/data/<?=$dir?>/";
 max = <?=$_set['max'];?>;
 autoplay = <?=$_set['autoplay'];?>;
 autopass = <?=$_set['autopass'];?>;
-mode = <?=$_set['defaultmode'];?>;
+mode = "<?=$_set['defaultmode'];?>";
 playCount = <?=$_set['playcount']?>;
 maxFull = <?=$_set['maxfull'];?>;
 maxWord = <?=$_set['maxword']?>;
@@ -55,7 +55,7 @@ maxWord = <?=$_set['maxword']?>;
 		<table id="container" style="text-align:center;width:100%;min-height:50%;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
-					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="changeMode(this);" />
+					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="changeMode(this);" <?=($_set['defaultmode'] == "full" ? "checked=\"checked\"" : "")?>/>
 				</td>
 				<td style="vertical-align:top;text-align:right;" class="ui-nodisc-icon">
 					<a id="btnAuto" class="ui-btn ui-icon-audio ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeAuto();">autoplay</a>
@@ -99,7 +99,7 @@ maxWord = <?=$_set['maxword']?>;
 		<p id="progress" style="text-align:center;"></p>
 	</div><!-- /footer -->
 
-	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-position-fixed="true" data-theme="b">
+	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-position-fixed="true" data-theme="b" data-dismissible="true">
 		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
 			<input type="radio" name="sort" id="sort1" value="asc" checked="checked" onclick="changeSort('asc');"/>
 			<label for="sort1">asc</label>

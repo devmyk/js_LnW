@@ -47,8 +47,8 @@
 	$err = implode("\n", $err);
 	echo "alert(\"{$err}\"); ";
 } ?>
-document.location.replace("index.php");
+//document.location.replace("index.php");
 </script>
 </head>
-<body></body>
+<body><? echo debug($data); ?></body>
 </html>

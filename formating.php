@@ -17,6 +17,7 @@
 	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 	<style>
+form { height: 100%; }
 .header .ui-btn { top: .35em; margin-top:0; }
 #edit table { width : 100%; border: 0px none; }
 #rightpanel table { width : 100%; border: 0px none; }
@@ -42,13 +43,13 @@ function submit() {
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<h1 style="text-align:center;">Error</h1>
-		<h2 style="text-align:center;">There is no file.</h2>
 		<form name="backform" method="post" action="formating_edit.php">
-		<? /* 업로드도 해야하나.. 귀찮은데..
+			<h1 style="text-align:center;">Error</h1>
+			<h2 style="text-align:center;">There is no file.</h2>
+			<? /* 업로드도 해야하나.. 귀찮은데..
              <label for="file">File:</label>
              <input type="file" name="file" id="file" value="">
-		*/ ?>
+			*/ ?>
 			<select name="dir" id="dir" data-native-menu="false">
 				<option value="" selected="selected" style="background-color:black;">FILE</option>
 				<? foreach ($dirs as $d) { echo "<option value=\"{$d}\">{$d}</option>"; } ?>

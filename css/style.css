@@ -47,18 +47,23 @@ div::-webkit-scrollbar-thumb {
 }
 
 
-/* left pannel nav menu*/
-#collapsivlesetE .ui-collapsible-content .ui-listview li a {
-	 background-color: #2a2a2a;
+/* left panel nav menu*/
+#leftpanel .ui-collapsible-set {
+	margin: 0;
 }
-#collapsivlesetE .ui-collapsible-content .ui-listview li a:hover {
-	 background-color: #2f2f2f;
+#leftpanel .ui-listview > li h2 {
+	margin: 0;
 }
+#leftpanel .ui-listview > .ui-li-static {
+	padding: 0em 1em;
+}
+
 .navmenu-panel .no {
 	color: #999;
 	font-size: small;
 	font-weight: lighter;
 }
+
 
 /* content */
 .ui-content td {

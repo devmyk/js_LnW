@@ -22,8 +22,8 @@ function login() {
 
 	var id = f.inputID.value.trim();
 	var pw = f.inputPW.value.trim();
-	if (id == "") { alert("input email."); return false; }
-	if (pw == "") { alert("input password."); return false; }
+	if (id === "") { alert("input email."); return false; }
+	if (pw === "") { alert("input password."); return false; }
 
 	f.submit();
 }

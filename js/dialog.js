@@ -170,14 +170,17 @@ function play(o) {
 //	if (sm.playState != 0) return;
 
 	sm.stop("sm_" + data[curr].fn);
-	var e = document.getElementById("scripts"+data[curr].seq);
+	var id = "scripts" + data[curr].seq;
+	var e = document.getElementById(id);
 	if (e) {
 		e.style.backgroundColor = colorBlue;
-		$("span[name=scripts" + data[curr].seq + "]").css("backgroundColor", colorBlue);
-//		$('body').scrollTo($(e));
+		var pos = $(e).offset();
+//		$("span[name=" + id + "]").css("backgroundColor", colorBlue);
+		var wh = $(window).height();
+		$('body').scrollTop(pos.top - (wh/3) );
 	}
 
-	if (typeof(o) == "undefined") o = {};
+	if (typeof(o) == "undefined") o = { from: 0 };
 	if (data[curr].from) o.from = data[curr].from;
 	if (data[curr].to) o.to = data[curr].to;
 //	if (! o.onfinish) {
