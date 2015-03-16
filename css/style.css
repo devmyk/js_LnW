@@ -54,6 +54,9 @@ div::-webkit-scrollbar-thumb {
 #leftpanel .ui-listview > li h2 {
 	margin: 0;
 }
+#leftpanel .border_none {
+    border: 0px none;
+}
 #leftpanel .ui-listview > .ui-li-static {
 	padding: 0em 1em;
 }

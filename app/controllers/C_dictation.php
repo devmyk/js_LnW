@@ -3,10 +3,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class C_Dictation extends CI_Controller {
-
-//    function __construct() {
-//        parent::__construct();
-//    }
+    public function __construct() {
+        parent::__construct();
+//        $this->load->model('m_dictation');
+    }
 	public function index() {
 		$s = $this->session->all_uiserdata();
 		if (!empty($s['uid'])) {
