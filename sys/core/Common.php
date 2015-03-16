@@ -845,3 +845,15 @@ if ( ! function_exists('function_usable'))
 		return FALSE;
 	}
 }
+// ------------------------------------------------------------------------
+
+if (!function_exists('debug')) {
+	function debug($v) {
+		$args = func_get_args();
+		echo "<xmp>";
+		foreach ($args as $arg) {
+			var_dump($arg);
+		}
+		echo "</xmp>";
+	}
+}
