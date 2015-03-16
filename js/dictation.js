@@ -25,6 +25,8 @@ function init() {
 	document.getElementById("count").innerHTML = "[ 0 / " + max + " ]";
 	document.getElementById("progress").innerHTML = "[ " + (curr+1) + " / " + sum + " ]";
 	document.getElementById("fld").innerHTML = "";
+	console.log(mode);
+	console.log(mode == "full");
 	if (mode == "full") {
 		document.getElementById("put").style.display = "";
 		document.getElementById("put").value = "";
@@ -55,10 +57,10 @@ function init() {
 	if (sum <= 1) {
 		$("#btnPre").addClass("ui-state-disabled");
 		$("#btnNext").addClass("ui-state-disabled");
-	} else if (curr == 0) {
+	} else if (curr==0) {
 		$("#btnPre").addClass("ui-state-disabled");
 		$("#btnNext").removeClass("ui-state-disabled");
-	} else if (curr+1 == sum) {
+	} else if (curr+1==sum) {
 		$("#btnPre").removeClass("ui-state-disabled");
 		$("#btnNext").addClass("ui-state-disabled");
 	} else {
@@ -174,16 +176,15 @@ function stringFill(x, n) {
 function check_words(o) {
 	var correct = false;
 	var pass = false;
-	var ov = o.innerHTML;
 
 	// arr 의 count 증가
 	arr[data[curr].curr].count++;
 	document.getElementById("count").innerHTML = "[ " + arr[data[curr].curr].count + " / " + max + " ]";
 	// arr 의 count 체크
-	if (arr[data[curr].curr].count > max) {
+	if (arr[data[curr].curr].count >= max) {
 		pass = true;
 		data[curr].correct = false;
-	} else if (specialCharRemove(sc[data[curr].curr], "check") == specialCharRemove(ov, "check")) {
+	} else if (specialCharRemove(sc[data[curr].curr]) == specialCharRemove(o.innerText)) {
 		// seq 는 다르지만 text 가 같은 경우도 있으므로 text 비교
 		correct = true;
 	}
@@ -191,13 +192,12 @@ function check_words(o) {
 	if (pass || correct) {
 		$(document.getElementById('btn'+data[curr].curr)).remove();
 		sa[data[curr].curr] = correct;
-		data[curr].answer += ov + " ";
 		data[curr].curr++;
 		
 		var result = "";
 		for(var i=0; i < sc.length; i++) {
 			if (i < data[curr].curr) {
-				if (sa[i] == true) result += sc[i] + " ";
+				if (sa[i]) result += sc[i] + " ";
 				else result += "<span>" + sc[i] + "</span> ";
 			}
 			else result += stringFill("_", sc[i].length) + " ";
@@ -210,7 +210,6 @@ function check_words(o) {
 			var dt = new Date();
 			data[curr].try = 1;
 			data[curr].timestamp = dt.getTime();
-			data[curr].answer = data[curr].answer.trim();
 			document.getElementById("list"+data[curr].seq).style.backgroundColor = (data[curr].correct ? colorBlue : colorRed);
 
 			var o = (autopass ? {onfinish : function() { if ((curr+1) < sum) { curr++; init(); } } } : {});
@@ -242,7 +241,7 @@ function check_full() {
 
 	var isCorr = [];
 	var va = o.value.trim().split(" ").filter(function(v){ return (v != undefined && v != "") });
-	if (! pass) {
+	if (!pass) {
 		correct = true;
 		var result = "";
 		for(var i=0; i < sc.length ; i++) {
@@ -318,17 +317,17 @@ function check_full() {
 
 function getResultText(script, answer, type) {
 	var result = "";
-	var arr_a = answer.trim().split(" ").filter(function(v){ return (v != undefined && v != "") });
-	var arr_s = script.trim().split(" ");
+	var va = answer.trim().split(" ").filter(function(v){ return (v != undefined && v != "") });
+	var sa = script.trim().split(" ");
 
-	for(var i=0; i < arr_s.length ; i++) {
-		if (specialCharRemove(arr_s[i], "check") == specialCharRemove(arr_a[i], "check")) {
-			result += arr_s[i] + " ";
+	for(var i=0; i < sa.length ; i++) {
+		if (specialCharRemove(sa[i], "check") == specialCharRemove(va[i], "check")) {
+			result += sa[i] + " ";
 		} else {
 			if (type == "red") {
-				result += "<span>" + arr_s[i] + "</span> ";
+				result += "<span>" + sa[i] + "</span> ";
 			} else {
-				result += stringFill("_", arr_s[i].length) + " ";
+				result += stringFill("_", sa[i].length) + " ";
 			}
 		}
 	}
@@ -426,7 +425,7 @@ function changeSort(v) {
 		var t2 = new Array();
 		var t3 = new Array();
 		for (var i = 0; i < data.length; i++) {
-			if (! data[i].correct) {
+			if (!data[i].correct) {
 				if (data[i].timestamp) t1.push(data[i]);
 				else t2.push(data[i]);
 			} else t3.push(data[i]);
