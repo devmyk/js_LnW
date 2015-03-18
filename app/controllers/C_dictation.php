@@ -5,10 +5,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class C_Dictation extends CI_Controller {
     public function __construct() {
         parent::__construct();
-//        $this->load->model('m_dictation');
+        $this->load->model('m_dictation');
     }
 	public function index() {
-		$s = $this->session->all_uiserdata();
+		$s = $this->session->all_userdata();
 		if (!empty($s['uid'])) {
 			$data = array(
 				// 카테고리, 출석, 일별 학습상황 등등..
@@ -24,101 +24,19 @@ class C_Dictation extends CI_Controller {
 
 		// 받아온 값 유효성 체크
 		$post = $this->input->post();
-		// 빈값
-		if (trim($post['id']) == "" || trim($post['pw']) == "") {
-			redirect('/c_dictation', 'refresh');
-			exit;
-		}
-		// 이메일 형태가 아님
-		// db 체크
-		// table : user
-		// structure : seq / email / name / pwd / login_dt / permit / autoplay / autopass / autoplaycount / defaultmode / maxfull / maxword 
-		$this->db->where('email', $post['id']);
-		$this->db->where('pwd', $post['pw']);
-		$q_user = $this->db->get('user');
+		$user_info = $this->m_dictation->get_user_info($post);
 
-		$num = $q_user->num_rows();
-		if ($num != 1) {
-			redirect('/c_dictation', 'refresh');
-			exit;
-		} else {
+		if (! $user_info) {
+			$uid = $user_info['uid'];
 			// 로그인 시간 저장
-			$login_dt = date('Y-m-d H:i:s');
-			$this->db->where('email', $post['id']);
-			$this->db->update('user', array('login_dt' => $login_dt));
+			$user_info['login_dt'] = $this->m_dictation->set_user_login_dt($uid);
+			// 카테고리
+			$user_info['category'] = $this->m_dictation->get_user_category($uid);
 			// 세션에 유저정보 저장
-			$row = $q_user->row();
-			$data = array(
-				'uid' => $row->seq,
-				'email' => $row->email,
-				'name' => $row->name,
-				'login_dt' => $login_dt,
-				'permit' => $row->permit,
-				'autoplay' => $row->autoplay,
-				'autopass' => $row->autopass,
-				'autoplaycount' => $row->autoplaycount,
-				'defaultmode' => $row->defaultmode,
-				'maxfull' => $row->maxfull,
-				'maxword' => $row->maxword,
-				'category' => array()
-			);
-
-			$q_uc = $this->db->query(""
-			. " select b.seq, b.code, b.name, b.pcode, b.pname, b.ppcode, c.name as ppname from ("
-				. " select a,seq, a.code, a.name, a.pcode, c.name as pname, c.pcode as ppcode from ("
-					. " select c.seq, c.path, c.pcode, ifnull(c.code, '') as code, c.name"
-					. " from (select code from user_category uc where uc.user='{$row->seq}') uc"
-					. " left join category c"
-					. " on uc.code=c.code"
-					. " order by path, pcode"
-				. ") a"
-				. " left join category c"
-				. " on a.pcode=c.code"
-				. " where a.code <> '' "
-			. " ) b "
-			. " left join category c"
-			. " on b.ppcode=c.code"
-			. " order by ppcode, pcode, code, seq"
-			. " ");
-
-			// 보여줄 카테고리 정리
-			if ($q_uc->num_rows() > 0) {
-				$category = array();
-				foreach ($q_uc->result() as $row) {
-					$ppcode = $row->ppcode;
-					$pcode = $row->pcode;
-					$code = $row->code;
-					if (!isset($category[$ppcode])) {
-						$category[$ppcode] = array(
-							'code' => $ppcode
-							, 'name' => $row->ppname
-							, 'list' => array()
-						);
-					}
-					if (!isset($category[$ppcode]['list'][$pcode])) {
-						$category[$ppcode]['list'][$pcode] = array(
-							'pcode' => $ppcode
-							, 'code' => $pcode
-							, 'name' => $row->pname
-							, 'list' => array()
-						);
-					}
-					if (!isset($category[$ppcode]['list'][$pcode]['list'][$code])) {
-						$category[$ppcode]['list'][$pcode]['list'][$code] = array(
-							'pcode' => $pcode
-							, 'code' => $code
-							, 'name' => $row->name
-						);
-					}
-				}
-				$data['category'] = $category;
-			}
-
-			// 세션에 저장
-			$this->session->set_userdata($data);
-			// 메인으로 이동
-			redirect('/c_dictation', 'refresh');
+			$this->session->set_userdata($user_info);
 		}
+		// 메인으로 이동
+		redirect('/c_dictation', 'refresh');
 	}
 
 	public function logout() {
@@ -126,5 +44,29 @@ class C_Dictation extends CI_Controller {
 		$this->session->set_userdata(array());
 		redirect('/c_dictation', 'refresh');
 	}
-
+	public function stat() {
+		$is_access = false;
+		$param = func_get_args();	// code 만 받기
+		$s = $this->session->all_userdata();
+		if (sizeof($param) == 1 && isset($s['uid'])) {
+			$c_code = $this->m_dictation->get_user_category_by_fld($s['uid'], 'code');
+			if (in_array($param[0], $c_code)) {
+				$is_access = true;
+			}
+		}
+		if (! $is_access) {
+			echo "ERROR";
+			exit;
+		}
+		// 그동안 통계 정보 뿌리고
+		//		full, word : 정답 / 오답 / 패스 (총공부양)
+		//		월별 통계
+		//		목표도 넣어야하나 D-day 같은 <- 추후 추가하자
+		$data = array();
+		$this->load->view('v_dictation_stat',$data);
+		
+	}
+	public function dialog() {
+		
+	}
 }

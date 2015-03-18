@@ -20,13 +20,13 @@
         ?>
             <li data-role="list-divider"><?= $c['name'] ?></li>
             <? foreach ($c['list'] as $cl) { ?>
-            <li class="border_none">
+            <li>
                 <div id="collapsivleset_<?=$cl['code']?>" data-role="collapsibleset" data-theme="b" data-content-theme="b" data-inset="false">
                     <div data-role="collapsible">
                         <h2><?=$cl['name']?></h2>
                         <ul data-role="listview" data-divider-theme="b">
                             <? foreach($cl['list'] as $cll) {?>
-                            <li><a href="#" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon border_none"><?=$cll['name']?></a></li>
+                            <li><a href="#" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon"><?=$cll['name']?></a></li>
                             <? } ?>
                         </ul>
                     </div>

@@ -49,16 +49,17 @@ div::-webkit-scrollbar-thumb {
 
 /* left panel nav menu*/
 #leftpanel .ui-collapsible-set {
-	margin: 0;
+    margin: 0;
 }
 #leftpanel .ui-listview > li h2 {
-	margin: 0;
+    margin: 0;
 }
-#leftpanel .border_none {
-    border: 0px none;
+#leftpanel .ui-collapsible-set .ui-listview > li a {
+    padding-left: 2.4em;
 }
 #leftpanel .ui-listview > .ui-li-static {
-	padding: 0em 1em;
+    padding: 0em 1em;
+    border: 0px none;
 }
 
 .navmenu-panel .no {

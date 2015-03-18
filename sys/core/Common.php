@@ -847,7 +847,7 @@ if ( ! function_exists('function_usable'))
 }
 // ------------------------------------------------------------------------
 
-if (!function_exists('debug')) {
+if ( ! function_exists('debug')) {
 	function debug($v) {
 		$args = func_get_args();
 		echo "<xmp>";
