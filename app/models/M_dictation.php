@@ -59,7 +59,7 @@ class M_Dictation extends CI_Model {
 			. " ) b "
 			. " left join category c"
 			. " on b.ppcode=c.code"
-			. " order by ppcode, pcode, code, seq"
+			. " order by b.seq"
 			. " ");
 		// 보여줄 카테고리 정리
 		if ($q_uc->num_rows() > 0) {

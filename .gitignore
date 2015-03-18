@@ -1,5 +1,6 @@
 /vendor/
 /nbproject/
+/app/config/database.php
 
 .*.swp
 .*.swo
@@ -7,4 +8,3 @@
 *.mp4
 /data/
 /logs/
-app/config/database.php
