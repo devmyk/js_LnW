@@ -6,10 +6,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>DICTATION : stat</title>
 	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
-	<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
-	<link rel="stylesheet" href="css/style.css">
-	<script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="/css/style.css">
+	<script type="text/javascript" src="/js/jquery.js"></script>
+	<script type="text/javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
 	<script>
 	</script>
 </head>
@@ -17,11 +17,13 @@
 <div data-role="page" data-theme="b" data-content-theme="b">
 	<div data-role="header" class="header">
 		<h1>STAT</h1>
+		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 	</div><!-- /header -->
 	<div role="main" class="ui-content">
 		<a href="#" rel="external" class="ui-btn ui-corner-all">DICTATION</a>
 		<a href="#" rel="external" class="ui-btn ui-corner-all">DIALOG</a>
 	</div><!-- /main -->
+	<? require_once("./app/views/v_dictation_left.php"); ?>
 </div><!-- /page -->
 </body>
 </html>

@@ -9,7 +9,7 @@ class C_Dictation extends CI_Controller {
     }
 	public function index() {
 		$s = $this->session->all_userdata();
-                $is_login = (! empty($s['uid']));
+		$is_login = (! empty($s['uid']));
 		if ($is_login) {
 			$data = array(
 				// 카테고리, 출석, 일별 학습상황 등등..
@@ -63,7 +63,9 @@ class C_Dictation extends CI_Controller {
 		//		full, word : 정답 / 오답 / 패스 (총공부양)
 		//		월별 통계
 		//		목표도 넣어야하나 D-day 같은 <- 추후 추가하자
-		$data = array();
+		$data = array(
+			'category' => $this->session->userdata('category')
+		);
 		$this->load->view('v_dictation_stat',$data);
 		
 	}
