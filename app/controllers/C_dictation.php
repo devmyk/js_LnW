@@ -9,7 +9,8 @@ class C_Dictation extends CI_Controller {
     }
 	public function index() {
 		$s = $this->session->all_userdata();
-		if (!empty($s['uid'])) {
+                $is_login = (! empty($s['uid']));
+		if ($is_login) {
 			$data = array(
 				// 카테고리, 출석, 일별 학습상황 등등..
 				'category' => $s['category']
@@ -26,7 +27,7 @@ class C_Dictation extends CI_Controller {
 		$post = $this->input->post();
 		$user_info = $this->m_dictation->get_user_info($post);
 
-		if (! $user_info) {
+		if ($user_info != false) {
 			$uid = $user_info['uid'];
 			// 로그인 시간 저장
 			$user_info['login_dt'] = $this->m_dictation->set_user_login_dt($uid);
