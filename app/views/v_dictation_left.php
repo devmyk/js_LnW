@@ -26,7 +26,7 @@
                         <h2><?=$cl['name']?></h2>
                         <ul data-role="listview" data-divider-theme="b">
                             <? foreach($cl['list'] as $cll) {?>
-                            <li><a href="#" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon"><?=$cll['name']?></a></li>
+                            <li><a href="/c_dictation/stat/<?=$cll['code']?>" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon"><?=$cll['name']?></a></li>
                             <? } ?>
                         </ul>
                     </div>
