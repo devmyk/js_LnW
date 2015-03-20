@@ -48,15 +48,20 @@ class C_Dictation extends CI_Controller {
 	public function stat() {
 		$is_access = false;
 		$param = func_get_args();	// code 만 받기
-		$s = $this->session->all_userdata();
-		if (sizeof($param) == 1 && isset($s['uid'])) {
-			$c_code = $this->m_dictation->get_user_category_by_fld($s['uid'], 'code');
-			if (in_array($param[0], $c_code)) {
-				$is_access = true;
-			}
+
+		if (sizeof($param) != 1) {
+			echo "ERROR : 잘못된 접근입니다";
+			exit;
 		}
-		if (! $is_access) {
-			echo "ERROR";
+		$code = $param[0];
+		$s = $this->session->all_userdata();
+		if (! isset($s['uid'])) {
+			redirect('/c_dictation', 'refresh');
+			exit;
+		}
+		$c_code = $this->m_dictation->get_user_category_by_fld($s['uid'], 'code');
+		if (! in_array($code, $c_code)) {
+			echo "ERROR : 권한이 없습니다";
 			exit;
 		}
 		// 그동안 통계 정보 뿌리고
@@ -64,9 +69,36 @@ class C_Dictation extends CI_Controller {
 		//		월별 통계
 		//		목표도 넣어야하나 D-day 같은 <- 추후 추가하자
 		$data = array(
-			'category' => $this->session->userdata('category')
+			'code'		=> $code,
+			'category'	=> $this->session->userdata('category')
 		);
 		$this->load->view('v_dictation_stat',$data);
+		
+	}
+	public function dictation() {
+		$param = func_get_args();	// code 만 받기
+
+		if (sizeof($param) != 1) {
+			echo "ERROR : 잘못된 접근입니다";
+			exit;
+		}
+
+		$s = $this->session->all_userdata();
+		if (! isset($s['uid'])) {
+			redirect('/c_dictation', 'refresh');
+			exit;
+		}
+		$c_code = $this->m_dictation->get_user_category_by_fld($s['uid'], 'code');
+		if (! in_array($param[0], $c_code)) {
+			echo "ERROR : 권한이 없습니다";
+			exit;
+		}
+
+		$data = array(
+			'category'		=> $s['category'],
+			'defaultmode'	=> $s['defaultmode']
+		);
+		$this->load->view('v_dictation',$data);
 		
 	}
 	public function dialog() {
