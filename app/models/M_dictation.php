@@ -4,6 +4,22 @@ class M_Dictation extends CI_Model {
     function __construct() {
         parent::__construct();
     }
+	public function chk_email($email) {
+		$res = array();
+		$this->db->where('email', $email);
+		$q_user = $this->db->get('user');
+		if($q_user->num_rows() == 1) {
+			$row = $q_user->row();
+			$res = array(
+				'uid'		=> $row->seq,
+				'email'		=> $row->email,
+				'name'		=> $row->name,
+				'permit'	=> $row->permit
+			);
+		}
+		return $res;
+	}
+			
 	public function get_user_info($data) {
 		// 모드로 나눠서 이미 등록된 정보를 찾는 용과 DB에서 가져오는 용으로 나눠야 할듯
 		// 빈값
@@ -37,7 +53,8 @@ class M_Dictation extends CI_Model {
 		}
 	}
 	public function set_user_login_dt($seq) {
-		$login_dt = date('Y-m-d H:i:s');
+		//$login_dt = date('Y-m-d H:i:s');
+		$login_dt = date("Y-m-d H:i:s",strtotime ("+9 hours")); // 한국 표준시 (KST)
 		$this->db->where('seq', $seq);
 		$this->db->update('user', array('login_dt' => $login_dt));
 		return $login_dt;
@@ -98,6 +115,23 @@ class M_Dictation extends CI_Model {
 			}
 		}
 		return $category;
+	}
+	public function get_category($code) {
+		$res = array();
+		$q = $this->db->query("select * from category where code='{$code}'");
+		if ($q->num_rows() > 0) {
+			foreach ($q->result() as $row) {
+				$res = array(
+					'seq'	=> $row->seq,
+					'path'	=> $row->path,
+					'pcode'	=> $row->pcode,
+					'code'	=> $row->code,
+					'name'	=> $row->name,
+					'file'	=> $row->file
+				);
+			}
+		}
+		return $res;
 	}
 	public function get_user_category_by_fld($seq, $fld='') {
 		$category = $this->get_user_category($seq, false);

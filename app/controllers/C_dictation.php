@@ -46,19 +46,18 @@ class C_Dictation extends CI_Controller {
 		redirect('/c_dictation', 'refresh');
 	}
 	public function stat() {
-		$is_access = false;
-		$param = func_get_args();	// code 만 받기
-
-		if (sizeof($param) != 1) {
-			echo "ERROR : 잘못된 접근입니다";
-			exit;
-		}
-		$code = $param[0];
 		$s = $this->session->all_userdata();
 		if (! isset($s['uid'])) {
 			redirect('/c_dictation', 'refresh');
 			exit;
 		}
+
+		$param = func_get_args();	// code 만 받기
+		if (sizeof($param) != 1) {
+			echo "ERROR : 잘못된 접근입니다";
+			exit;
+		}
+		$code = $param[0];
 		$c_code = $this->m_dictation->get_user_category_by_fld($s['uid'], 'code');
 		if (! in_array($code, $c_code)) {
 			echo "ERROR : 권한이 없습니다";
@@ -70,24 +69,25 @@ class C_Dictation extends CI_Controller {
 		//		목표도 넣어야하나 D-day 같은 <- 추후 추가하자
 		$data = array(
 			'code'		=> $code,
-			'category'	=> $this->session->userdata('category')
+			'category'	=> $s['category'],
+			'permit'	=> $s['permit']
 		);
 		$this->load->view('v_dictation_stat',$data);
 		
 	}
 	public function dictation() {
-		$param = func_get_args();	// code 만 받기
-
-		if (sizeof($param) != 1) {
-			echo "ERROR : 잘못된 접근입니다";
-			exit;
-		}
-
 		$s = $this->session->all_userdata();
 		if (! isset($s['uid'])) {
 			redirect('/c_dictation', 'refresh');
 			exit;
 		}
+		
+		$param = func_get_args();	// code 만 받기
+		if (sizeof($param) != 1) {
+			echo "ERROR : 잘못된 접근입니다";
+			exit;
+		}
+
 		$c_code = $this->m_dictation->get_user_category_by_fld($s['uid'], 'code');
 		if (! in_array($param[0], $c_code)) {
 			echo "ERROR : 권한이 없습니다";
@@ -101,7 +101,98 @@ class C_Dictation extends CI_Controller {
 		$this->load->view('v_dictation',$data);
 		
 	}
+
 	public function dialog() {
+		$s = $this->session->all_userdata();
+		if (! isset($s['uid'])) {
+			redirect('/c_dictation', 'refresh');
+			exit;
+		}
 		
+		$param = func_get_args();	// code 만 받기
+		if (sizeof($param) != 1) {
+			echo "ERROR : 잘못된 접근입니다";
+			exit;
+		}
+		$code = $param[0];
+
+		$c_code = $this->m_dictation->get_user_category_by_fld($s['uid'], 'code');
+		if (! in_array($code, $c_code)) {
+			echo "ERROR : 권한이 없습니다";
+			exit;
+		}
+
+		$code_info = $this->m_dictation->get_category($code);
+		if (empty($code_info)) {
+			echo "ERROR : 잘못된 접근입니다";
+			exit;
+		}
+		else if (! isset($code_info['file']) || empty($code_info['file'])) {
+			// db 에 저장된 값 없음
+			redirect('/c_dictation', 'refresh');
+			exit;
+		}
+		
+		if (! file_exists(".{$code_info['file']}")) {
+			// db 에 저장된 파일이 존재하지 않음
+			redirect('/c_dictation', 'refresh');
+			exit;
+		}
+
+		$data = array(
+			'category'		=> $s['category'],
+			'code_info'		=> $code_info,
+			'defaultmode'	=> $s['defaultmode']
+		);
+		$this->load->view('v_dictation_dialog',$data);
+	}
+
+	public function setlog() {
+        $this->load->model('m_dictation','md');
+
+		$email = $this->input->post('user_email');
+		$code = $this->input->post('code');
+		$txt = $this->input->post('txt');
+		
+		if (! $email || ! $code || ! $txt) {
+			echo "no data!!";
+			return;
+		}
+		$ui = $this->md->chk_email($email);
+		$ci = $this->md->get_category($code);
+		if (empty($ui) || empty($ci) || empty($txt)) {
+			echo "error";
+			return;
+		}
+		
+		// 데이터 확인
+		$d = explode("\n", $txt);
+		
+		//$dt = date('Y-m-d H:i:s');
+		$dt = date("Y-m-d H:i:s",strtotime ("+9 hours")); // 한국 표준시 (KST)
+		$save = array();
+		foreach ($d as $v) {
+			if (empty($v)) { continue; }
+			// code, seq, corr, answer
+			$tmp = explode("/", $v);
+			if ($tmp[0] == "") { continue; }
+			// 가공 user_logs
+			// user_seq | script_seq | code | corr | answer | log_dt
+			$save[] = array(
+				'user_seq'	=> $ui['uid'],
+				'script_seq' => $tmp[0],
+				'code'		=> $code,
+				'corr'		=> (empty($tmp[1]) ? "0" : $tmp[1]),
+				'answer'	=> (empty($tmp[2]) ? "" : $tmp[2]),
+				'log_dt'	=> $dt
+			);
+		}
+		
+		if (! empty($save)) {
+			$this->db->insert_batch('user_logs', $save);
+			echo "succes";
+		} else {
+			debug($save);
+		}
 	}
 }

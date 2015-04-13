@@ -4,12 +4,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>DICTATION : [언어] 제목</title>
-	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
+	<link rel="shortcut icon" href="/images/icon.ico">
 	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 	<script language="javascript" src="/js/jquery.js"></script>
 	<script language="javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="/js/soundmanager2-js.min.js"></script>
+	<script language="javascript" src="/js/dictation/common.js"></script>
 <? /*
 	<script language="javascript" src="/js/common_dictation.js"></script>
 	<script language="javascript" src="/data/<?=$dir?>/<?=$file?>.js"></script>

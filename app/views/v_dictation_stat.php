@@ -13,7 +13,7 @@ $w_pass		= round((30 / $w_total) * 100);
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>DICTATION : stat</title>
-	<!-- link rel="shortcut icon" href="demos/favicon.ico" -->
+	<link rel="shortcut icon" href="/images/icon.ico">
 	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="/css/style.css">
 	<script type="text/javascript" src="/js/jquery.js"></script>
@@ -29,8 +29,8 @@ $("#myChart").width(w+"px");
 $("#myChart").height(h+"px");
 $("#cart").height(h+"px");
 
-var corr_color = "34, 170, 221";
-var incorr_color = "204, 51, 51";
+var corr_color = "34,170,221";
+var incorr_color = "204,51,51";
 var pass_color = "110,110,110";
 var data = {
 labels: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
@@ -64,9 +64,14 @@ datasets: [
 }
 ]};
 var option = {
+	responsive: true,
     animation: false,
     scaleFontColor: "#aaa",
-    scaleGridLineColor : "rgba(0,0,0,.5)"
+    scaleGridLineColor : "rgba(0,0,0,.5)",
+//	barValueSpacing : 5,
+//	barDatasetSpacing : 1,
+	tooltipFontSize: 12,
+	multiTooltipTemplate: "<%=datasetLabel%> : <%=value%>"
 };
 var ctx = $("#myChart").get(0).getContext("2d");
 var myLineChart = new Chart(ctx).Line(data,option);
@@ -98,8 +103,11 @@ var myChart = new Chart(ctx).Doughnut(data);
 		<div id="chart" style="text-align:center;margin:0.5em;">
 			<canvas id="myChart" width="100" height="300"></canvas>
 		</div>
+		<a href="/c_dictation/dialog/<?=$code?>" rel="external" class="ui-btn ui-corner-all">DIALOG</a>
 		<a href="/c_dictation/dictation/<?=$code?>" rel="external" class="ui-btn ui-corner-all">DICTATION</a>
-		<a href="#" rel="external" class="ui-btn ui-corner-all">DIALOG</a>
+		<? if($permit == 9) { ?>
+		<a href="/c_dictation/edit/<?=$code?>" rel="external" class="ui-btn ui-corner-all">EDIT</a>	
+		<? } ?>
 	</div><!-- /main -->
 	<? require_once("./app/views/v_dictation_left.php"); ?>
 </div><!-- /page -->
