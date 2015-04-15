@@ -8,3 +8,4 @@
 *.mp4
 /data/
 /logs/
+js/offline_ignore.js
