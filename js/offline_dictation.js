@@ -1,4 +1,4 @@
-soundManager.setup({});
+soundManager.setup({useConsole:false});
 
 var sum = 0;
 var curr = 0;
