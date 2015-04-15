@@ -47,7 +47,13 @@ div::-webkit-scrollbar-thumb {
 }
 
 
-/* left panel nav menu*/
+/* left pannel nav menu*/
+#collapsivlesetE .ui-collapsible-content .ui-listview li a {
+	 background-color: #2a2a2a;
+}
+#collapsivlesetE .ui-collapsible-content .ui-listview li a:hover {
+	 background-color: #2f2f2f;
+}
 #leftpanel .ui-collapsible-set {
     margin: 0;
 }
@@ -67,7 +73,6 @@ div::-webkit-scrollbar-thumb {
 	font-size: small;
 	font-weight: lighter;
 }
-
 
 /* content */
 .ui-content td {
@@ -101,6 +106,14 @@ div::-webkit-scrollbar-thumb {
 }
 #rightpanelSetting li table {
 	width: 100%;
+}
+#rightpanelSetting li table .td40 {
+	width: 40%;
+	text-align: right;
+}
+#rightpanelSetting li table .td50 {
+	width: 50%;
+	text-align: center;
 }
 
 #rightpanel .ui-controlgroup-controls {
