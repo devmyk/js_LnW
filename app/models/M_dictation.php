@@ -27,9 +27,7 @@ class M_Dictation extends CI_Model {
 			return false;
 		}
 		// DB 검사
-		$this->db->where('email', $data['id']);
-		$this->db->where('pwd', $data['pw']);
-		$q_user = $this->db->get('user');
+		$q_user = $this->db->query("select * from user where email='{$data['id']}' and pwd=password('{$data['pw']}')");
 		if($q_user->num_rows() != 1) {
 			return false;
 		} else {

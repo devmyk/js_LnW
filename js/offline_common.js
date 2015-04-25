@@ -22,6 +22,13 @@ var data = [];
 function save_db()
 {
 	var f = document.f2;
+	// code
+	var em = document.getElementById('mode');
+	if (! em) f.md.value = 'words';
+	else if (em.checked) f.md.value = 'full';
+	else f.md.value = 'words';
+
+	// send data
 	var e = document.getElementById('send_data');
 	var sends = "";
 	if (data.length == 0 || code == "") {

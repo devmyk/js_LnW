@@ -91,6 +91,7 @@
 	<div data-role="panel" id="save" data-position="right" data-display="overlay">
 		<form name="f2" id="f2" method="post" action="http://devmyk.esy.es/c_dictation/setlog" target="iframe">
 			<input type="hidden" name="user_email" id="user_email" value="" />
+			<input type="hidden" name="md" value="" />
 			<input type="hidden" name="code" value="" />
 			<textarea cols="30" rows="3" name="txt" id="send_data" style="display:none;"></textarea>
 			<input type="button" value="DB Insert" onclick="save_db();">

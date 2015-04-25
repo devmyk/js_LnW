@@ -153,6 +153,7 @@ class C_Dictation extends CI_Controller {
 		$email = $this->input->post('user_email');
 		$code = $this->input->post('code');
 		$txt = $this->input->post('txt');
+		$mode = $this->input->post('md');
 		
 		if (! $email || ! $code || ! $txt) {
 			echo "no data!!";
@@ -184,7 +185,8 @@ class C_Dictation extends CI_Controller {
 				'code'		=> $code,
 				'corr'		=> (empty($tmp[1]) ? "0" : $tmp[1]),
 				'answer'	=> (empty($tmp[2]) ? "" : $tmp[2]),
-				'log_dt'	=> $dt
+				'log_dt'	=> $dt,
+				'mode'		=> ($mode == 'full') ? 'full' : 'words'
 			);
 		}
 		
