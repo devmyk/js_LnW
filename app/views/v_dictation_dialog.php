@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>DICTATION : <?=substr($code_info['code'],0,2)?> <?=$code_info['name']?></title>
+	<title>DICTATION : <?=substr($ci['code'],0,2)?> <?=$ci['name']?></title>
 	<link rel="shortcut icon" href="/images/icon.ico">
 	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="/css/style.css">
@@ -12,7 +12,7 @@
 	<script language="javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="/js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="/js/dictation/common.js"></script>
-	<script language="javascript" src="<?=$code_info['file']?>"></script>
+	<script language="javascript" src="<?=$ci['dir']?><?=$ci['js']?>"></script>
 	<script>
 var sum = 0;
 var curr = 0;
@@ -56,7 +56,7 @@ maxWord = <?=$_set['maxword']?>;
 <body onload="init();"<? /*attachRightList();" */ ?>>
 <div data-role="page" data-theme="b" class="ui-page-theme-b">
 	<div data-role="header" class="header">
-		<h1><span><?=substr($code_info['code'],0,2)?></span> <?=$code_info['name']?></h1>
+		<h1><span><?=substr($ci['code'],0,2)?></span> <?=$ci['name']?></h1>
 		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-grid ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->

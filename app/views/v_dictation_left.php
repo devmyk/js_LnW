@@ -9,12 +9,12 @@
         <? // admin ####################### ?>
         <?
 //        if ($is_admin) {
-//            <li><a href="#" rel="external" class="ui-btn ui-btn-icon-left ui-icon-edit">Edit</a></li>
+//            <li><a href="#" rel="external" class="ui-btn ui-btn-icon-left ui-icon-edit">Add</a></li>
 //        } 
         ?>
         
         <? // list ####################### ?>
-        <?
+        <? // seq / code / name / pcode / pname / ppcode / ppname
         foreach ($category as $c) {
             if (sizeof($c['list']) > 0) {
         ?>
@@ -25,8 +25,14 @@
                     <div data-role="collapsible">
                         <h2><?=$cl['name']?></h2>
                         <ul data-role="listview">
-                            <? foreach($cl['list'] as $cll) {?>
-                            <li><a href="/c_dictation/stat/<?=$cll['code']?>" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon"><?=$cll['name']?></a></li>
+                            <? foreach($cl['list'] as $cll) {
+								$no_file = (empty($cll['dir']) || empty($cll['js']) || ! is_file(".{$cll['dir']}{$cll['js']}")) ? "background-color:#322;" : "";
+							?>
+                            <li>
+								<a href="/c_dictation/stat/<?=$cll['code']?>" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon" style="<?=$no_file?>">
+									<?=$cll['name']?>
+								</a>
+							</li>
                             <? } ?>
                         </ul>
                     </div>

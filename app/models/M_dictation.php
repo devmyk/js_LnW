@@ -33,53 +33,72 @@ class M_Dictation extends CI_Model {
 		} else {
 			$row = $q_user->row();
 			$res = array(
-				'uid'		=> $row->seq,
-				'email'		=> $row->email,
-				'name'		=> $row->name,
-				'permit'	=> $row->permit,
-				'autoplay'	=> $row->autoplay,
-				'autopass'	=> $row->autopass,
-				'autoplaycount'	=> $row->autoplaycount,
-				'defaultmode'	=> $row->defaultmode,
-				'maxfull'		=> $row->maxfull,
-				'maxword'		=> $row->maxword,
-				'pre_login_dt'	=> $row->login_dt,
-				'login_dt'		=> '',
-				'category'		=> array()
+				'u' => array(
+					'uid'		=> $row->seq,
+					'email'		=> $row->email,
+					'name'		=> $row->name,
+					'permit'	=> $row->permit,
+					'autoplay'	=> $row->autoplay,
+					'autopass'	=> $row->autopass,
+					'autoplaycount'	=> $row->autoplaycount,
+					'defaultmode'	=> $row->defaultmode,
+					'maxfull'		=> $row->maxfull,
+					'maxword'		=> $row->maxword,
+					'pre_login_dt'	=> $row->login_dt,
+					'login_dt'		=> ''
+				),
+				'category'		=> array(),
+				'co'			=> array()
 			);
 			return $res;
 		}
 	}
-	public function set_user_login_dt($seq) {
+	public function set_user_login_dt($uid) {
 		//$login_dt = date('Y-m-d H:i:s');
 		$login_dt = date("Y-m-d H:i:s",strtotime ("+9 hours")); // 한국 표준시 (KST)
-		$this->db->where('seq', $seq);
+		$this->db->where('seq', $uid);
 		$this->db->update('user', array('login_dt' => $login_dt));
 		return $login_dt;
 	}
-	public function get_user_category($seq,$is_deco=true) {
+	public function get_user_category($uid,$is_deco=true) {
 		$category = array();
+		$is_admin = false;
+		$q_u = $this->db->query("select permit from user where seq='{$uid}'");
+		if ($q_u->num_rows() != 1) return $category;
+		foreach ($q_u->result() as $row) {
+			$is_admin = ((int)$row->permit == 9);
+		}
+		
+		$qi_uc = "select code from user_category uc where uc.user='{$uid}'";
+		$qi_file = " and a.dir <> '' and a.js <> ''";
+		if ($is_admin) {
+			$qi_uc = "select code from category where depth='3'";
+			$qi_file = "";
+		}
 		$q_uc = $this->db->query(""
-			. " select b.seq, b.code, b.name, b.pcode, b.pname, b.ppcode, c.name as ppname from ("
-				. " select a.seq, a.code, a.name, a.pcode, c.name as pname, c.pcode as ppcode from ("
-					. " select c.seq, c.path, c.pcode, ifnull(c.code, '') as code, c.name"
-					. " from (select code from user_category uc where uc.user='{$seq}') uc"
+			. " select b.seq, b.code, b.name, b.pcode, b.pname, b.ppcode, c.name as ppname, b.dir, b.js from ("
+				. " select a.seq, a.code, a.name, a.pcode, c.name as pname, c.pcode as ppcode, a.dir, a.js from ("
+					. " select c.seq, c.depth, c.pcode, ifnull(c.code, '') as code, c.name, c.dir, c.js"
+					. " from ({$qi_uc}) uc"
 					. " left join category c"
 					. " on uc.code=c.code"
-					. " order by path, pcode"
+					. " order by depth, pcode"
 				. ") a"
 				. " left join category c"
 				. " on a.pcode=c.code"
-				. " where a.code <> '' "
+				. " where a.code <> '' {$qi_file}"
 			. " ) b "
 			. " left join category c"
 			. " on b.ppcode=c.code"
 			. " order by b.seq"
 			. " ");
 		// 보여줄 카테고리 정리
+		// 배열 구조를 바꿔야 할 듯
 		if ($q_uc->num_rows() > 0) {
 			if ($is_deco) {
 				foreach ($q_uc->result() as $row) {
+					if (! is_file(sprintf(".%s%s",$row->dir,$row->js)) && ! $is_admin)
+						continue;
 					$ppcode = $row->ppcode;
 					$pcode = $row->pcode;
 					$code = $row->code;
@@ -103,6 +122,8 @@ class M_Dictation extends CI_Model {
 							'pcode' => $pcode
 							, 'code' => $code
 							, 'name' => $row->name
+							, 'dir'	=> $row->dir
+							, 'js'	=> $row->js
 						);
 					}
 				}
@@ -114,25 +135,41 @@ class M_Dictation extends CI_Model {
 		}
 		return $category;
 	}
+
 	public function get_category($code) {
 		$res = array();
-		$q = $this->db->query("select * from category where code='{$code}'");
+		$q = $this->db->query("select c.*, d.name as ppname"
+			." from ("
+				." select a.*, b.name as pname, b.pcode as ppcode"
+				." from ("
+					." select * from category where code='{$code}'"
+				." ) a "
+				." left join category b"
+				." on b.code=a.pcode"
+			." ) as c"
+			." left join category d"
+			." on d.code=c.ppcode");
+				
 		if ($q->num_rows() > 0) {
 			foreach ($q->result() as $row) {
 				$res = array(
 					'seq'	=> $row->seq,
-					'path'	=> $row->path,
-					'pcode'	=> $row->pcode,
+					'depth'	=> $row->depth,
 					'code'	=> $row->code,
 					'name'	=> $row->name,
-					'file'	=> $row->file
+					'dir'	=> $row->dir,
+					'js'	=> $row->js,
+					'pcode'	=> $row->pcode,
+					'pname' => $row->pname,
+					'ppcode' => $row->ppcode,
+					'ppname' => $row->ppname
 				);
 			}
 		}
 		return $res;
 	}
-	public function get_user_category_by_fld($seq, $fld='') {
-		$category = $this->get_user_category($seq, false);
+	public function get_user_category_by_fld($uid, $fld='') {
+		$category = $this->get_user_category($uid, false);
 		$f = array("seq","code","name","pcode","pname","ppcode","ppname");
 		if (in_array($fld,$f)) {
 			$res = array();

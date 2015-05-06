@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php defined('BASEPATH') OR exit('No direct script access allowed');?>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -11,12 +11,12 @@
 	<script language="javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="/js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="/js/dictation/common.js"></script>
-<? /*
 	<script language="javascript" src="/js/common_dictation.js"></script>
-	<script language="javascript" src="/data/<?=$dir?>/<?=$file?>.js"></script>
+	<script language="javascript" src="<?=$info['dir']?><?=$info['js']?>"></script>
 	<script language="javascript" src="/js/dictation.js"></script>
 	<script>
-dir = "<?=$dir?>";
+dir = "<?=$info['dir']?>";
+<? /*
 file = "<?=$file?>";
 path = "/data/<?=$dir?>/";
 max = <?=$_set['max'];?>;
@@ -26,18 +26,20 @@ mode = "<?=$_set['defaultmode'];?>";
 playCount = <?=$_set['playcount']?>;
 maxFull = <?=$_set['maxfull'];?>;
 maxWord = <?=$_set['maxword']?>;
+*/ ?>
 	</script>
- */ ?>
 </head>
 <body <?/*onload="init();attachRightList();" */ ?>>
 <div data-role="page" data-theme="b" class="ui-page-theme-b">
 	<div data-role="header" class="header">
-		<h1><span>[분류]</span> 제목</h1>
+		<h1><span>[<?=$info['pname']?>]</span> <?=$info['name']?></h1>
 		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 		<a href="#rightpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-grid ui-nodisc-icon ui-alt-icon ui-btn-right">Search</a>
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
+		<?=debug($u,$info);?>
+	<!--
 		<table id="container" style="text-align:center;width:100%;min-height:50%;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
@@ -78,6 +80,7 @@ maxWord = <?=$_set['maxword']?>;
 				<div id="fld"></div>
 			</td></tr>
 		</table>
+		-->
 	</div><!-- /content -->
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer">
