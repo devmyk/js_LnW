@@ -26,13 +26,10 @@
                         <h2><?=$cl['name']?></h2>
                         <ul data-role="listview">
                             <? foreach($cl['list'] as $cll) {
-								$is_no_file = (empty($cll['dir']) || empty($cll['js']) || ! is_file(".{$cll['dir']}{$cll['js']}"));
-								$color = ($is_no_file) ? "background-color:#322;" : "";
-								//$url = ($is_no_file) ? "/c_dictation/stat/{$cll['code']}" : "#";
-								$url = "/c_dictation/stat/{$cll['code']}";
+								$no_file = (empty($cll['dir']) || empty($cll['js']) || ! is_file(".{$cll['dir']}{$cll['js']}")) ? "background-color:#322;" : "";
 							?>
                             <li>
-								<a href="<?=$url?>" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon" style="<?=$color?>">
+								<a href="/c_dictation/stat/<?=$cll['code']?>" rel="external" class="ui-btn ui-btn-icon-right ui-icon-carat-r ui-mini ui-nodisc-icon" style="<?=$no_file?>">
 									<?=$cll['name']?>
 								</a>
 							</li>
