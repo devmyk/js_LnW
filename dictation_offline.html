@@ -33,6 +33,7 @@
 					<a id="btnMark" class="ui-btn ui-icon-star ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeMark();">mark</a>
 					<a class="ui-btn ui-icon-refresh ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="refresh();">refresh</a>
 					<a id="btnRecycle" class="ui-btn ui-icon-recycle ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeRecycle();">recycle</a>
+					<a id="btnAnswer" class="ui-btn ui-icon-eye ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="showAnswer();">answer</a>
 				</td>
 			</tr>
 			<tr>
@@ -71,6 +72,7 @@
 	</div><!-- /footer -->
 
 	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay">
+		<input type="checkbox" data-role="flipswitch" name="btnShowAll" id="btnShowAll" data-on-text="show" data-off-text="none" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="showAll(this);"/>
 		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
 			<input type="radio" name="sort" id="sort1" value="asc" checked="checked" onclick="changeSort('asc');"/>
 			<label for="sort1">asc</label>
@@ -104,7 +106,8 @@
 		<ul data-role="listview" data-divider-theme="b" style="margin-bottom:-0.5em;">
 			<li><a href="#rightSetting" class="ui-btn ui-btn-icon-left ui-icon-gear">Setting</a></li>
 			<li data-role="list-divider">English</li>
-		</ul>
+			<li>
+
 		<!-- English collapsibleset -->
 		<div id="collapsivlesetE" data-role="collapsibleset" data-theme="b" data-content-theme="b" data-inset="false">
 			<div data-role="collapsible">
@@ -141,6 +144,7 @@
 					</li>
 				</ul>
 			</div><!-- TED -->
+			<!-- 
 			<div data-role="collapsible">
 				<h2>NAVER</h2>
 				<ul data-role="listview" data-divider-theme="b">
@@ -155,8 +159,36 @@
 						</a>
 					</li>
 				</ul>
-			</div><!-- NAVER -->
+			</div>
+			NAVER -->
 		</div><!-- English collapsibleset -->
+		</li>
+
+		<li data-role="list-divider">German</li>
+		<li>
+		<!-- German -->
+		<div id="collapsivlesetG" data-role="collapsibleset" data-theme="b" data-content-theme="b" data-inset="false">
+			<div data-role="collapsible">
+				<h2>NAVER</h2>
+				<ul data-role="listview" data-divider-theme="b">
+					<!--
+					<li data-filtertext="">
+						<a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r">
+						01 <span class="ui-li-count">20</span>
+						</a>
+					</li>
+					-->
+					<li data-filtertext="">
+						<a href="#" data-ajax="false" class="ui-btn ui-btn-icon-right ui-icon-carat-r" onclick="set('data/de/naver/','02_002');" >
+						02 기본인사<span class="ui-li-count">20</span>
+						</a>
+					</li>
+
+				</ul>
+			</div>
+		</div> <!-- German end -->
+		</li>
+		</ul>
 	</div><!-- left panel menu -->
 </div><!-- /page -->
 

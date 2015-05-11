@@ -16,6 +16,7 @@ var colorBlue = "#38c";
 var colorRed = "#c33";
 var autopass = false;
 var autoplay = true;
+var isShowAll = false;
 
 // dir, js file name
 function set(p, js) {
@@ -105,7 +106,10 @@ function init() {
 	sc = data[curr].script.split(" ");
 	var result = "";
 	// view script hidden
-	if (data[curr].try) {
+	if (isShowAll == true) {
+		result = data[curr].script;
+		document.getElementById("put").disabled = 'disabled';
+	} else if (data[curr].try) {
 		result = getResultText(data[curr].script, data[curr].answer, "red");
 		document.getElementById("put").disabled = 'disabled';
 	} else {
@@ -341,6 +345,15 @@ function changeMode(o) {
 	init();
 }
 
+function showAll(o) {
+	if (o.checked) {
+		isShowAll = true;
+	} else {
+		isShowAll = false;
+	}
+	init();
+}
+
 function changeMark() {
 	var o = document.getElementById("btnMark");
 	if (data[curr].mark) {
@@ -387,6 +400,9 @@ function changeRecycle() {
 	}
 }
 
+function showAnswer() {
+	document.getElementById("result").innerHTML = data[curr].script;
+}
 function playloop() {
 	var func = function() {
 		playloop();
