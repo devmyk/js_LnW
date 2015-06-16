@@ -9,70 +9,44 @@ function init() {
 	sum = data.length;
 	getRecords();
 	attachDialogList();
+	attachDialogList2();
 	setSm(data[curr]);
 }
 
 function setSm(dc) // dc = data[curr];
 {
 	var isexurl = /^http/i;
-	var isexurl2 = /\.mp3$/i;
-	var obj = {id:dc.code};
-
-	if (isexurl.test(dc.fn)) obj.url = dc.fn;
-	else if(isexurl2.test(dc.fn)) obj.url =  path + "mp3/" + dc.fn;
-	else obj.url =  path + "mp3/" + dc.fn + ".mp3";
-
-	if (typeof(dc['from']) !== "undefined") obj.from = dc['from'];
-	if (typeof(dc['to']) !== "undefined") obj.to = dc['to']; 
-
-	sm = soundManager.createSound(obj);
+	if (isexurl.test(dc.fn)) {
+		sm = soundManager.createSound({id: dc.code , url: dc.fn});
+	} else {
+		sm = soundManager.createSound({id:dc.code , url: path + "mp3/" + dc.fn + ".mp3"});
+	}
 }
 
 function attachDialogList() {
 	if (data.length <= 0) return;
-	var table = document.getElementById("list");
+	var table = document.getElementById("contain");
 	if (!table) return;
-	var html = "";
-	for(var i=0; i<data.length; i++) {
-		var style = "";
-		if (i%2==0) style="background-color:#111;";
-		html += "<tr><td style=\"width:3em;"+style+"\" align=\"center\"><a href=\"#\" onclick=\"play("+i+")\">"+(startSeq + data[i]['seq'] + 1)+"</a></td>";
-		html += "<td style=\""+style+"\">"+data[i]['script']+"</td></tr>";
+	for (var i=0; i<data.length; i++) {
+		var tr = document.createElement("tr");
+		var no = parseInt(data[i].seq) + startSeq + 1;
+		tr.innerHTML = '<td><a id="btnMark'+data[i].seq+'" class="ui-btn ui-icon-star ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin ui-nodisc-icon" onclick="changeMark('+data[i].seq+');">mark</a></td>';
+		tr.innerHTML += '<td>'+no+'</td>';
+		tr.innerHTML += '<td style="text-align:left;padding:0.5em 0.25em;"><span class="scripts" id="scripts'+data[i].seq + '">' + data[i].script + '</span></td>';
+		$("#contain").append(tr);
 	}
-	table.innerHTML = html;
 }
 
-function play(o) {
-//	if (sm.playState != 0) return;
-
-	sm.stop(data[curr].code);
-	var id = "scripts" + data[curr].seq;
-	var e = document.getElementById(id);
-	if (e) {
-		e.style.backgroundColor = colorBlue;
-		var pos = $(e).offset();
-//		$("span[name=" + id + "]").css("backgroundColor", colorBlue);
-		var wh = $(window).height();
-		$('body').scrollTop(pos.top - (wh/3) );
+function attachDialogList2() {
+	if (data.length <= 0) return;
+	var table = document.getElementById("justlist");
+	if (!table) return;
+	for (var i=0; i<data.length; i++) {
+		var tr = document.createElement("tr");
+		tr.innerHTML += '<td style="text-align:left;padding:0.5em 0.25em;"><span class="scripts" name="scripts'+data[i].seq + '">' + data[i].script + '</span></td>';
+		$("#justlist").append(tr);
 	}
-
-	if (typeof(o) == "undefined") o = { from: 0 };
-	if (data[curr].from) o.from = data[curr].from;
-	if (data[curr].to) o.to = data[curr].to;
-//	if (! o.onfinish) {
-//		o.onfinish = function() {
-//		};
-//	}
-
-	sm.play(o);
 }
-
-
-
-
-
-
-
 
 function changeMark(i) {
 	var ol = document.getElementById("btnMark"+i);
@@ -200,6 +174,31 @@ function playloop(mode, reset) {
 		play(o);
 		stop = 0;
 	}
+}
+
+function play(o) {
+//	if (sm.playState != 0) return;
+
+	sm.stop(data[curr].code);
+	var id = "scripts" + data[curr].seq;
+	var e = document.getElementById(id);
+	if (e) {
+		e.style.backgroundColor = colorBlue;
+		var pos = $(e).offset();
+//		$("span[name=" + id + "]").css("backgroundColor", colorBlue);
+		var wh = $(window).height();
+		$('body').scrollTop(pos.top - (wh/3) );
+	}
+
+	if (typeof(o) == "undefined") o = { from: 0 };
+	if (data[curr].from) o.from = data[curr].from;
+	if (data[curr].to) o.to = data[curr].to;
+//	if (! o.onfinish) {
+//		o.onfinish = function() {
+//		};
+//	}
+
+	sm.play(o);
 }
 
 function getRecords() {

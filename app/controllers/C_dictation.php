@@ -13,12 +13,14 @@ class C_Dictation extends CI_Controller {
 		if ($is_login) {
 			$data = array(
 				// 카테고리, 출석, 일별 학습상황 등등..
+				'is_admin'	=> (bool)$this->md->is_admin(),
 				'co'		=> $this->session->userdata('co'),
 				'category'	=> $this->session->userdata('category')
 			);
-			$this->load->view('v_dictation_main', $data);
+			$data['test'] = $this->md->get_user_category($u['uid'], false);
+			$this->load->view('dictation/main', $data);
 		} else {
-			$this->load->view('v_dictation_login');
+			$this->load->view('dictation/login');
 		}
 	}
 
@@ -69,12 +71,15 @@ class C_Dictation extends CI_Controller {
 		//		full, word : 정답 / 오답 / 패스 (총공부양)
 		//		월별 통계
 		//		목표도 넣어야하나 D-day 같은 <- 추후 추가하자
+		$logs = $this->md->get_logs($u['uid'], $code);
 		$data = array(
+			'is_admin'	=> (bool)$this->md->is_admin(),
 			'code'		=> $code,
 			'category'	=> $this->session->userdata('category'),
-			'permit'	=> $u['permit']
+			'permit'	=> $u['permit'],
+			'logs'		=> $logs
 		);
-		$this->load->view('v_dictation_stat',$data);
+		$this->load->view('dictation/stat',$data);
 		
 	}
 	public function dictation() {
@@ -106,16 +111,18 @@ class C_Dictation extends CI_Controller {
 		$data = array(
 			'u'			=> $u,
 			'info'		=> $ci,
+			'is_admin'	=> (bool)$this->md->is_admin(),
 			'co'		=> $this->session->userdata('co'),
 			'category'	=> $this->session->userdata('category')
 		);
 
-		if (! is_file(".{$ci['dir']}/{$ci['js']}")) {
+		$ci['dir'] = preg_replace(array("/^\//", "/\/$/"), array("", ""), $ci['dir']);
+		if (! is_file("./{$ci['dir']}/{$ci['js']}")) {
 			debug($data['info']);
 			echo "ERROR : 파일이 없습니다.";
 			exit;
 		} else {
-			$this->load->view('v_dictation',$data);
+			$this->load->view('dictation/dictaion',$data);
 		}
 	}
 
@@ -145,21 +152,27 @@ class C_Dictation extends CI_Controller {
 			exit;
 		}
 		else if (! isset($ci['dir']) || empty($ci['dir']) || ! isset($ci['js']) || empty($ci['js'])) {
-			echo "ERROR : 정보가 없습니다.";
+			echo "ERROR : 파일 정보가 없습니다.";
+			debug($ci); 
 			exit;
 		}
 		
-		if (! is_file(".{$ci['dir']}/{$ci['js']}")) {
-			echo "ERROR : 파일이 없습니다.";
+		$ci['dir'] = preg_replace(array("/^\//", "/\/$/"), array("", ""), $ci['dir']);
+		$path = "./{$ci['dir']}/{$ci['js']}";
+
+		if (! is_file($path)) {
+			echo "ERROR : 파일이 없습니다.<br>{$path}";
 			exit;
 		}
 
 		$data = array(
-			'u'				=> $u,
+			'u'			=> $u,
 			'ci'		=> $ci,
-			'category'		=> $this->session->userdata('category')
+			'is_admin'	=> (bool)$this->md->is_admin(),
+			'category'	=> $this->session->userdata('category'),
+			'info'		=> array('dir'=>"/{$ci['dir']}/", 'js'=>$ci['js'])
 		);
-		$this->load->view('v_dictation_dialog',$data);
+		$this->load->view('dictation/dialog',$data);
 	}
 
 	public function setlog() {
@@ -210,5 +223,63 @@ class C_Dictation extends CI_Controller {
 		} else {
 			debug($save);
 		}
+	}
+
+	public function ad_script() {
+		if (! $this->md->is_admin()) {
+			redirect('/c_dictation', 'refresh');
+			exit();
+		}
+
+		$code = $this->input->post('code');
+		$data = array();
+		$data['co'] = $this->session->userdata('co');
+		$data['category'] = $this->session->userdata('category');
+		$data['info'] = array('code'=>"", 'pcode'=>"", 'ppcode'=>"");
+		if (empty($code)) {
+			$data['list'] = array();
+		} else {
+			$q = $this->db->query("select * from script where code='{$code}' order by seq");
+			$data['list'] = $q->result_array();
+			foreach($data['co'] as $c) {
+				if ($c['code'] == $code) $data['info'] = $c;
+			}
+		}
+		$this->load->view("dictation/admin/script_view",$data);
+	}
+
+	public function ad_script_edit() {
+		if (! $this->md->is_admin()) {
+			redirect('/c_dictation', 'refresh');
+			exit();
+		}
+		$seq = $this->input->post('seq');
+		$code = $this->input->post('code');
+
+		$from = $this->input->post('from');
+		$to = $this->input->post('to');
+		$mp3 = $this->input->post('mp3');
+//		$mp3 = str_replace(array("'", '"', "\t", "\n"), array("\'", '\"', "", ""), $this->input->post('mp3'));
+
+		$data = array('from'=>$from, 'to'=>$to, 'mp3'=>$mp3);
+
+		debug($seq, $code, $data);
+//		$this->db->query("update");
+//		$this->db->where('seq', $seq);
+//		$this->db->update('script', $data);
+
+	}
+
+	public function ad_table() {
+		if (! $this->md->is_admin()) {
+			redirect('/c_dictation', 'refresh');
+			exit();
+		}
+		$table = $this->input->post('table');
+		if (empty($table)) $table = "category";
+/*
+		$data = array();
+		$this->load->view("dictation/admin/database",$data);
+*/
 	}
 }

@@ -62,12 +62,10 @@ class M_Dictation extends CI_Model {
 	}
 	public function get_user_category($uid,$is_deco=true) {
 		$category = array();
-		$is_admin = false;
-		$q_u = $this->db->query("select permit from user where seq='{$uid}'");
-		if ($q_u->num_rows() != 1) return $category;
-		foreach ($q_u->result() as $row) {
-			$is_admin = ((int)$row->permit == 9);
-		}
+//		$q_u = $this->db->query("select permit from user where seq='{$uid}'");
+//		if ($q_u->num_rows() != 1) return $category;
+
+		$is_admin = $this->is_admin();
 		
 		$qi_uc = "select code from user_category uc where uc.user='{$uid}'";
 		$qi_file = " and a.dir <> '' and a.js <> ''";
@@ -118,17 +116,22 @@ class M_Dictation extends CI_Model {
 						);
 					}
 					if (! isset($category[$ppcode]['list'][$pcode]['list'][$code])) {
+						$no_js = 0;
+//						(empty($is_file(sprintf(".%s%s",$row->dir,$row->js));
+//						((int)(empty($row['dir']) || empty($row['js']) || ! is_file(".{$row['dir']}{$row['js']}")))
 						$category[$ppcode]['list'][$pcode]['list'][$code] = array(
 							'pcode' => $pcode
 							, 'code' => $code
 							, 'name' => $row->name
 							, 'dir'	=> $row->dir
 							, 'js'	=> $row->js
+							, 'no_js' => $no_js
 						);
 					}
 				}
 			} else {
 				foreach ($q_uc->result_array() as $row) {
+					$row['no_js'] = (empty($row['dir']) || empty($row['js']) || ! is_file(".{$row['dir']}{$row['js']}")) ? 1 : 0;
 					$category[] = $row;
 				}
 			}
@@ -179,6 +182,110 @@ class M_Dictation extends CI_Model {
 			return array_unique($res);
 		} else {
 			return $category;
+		}
+	}
+	public function get_all_logs($uid, $code) // code의 path는 3
+	{
+		$this->db->where("user_seq", $uid);
+		$this->db->where("code", $code);
+		return $this->db->get('user_logs')->result_array();
+	}
+	public function get_logs($uid, $code, $is_detail=false) // code의 path는 3
+	{
+		// 아 맞다 날짜로 그룹화 해야한다..
+		$this->db->where("user_seq", $uid);
+		$this->db->where("code", $code);
+		$q = $this->db->get('user_logs');
+		if ($is_detail) {
+			return $q->result_array();
+		} else {
+			$res = array('date'=>'', 'total'=>0, 'corr'=>0, 'incorr'=>0, 'pass'=>0);
+			if ($q->num_rows() == 0)
+				return $res;
+			$res['total'] = $q->num_rows();
+			foreach ($q->result() as $row) {
+				if ($row->corr == 1) $res['corr']++;
+				else $res['incorr']++;
+			}
+			return $res;
+		}
+	}
+	public function is_admin() {
+		$u = $this->session->userdata('u');
+		if (empty($u)) return false;
+		if (! isset($u['permit']) || ! isset($u['uid']))
+			return false;
+		else if ($u['permit'] == 9)
+			return true;
+
+		return false;
+	}
+	public function replace_script($str) {
+		return str_replace(
+			array("'",'"',"\n","\t"),
+			array("\'", "\'"," ", " "),
+			$str);
+	}
+	public function make_js($code) {
+		// category 있는지 확인
+		$qc = $this->db->query("select * from category where dir<>'' and js<>'' and depth='3' and code='{$code}'");
+		if ($qc->num_rows() !== 1)
+			return "ERROR : wrong code";
+
+		// 파일 유효성 검사
+		$start_no = 0;
+		$dir = $js = $path = "";
+		foreach($qc->result() as $c) {
+			$dir = preg_replace(array("/^\//", "/\/$/"), array("", ""), $c->dir);
+			$js = $c->js;
+			$start_no = (int)$c->start_no;
+		}
+		if (substr($dir,0,4) != "data" || substr($js, -3) != ".js") {
+			return "ERROR : wrong file";
+		}
+
+		// script 있는지 확인
+		$qs = $this->db->query("select * from script where code='{$code}' and mp3<>'' order by seq asc");
+		$num_rows = $qs->num_rows();
+		if ($num_rows <= 0)
+			return "ERROR : empty script";
+
+		// 파일이 있는지 확인
+		$path = "./{$dir}/{$js}";
+
+		// 있으면 <파일명.js>.YYYYMMDD.HH.ii.ss.bak 로 변경하여 백업
+		if (is_file($path)) {
+			$dt = date('Ymd.H.i.s', strtotime("+9 hours"));
+			$new_path = "{$path}.{$dt}.bak";
+			if (! copy($path, $new_path)) {
+				return "ERROR : file to back up file ({$path} -> {$new_path})";
+			}
+		}
+		
+		// 파일 생성
+		$fc = array(); // file contents
+		$fc[] = "startSeq = {$start_no};";
+		$fc[] = "code = \"{$code}\";";
+		// seq / mp3 / from / to / speaker / script / trans^n
+		foreach ($qs->result_array() as $k=>$v) {
+			$v['to'] = ($v['to'] == 0 ? "" : $v['to']);
+			$v['script'] = $this->replace_script($v['script']);
+			$v['trans'] = $this->replace_script($v['trans']);
+
+			$text = "{$v['seq']}\t{$v['mp3']}\t{$v['from']}\t{$v['to']}\t{$v['speaker']}\t{$v['script']}\t{$v['trans']}";
+			if ($k === 0)
+				$fc[] = sprintf("var list = \"%s^n\\",$text);
+			else if ($k === ($num_rows-1))
+				$fc[] = sprintf("%s\";",$text);
+			else
+				$fc[] = sprintf("%s^n\\",$text);
+		}
+		$fc[] = "setData();";
+
+		if (! write_file($path, implode("\n",$fc))) {
+			return "ERROR : fail to write file";
+		} else {
+			return array("SUCCESS : {$path}", implode("\n", $fc));
 		}
 	}
 }

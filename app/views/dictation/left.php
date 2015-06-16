@@ -5,13 +5,9 @@
 		<li><a href="/c_dictation" rel="external" class="ui-btn ui-btn-icon-left ui-icon-home">Home</a></li>
 		<li><a href="#" rel="external" class="ui-btn ui-btn-icon-left ui-icon-gear">Setting</a></li>
 		<li><a href="/c_dictation/logout" rel="external" class="ui-btn ui-btn-icon-left ui-icon-power">Logout</a></li>
-
-        <? // admin ####################### ?>
-        <?
-//        if ($is_admin) {
-//            <li><a href="#" rel="external" class="ui-btn ui-btn-icon-left ui-icon-edit">Add</a></li>
-//        } 
-        ?>
+<? if ($is_admin) { ?>
+		<li><a href="/c_dictation/ad_script" rel="external" class="ui-btn ui-btn-icon-left ui-icon-edit" style="color:#ff0;">ADMIN</a></li>
+<? } ?>
         
         <? // list ####################### ?>
         <? // seq / code / name / pcode / pname / ppcode / ppname

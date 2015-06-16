@@ -84,7 +84,7 @@ function save() {
 		</form>
 	</div><!-- content -->
 
-	<? require_once(getcwd()."/left.php"); ?>
+	<? require_once("./app/views/dictation/left.php"); ?>
 </div><!-- page -->
 </body>
 </html>

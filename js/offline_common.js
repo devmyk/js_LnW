@@ -59,17 +59,22 @@ function save_db()
 }
 
 function setData() {
-	var tmp = list.split("/");
+	var tmp = list.split("^n"); // filename-url / speaker / from / to / script / trans
 	var j = 0;
 	for (var i=0; i<tmp.length; i++) {
 		if (tmp[i].trim() == "") continue;
-		else {		//	순번,	시도,	시도회수,	정답여부,	테스트한시간,	북마크여부,	failname,	시작시간,	끝시간,스크립트,대답
-			data[j] = {	seq:j,try:0,count:0,correct:0,timestamp:0,mark:0,fn:"",from:0,to:0,script:"",answer:""};
-			var tmp2 = tmp[i].trim().split("\t");
-			data[j].fn		= tmp2[0].trim();
-			if (tmp2[1] != "") data[j].from = parseInt(tmp2[1]);
-			if (tmp2[2] != "") data[j].to = parseInt(tmp2[2]);
-			data[j].script	= tmp2[3].trim();
+		else {		//	순번,	시도,	시도회수,	정답여부,	테스트한시간,	북마크여부,	failname,	시작시간,	끝시간,		스크립트,	해석,		코드	,dbseq
+			data[j] = {	seq:j,	try:0,	count:0,	correct:0,	timestamp:0,	mark:0,		fn:"",		from:0,		to:0,		script:"",	trans:"",	code:"", dbseq:""};
+			var tmp2 = trim_f(tmp[i]).split("\t");
+			// dbseq / mp3 / from / to / script / trans
+			data[j].dbseq	= tmp2[0];
+			data[j].fn		= trim(tmp2[1]);
+			if (trim(tmp2[2]) != "") data[j].speaker = trim(tmp2[2]);
+			if (tmp2[3] != "") data[j].from = parseInt(tmp2[3]);
+			if (tmp2[4] != "") data[j].to = parseInt(tmp2[4]);
+			data[j].script	= trim(tmp2[5]);
+			if (trim(tmp2[6]) != "") data[j].trans = trim(tmp2[6]);
+			data[j].code = code + "_" + j;
 			j++;
 		}
 	}

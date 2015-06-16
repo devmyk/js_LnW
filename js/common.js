@@ -59,3 +59,7 @@ function trim(s) {
 	return s.replace(/^[\r\n\t ]+/, "").replace(/[\r\n\t ]+$/, "");
 }
 
+function trim_f(s) {
+	if (typeof(s) == "undefined") return "";
+	return s.replace(/^[\r\n\t ]+/, "");
+}

@@ -13,13 +13,25 @@
 	<script>
 function login() {
 	var f = document.result;
+	
+	if (f.inputID.value === "") {
+		f.inputID.focus();
+		alert("input email.");
+		return false;
+	}
+	if (f.inputPW.value === "") {
+		f.inputPW.focus();
+		alert("input password.");
+		return false;
+	}
 
-	var id = f.inputID.value.trim();
-	var pw = f.inputPW.value.trim();
-	if (id === "") { alert("input email."); return false; }
-	if (pw === "") { alert("input password."); return false; }
-
+	f.action = "/c_dictation/login";
 	f.submit();
+}
+function enter(e) {
+	if (e.which == 13 || e.keyCode == 13) {
+		login();
+	}
 }
 	</script>
 </head>
@@ -30,12 +42,12 @@ function login() {
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<form name="result" method="post" action="index.php/c_dictation/login" style="padding-top:6em;">
+		<form name="result" method="post" style="padding-top:6em;">
 			<label for="inputEmail" class="ui-hidden-accessible">Email:</label>
-			<input type="text" name="id" id="inputID" in="inputID" value="" placeholder="EMAIL">
+			<input type="text" name="id" id="inputID" in="inputID" value="" placeholder="EMAIL" onkeydown="enter(event);">
 			<label for="inputPW" class="ui-hidden-accessible">Password:</label>
-			<input type="password" name="pw" id="inputPW" in="inputPW" value="" placeholder="password">
-			<a href="#" rel="external" class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-power" onclick="login();">LOGIN</a>
+			<input type="password" name="pw" id="inputPW" in="inputPW" value="" placeholder="password" onkeydown="enter(event);">
+			<a href="#" class="ui-btn ui-btn-icon-left ui-corner-all ui-icon-power" onclick="login();">LOGIN</a>
 		</form>
 	</div><!-- /main -->
 </div><!-- /page -->

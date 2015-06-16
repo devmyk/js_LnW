@@ -246,7 +246,10 @@ function check_words(o) {
 // mode 가 full 일 때 mobile 여부 판단하여 check
 function check(e, o) {  // 값 비교
 	if (e.which == 13 || e.keyCode == 13) {
-		if (isMobile) play();
+		if (isMobile) {
+			play();
+			e.focus();
+		}
 		else check_full();
 	}
 }

@@ -12,28 +12,50 @@
 	<script language="javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="/js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="/js/dictation/common.js"></script>
-	<script language="javascript" src="<?=$ci['dir']?><?=$ci['js']?>"></script>
+	<script language="javascript" src="<?=$info['dir']?><?=$info['js']?>"></script>
 	<script>
 var sum = 0;
 var curr = 0;
 var sm;
+var path = "<?=$info['dir']?>";
+function setSm(dc) { // dc = data[curr]
+	var isexurl = /^http/i;
+	var obj = {id:dc.code};
+	if (isexurl.test(dc.fn)) obj.url = dc.fn;
+	else obj.url =  path + "mp3/" + dc.fn + ".mp3";
+	if (typeof(dc['from']) !== "undefined") obj.from = dc['from'];
+	if (typeof(dc['to']) !== "undefined") obj.to = dc['to']; 
+	sm = soundManager.createSound(obj);
+}
 function init() {
 	attachDialogList();
 	sum = data.length;
-	sm = soundManager.createSound({id:"sm_" + data[curr].fn , url: path + "mp3/" + data[curr].fn + ".mp3"});
+	setSm(data[curr]);
 }
-function attachDialogList() 
-{
+
+function attachDialogList() {
 	var list = document.getElementById("list");
 	if (list) {
 		var html = "";
 		for(var i=0; i<data.length; i++) {
 			var style = "";
 			if (i%2==0) style="background-color:#111;";
-			html += "<tr><td style=\"width:3em;"+style+"\">"+(startSeq + data[i]['seq'] + 1)+"</td><td style=\""+style+"\">"+data[i]['script']+"</td></tr>";
+			html += "<tr><td style=\"width:3em;"+style+"\" align=\"center\">";
+			html += "<a href=\"#\" onclick=\"play("+i+")\">"+(startSeq + data[i]['seq'] + 1)+"</a></td>";
+			html += "<td style=\""+style+"\"><input id=\"from" + data[i]['seq'] +"\" type=\"text\" value=\"" + data[i].from +"\" size=\"5\" style=\"font-size:9pt;\"/></td>";
+			var to = 0;
+			if (data[i].to) to = data[i].to;
+			html += "<td style=\""+style+"\"><input id=\"to" + data[i]['seq'] +"\" type=\"text\" value=\"" + to +"\" size=\"5\"  style=\"font-size:9pt;\"/></td>";
+			html += "<td style=\""+style+"\">"+data[i]['script']+"</td></tr>";
 		}
 		list.innerHTML = html;
 	}
+}
+
+function play(seq) {
+	sm.stop();
+	setSm(data[seq]);
+	sm.play();
 }
 	</script>
 <? /*
@@ -74,7 +96,7 @@ maxWord = <?=$_set['maxword']?>;
 	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-position-fixed="true" data-theme="b" data-dismissible="true">
 	</div><!-- /rightpanel -->
 
-	<? require_once("./app/views/v_dictation_left.php"); ?>
+	<? require_once("./app/views/dictation/left.php"); ?>
 </div><!-- /page -->
 
 </body>

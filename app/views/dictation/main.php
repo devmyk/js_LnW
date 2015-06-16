@@ -21,11 +21,10 @@
 
 	<div role="main" class="ui-content">
     	<h1>summary</h1>
+		<? debug($test); ?>
 	</div><!-- content -->
 
-	<?
-        require_once("./app/views/v_dictation_left.php");
-    ?>
+	<? require_once("./app/views/dictation/left.php"); ?>
 </div><!-- page -->
 </body>
 </html>
