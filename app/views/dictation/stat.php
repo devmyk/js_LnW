@@ -107,8 +107,8 @@ var myChart = new Chart(ctx).Doughnut(data);
 		<a href="/c_dictation/dialog/<?=$code?>" rel="external" class="ui-btn ui-corner-all">DIALOG</a>
 		<a href="/c_dictation/dictation/<?=$code?>" rel="external" class="ui-btn ui-corner-all">DICTATION</a>
 		<? if($permit == 9) {
-		debug($logs, $is_nologs);
-			?>
+			debug($logs, $is_nologs);
+		?>
 		<a href="/c_dictation/edit/<?=$code?>" rel="external" class="ui-btn ui-corner-all">EDIT</a>	
 		<? } ?>
 	</div><!-- /main -->

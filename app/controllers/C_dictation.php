@@ -25,7 +25,6 @@ class C_Dictation extends CI_Controller {
 	}
 
 	public function login() {
-
 		// 받아온 값 유효성 체크
 		$post = $this->input->post();
 		$ui = $this->md->get_user_info($post);
@@ -35,6 +34,8 @@ class C_Dictation extends CI_Controller {
 			// 로그인 시간 저장
 			$ui['u']['login_dt'] = $this->md->set_user_login_dt($uid);
 			// 카테고리
+//			$category = $this->md->get_user_category($uid);
+//			$co = $this->md->get_user_category($uid, false);
 			$ui['category'] = $this->md->get_user_category($uid);
 			$ui['co'] = $this->md->get_user_category($uid, false);
 			// 세션에 유저정보 저장
@@ -225,6 +226,36 @@ class C_Dictation extends CI_Controller {
 		}
 	}
 
+///////////// admin ///////////////////////
+
+	public function ad_sql() {
+		if (! $this->md->is_admin()) {
+			redirect('/c_dictation', 'refresh');
+			exit();
+		}
+		$q = $this->input->post('q');
+		$q = trim(str_replace("\n", " ", $q));
+		$data = array('sql'=>$q);
+		if (! empty($q)) {
+			$data['res'] = $this->db->query($q)->result();
+		}
+		$this->load->view('/dictation/admin/sql', $data);
+	}
+
+	// script insert
+	// javascript 로 설정한 후 모아서 insert
+	// code 가 category 테이블에 없는 경우 유효성 검사 후 추가해야함
+	public function ad_script_frm() {
+		if (! $this->md->is_admin()) {
+			redirect('/c_dictation', 'refresh');
+			exit();
+		}
+		$data = array();
+//		$code = $this->input->post('code');
+//		if (!empty($code)) {
+//		}
+		$this->load->view("dictation/admin/script_frm",$data);
+	}
 	public function ad_script() {
 		if (! $this->md->is_admin()) {
 			redirect('/c_dictation', 'refresh');

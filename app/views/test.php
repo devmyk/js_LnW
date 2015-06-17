@@ -28,6 +28,7 @@ insert : <input type="button" value="category" onclick="insert('category');" />
 <br>
 <textarea id="q" name="q" cols="100" rows="8"></textarea><br>
 <input type="submit" value="send" />
+<div><? debug($sql); ?></div>
 <div id="result">
 <? if (isset($res)) debug($res)?>
 </div>

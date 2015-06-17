@@ -137,7 +137,7 @@ body, table, td { font-size:10pt }
 <table width="100%">
 	<tr><td colspan="2"><?//debug($info);?></td></tr>
 	<tr>
-		<td width="180px" valign="top" rowspan="2" style="border-right:1px solid #aaa;"><!-- tables -->
+		<td width="130px" valign="top" rowspan="2" style="border-right:1px solid #aaa;"><!-- tables -->
         <? require_once("./app/views/dictation/admin/left.php"); ?>
 		</td>
 		<td valign="top" height="1em" style="border-bottom:1px solid #aaa;">

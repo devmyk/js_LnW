@@ -21,7 +21,7 @@
 
 	<div role="main" class="ui-content">
     	<h1>summary</h1>
-		<? debug($test); ?>
+		<? if ($is_admin) debug($co, $category); ?>
 	</div><!-- content -->
 
 	<? require_once("./app/views/dictation/left.php"); ?>

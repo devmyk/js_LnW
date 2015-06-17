@@ -60,21 +60,30 @@ class M_Dictation extends CI_Model {
 		$this->db->update('user', array('login_dt' => $login_dt));
 		return $login_dt;
 	}
+
+	public function deco_dir($dir) {
+		$dir = preg_replace(array("/^\//", "/\/$/"), array("", ""), $dir);
+		return "/$dir/";
+	}
+
 	public function get_user_category($uid,$is_deco=true) {
 		$category = array();
-//		$q_u = $this->db->query("select permit from user where seq='{$uid}'");
-//		if ($q_u->num_rows() != 1) return $category;
-
-		$is_admin = $this->is_admin();
+		$q_u = $this->db->query("select permit from user where seq='{$uid}'");
+		if ($q_u->num_rows() != 1) return $category;
+		$permit = 1;
+		foreach($q_u->result() as $v) {
+			$permit = $v->permit;
+		}
+		$is_admin = ($permit == 9);
+//		$is_admin = $this->is_admin(); // 세션으로 확인하기 때문에 로그인 시 미작동
 		
-		$qi_uc = "select code from user_category uc where uc.user='{$uid}'";
-		$qi_file = " and a.dir <> '' and a.js <> ''";
+		$qi_uc = " select code from user_category uc where uc.user='{$uid}' ";
+		$qi_file = " and a.dir <> '' and a.js <> '' ";
 		if ($is_admin) {
-			$qi_uc = "select code from category where depth='3'";
+			$qi_uc = " select code from category where depth='3' ";
 			$qi_file = "";
 		}
-		$q_uc = $this->db->query(""
-			. " select b.seq, b.code, b.name, b.pcode, b.pname, b.ppcode, c.name as ppname, b.dir, b.js from ("
+		$sql = " select b.seq, b.code, b.name, b.pcode, b.pname, b.ppcode, c.name as ppname, b.dir, b.js from ("
 				. " select a.seq, a.code, a.name, a.pcode, c.name as pname, c.pcode as ppcode, a.dir, a.js from ("
 					. " select c.seq, c.depth, c.pcode, ifnull(c.code, '') as code, c.name, c.dir, c.js"
 					. " from ({$qi_uc}) uc"
@@ -89,14 +98,18 @@ class M_Dictation extends CI_Model {
 			. " left join category c"
 			. " on b.ppcode=c.code"
 			. " order by b.seq"
-			. " ");
+			. " ";
+		$q_uc = $this->db->query($sql);
+
 		// 보여줄 카테고리 정리
 		// 배열 구조를 바꿔야 할 듯
 		if ($q_uc->num_rows() > 0) {
 			if ($is_deco) {
 				foreach ($q_uc->result() as $row) {
-					if (! is_file(sprintf(".%s%s",$row->dir,$row->js)) && ! $is_admin)
-						continue;
+					$row->dir = $this->deco_dir($row->dir);
+					if (! $is_admin) {
+						if (! is_file(sprintf(".%s%s",$row->dir,$row->js))) continue;
+					}
 					$ppcode = $row->ppcode;
 					$pcode = $row->pcode;
 					$code = $row->code;
@@ -116,9 +129,7 @@ class M_Dictation extends CI_Model {
 						);
 					}
 					if (! isset($category[$ppcode]['list'][$pcode]['list'][$code])) {
-						$no_js = 0;
-//						(empty($is_file(sprintf(".%s%s",$row->dir,$row->js));
-//						((int)(empty($row['dir']) || empty($row['js']) || ! is_file(".{$row['dir']}{$row['js']}")))
+						$no_js = (empty($row->dir) || empty($row->js) || ! is_file(".{$row->dir}{$row->js}")) ? 1 : 0;
 						$category[$ppcode]['list'][$pcode]['list'][$code] = array(
 							'pcode' => $pcode
 							, 'code' => $code
@@ -131,6 +142,7 @@ class M_Dictation extends CI_Model {
 				}
 			} else {
 				foreach ($q_uc->result_array() as $row) {
+					$row['dir'] = $this->deco_dir($row['dir']);
 					$row['no_js'] = (empty($row['dir']) || empty($row['js']) || ! is_file(".{$row['dir']}{$row['js']}")) ? 1 : 0;
 					$category[] = $row;
 				}

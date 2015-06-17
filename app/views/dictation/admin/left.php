@@ -18,10 +18,12 @@ $tables = $this->db->list_tables();
 <table id="tbl">
 	<tr><td style="font-weight:bold;">database tables</td></tr>
 	<? foreach($tables as $t) { ?>
-	<tr><td class="td_li"> <?=htmlspecialchars($t)?></td></tr>
+	<tr><td class="td_li"><?=htmlspecialchars($t)?></td></tr>
 	<? } ?>
-	<tr><td class="td_ttl">scripts</tr></td>
-	<tr><td class="td_li">new</td></tr>
+	<tr><td class="td_ttl"><a href="/c_dictation/ad_sql">SQL</a></td></tr>
+	<tr><td class="td_ttl"><a href="/c_dictation/ad_script">scripts</a></tr></td>
+	<tr><td class="td_li"><a href="/c_dictation/ad_script_frm">new</a></td></tr>
+<!--
 	<tr><td class="td_li">show
 		<div>
 			en
@@ -30,4 +32,5 @@ $tables = $this->db->list_tables();
 			de
 		</div>
 	</td></tr>
+	-->
 </table>
