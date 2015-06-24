@@ -42,10 +42,10 @@ function attachDialogList() {
 			if (i%2==0) style="background-color:#111;";
 			html += "<tr><td style=\"width:3em;"+style+"\" align=\"center\">";
 			html += "<a href=\"#\" onclick=\"play("+i+")\">"+(startSeq + data[i]['seq'] + 1)+"</a></td>";
-			html += "<td style=\""+style+"\"><input id=\"from" + data[i]['seq'] +"\" type=\"text\" value=\"" + data[i].from +"\" size=\"5\" style=\"font-size:9pt;\"/></td>";
-			var to = 0;
-			if (data[i].to) to = data[i].to;
-			html += "<td style=\""+style+"\"><input id=\"to" + data[i]['seq'] +"\" type=\"text\" value=\"" + to +"\" size=\"5\"  style=\"font-size:9pt;\"/></td>";
+//			html += "<td style=\""+style+"\"><input id=\"from" + data[i]['seq'] +"\" type=\"text\" value=\"" + data[i].from +"\" size=\"5\" style=\"font-size:9pt;\"/></td>";
+//			var to = 0;
+//			if (data[i].to) to = data[i].to;
+//			html += "<td style=\""+style+"\"><input id=\"to" + data[i]['seq'] +"\" type=\"text\" value=\"" + to +"\" size=\"5\"  style=\"font-size:9pt;\"/></td>";
 			html += "<td style=\""+style+"\">"+data[i]['script']+"</td></tr>";
 		}
 		list.innerHTML = html;

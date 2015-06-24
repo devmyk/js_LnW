@@ -60,12 +60,6 @@ class M_Dictation extends CI_Model {
 		$this->db->update('user', array('login_dt' => $login_dt));
 		return $login_dt;
 	}
-
-	public function deco_dir($dir) {
-		$dir = preg_replace(array("/^\//", "/\/$/"), array("", ""), $dir);
-		return "/$dir/";
-	}
-
 	public function get_user_category($uid,$is_deco=true) {
 		$category = array();
 		$q_u = $this->db->query("select permit from user where seq='{$uid}'");
@@ -106,10 +100,8 @@ class M_Dictation extends CI_Model {
 		if ($q_uc->num_rows() > 0) {
 			if ($is_deco) {
 				foreach ($q_uc->result() as $row) {
-					$row->dir = $this->deco_dir($row->dir);
-					if (! $is_admin) {
-						if (! is_file(sprintf(".%s%s",$row->dir,$row->js))) continue;
-					}
+					if (! is_file(sprintf(".%s%s",$row->dir,$row->js)) && ! $is_admin)
+						continue;
 					$ppcode = $row->ppcode;
 					$pcode = $row->pcode;
 					$code = $row->code;
@@ -129,7 +121,9 @@ class M_Dictation extends CI_Model {
 						);
 					}
 					if (! isset($category[$ppcode]['list'][$pcode]['list'][$code])) {
-						$no_js = (empty($row->dir) || empty($row->js) || ! is_file(".{$row->dir}{$row->js}")) ? 1 : 0;
+						$no_js = 0;
+//						(empty($is_file(sprintf(".%s%s",$row->dir,$row->js));
+//						((int)(empty($row['dir']) || empty($row['js']) || ! is_file(".{$row['dir']}{$row['js']}")))
 						$category[$ppcode]['list'][$pcode]['list'][$code] = array(
 							'pcode' => $pcode
 							, 'code' => $code
@@ -142,7 +136,6 @@ class M_Dictation extends CI_Model {
 				}
 			} else {
 				foreach ($q_uc->result_array() as $row) {
-					$row['dir'] = $this->deco_dir($row['dir']);
 					$row['no_js'] = (empty($row['dir']) || empty($row['js']) || ! is_file(".{$row['dir']}{$row['js']}")) ? 1 : 0;
 					$category[] = $row;
 				}

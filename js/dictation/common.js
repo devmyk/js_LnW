@@ -25,7 +25,7 @@ function setData() {
 		else {		//	순번,	시도,	시도회수,	정답여부,	테스트한시간,	북마크여부,	failname,	시작시간,	끝시간,		스크립트,	해석,		코드	,dbseq
 			data[j] = {	seq:j,	try:0,	count:0,	correct:0,	timestamp:0,	mark:0,		fn:"",		from:0,		to:0,		script:"",	trans:"",	code:"", dbseq:""};
 			var tmp2 = trim_f(tmp[i]).split("\t");
-			// dbseq / mp3 / from / to / script / trans
+			// dbseq / mp3 / speaker / from / to / script / trans
 			data[j].dbseq	= tmp2[0];
 			data[j].fn		= trim(tmp2[1]);
 			if (trim(tmp2[2]) != "") data[j].speaker = trim(tmp2[2]);
