@@ -10,26 +10,24 @@
 	<script language="javascript" src="/js/jquery.js"></script>
 	<script language="javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
 	<script language="javascript" src="/js/soundmanager2-js.min.js"></script>
+	<script language="javascript" src="/js/common.js"></script>
 	<script language="javascript" src="/js/dictation/common.js"></script>
-	<script language="javascript" src="/js/common_dictation.js"></script>
 	<script language="javascript" src="<?=$info['dir']?><?=$info['js']?>"></script>
-	<script language="javascript" src="/js/dictation.js"></script>
-	<script>
-//dir = "<?=$info['dir']?>";
-<? /*
-file = "<?=$file?>";
-path = "/data/<?=$dir?>/";
-max = <?=$_set['max'];?>;
-autoplay = <?=$_set['autoplay'];?>;
-autopass = <?=$_set['autopass'];?>;
-mode = "<?=$_set['defaultmode'];?>";
-playCount = <?=$_set['playcount']?>;
-maxFull = <?=$_set['maxfull'];?>;
-maxWord = <?=$_set['maxword']?>;
-*/ ?>
-	</script>
+	<script language="javascript" src="/js/dictation/dictation.js"></script>
+<script>
+dir = "<?=$info['dir']?>";
+file = "<?=$info['js']?>";
+path = "<?=$info['dir']?>";
+autoplay = <?=$u['autoplay'];?>;
+autopass = <?=$u['autopass'];?>;
+mode = "<?=($u['defaultmode']="full" ? "full" : "words");?>";
+playCount = <?=$u['autoplaycount']?>;
+maxFull = <?=$u['maxfull'];?>;
+maxWord = <?=$u['maxword']?>;
+max = <?=($u['defaultmode']=='full' ? $u['maxfull'] : $u['maxword'])?>;
+</script>
 </head>
-<body <?/*onload="init();attachRightList();" */ ?>>
+<body onload="init();"<?/*attachRightList();*/ ?>>
 <div data-role="page" data-theme="b" class="ui-page-theme-b">
 	<div data-role="header" class="header">
 		<h1><span>[<?=$info['pname']?>]</span> <?=$info['name']?></h1>
@@ -38,12 +36,10 @@ maxWord = <?=$_set['maxword']?>;
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<?=debug($u,$info);?>
-	<!--
 		<table id="container" style="text-align:center;width:100%;min-height:50%;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
-					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="changeMode(this);" <?=($defaultmode == "full" ? "checked=\"checked\"" : "")?>/>
+					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="words" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="changeMode(this);" <?=($u['defaultmode'] == "full" ? "checked=\"checked\"" : "")?>/>
 				</td>
 				<td style="vertical-align:top;text-align:right;" class="ui-nodisc-icon">
 					<a id="btnAuto" class="ui-btn ui-icon-audio ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeAuto();">autoplay</a>
@@ -80,7 +76,6 @@ maxWord = <?=$_set['maxword']?>;
 				<div id="fld"></div>
 			</td></tr>
 		</table>
-		-->
 	</div><!-- /content -->
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer">
@@ -102,6 +97,7 @@ maxWord = <?=$_set['maxword']?>;
 			<label for="sort4">shuffle</label>
 		</fieldset>
 		<div id="list"  style="text-align:left;"></div>
+		<? // debug($u,$info); ?>
 	</div><!-- /rightpanel -->
 
 	<? require_once("./app/views/dictation/left.php"); ?>

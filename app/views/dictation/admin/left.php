@@ -33,4 +33,5 @@ $tables = $this->db->list_tables();
 		</div>
 	</td></tr>
 	-->
+	<tr><td class="td_ttl"><a href="/c_dictation/logout">LOGOUT</a></td></tr>
 </table>

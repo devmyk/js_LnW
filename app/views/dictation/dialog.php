@@ -60,7 +60,7 @@ function play(seq) {
 	</script>
 <? /*
 	<script language="javascript" src="/data/<?=$dir?>/<?=$file?>.js"></script>
-	<script language="javascript" src="/js/dictation.js"></script>
+	<script language="javascript" src="/js/dictation/dictation.js"></script>
 	<script>
 dir = "<?=$dir?>";
 file = "<?=$file?>";

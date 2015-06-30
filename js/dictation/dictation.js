@@ -39,7 +39,7 @@ function init() {
 	}
 
 	// book mark
-	getRecords();
+//	getRecords();
 	if (data[curr].mark == 1) {
 		document.getElementById("btnMark").style.backgroundColor = colorBlue;
 	} else {
@@ -282,6 +282,7 @@ function check_full() {
 		if (e_result) e_result.innerHTML = getResultText(data[curr].script, data[curr].answer, "red");
 
 		// log 남기기
+		/*
 		$.ajax({
 			type: "POST",
 			url : "/log.php",
@@ -315,6 +316,7 @@ function check_full() {
 				console.log(data);
 			}
 		});
+		*/
 
 		var o = (autopass ? { onfinish : function() {	if ((curr+1) < sum) { curr++; init(); }	} } : {});
 		play(o);

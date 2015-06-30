@@ -3,7 +3,7 @@
 	<!-- left panel menu -->
 	<ul data-role="listview" style="margin-bottom:-0.5em;">
 		<li><a href="/c_dictation" rel="external" class="ui-btn ui-btn-icon-left ui-icon-home">Home</a></li>
-		<li><a href="#" rel="external" class="ui-btn ui-btn-icon-left ui-icon-gear">Setting</a></li>
+		<li><a href="<?=($is_admin ? "/c_dictation/setting" : "#")?>" rel="external" class="ui-btn ui-btn-icon-left ui-icon-gear">Setting</a></li>
 		<li><a href="/c_dictation/logout" rel="external" class="ui-btn ui-btn-icon-left ui-icon-power">Logout</a></li>
 <? if ($is_admin) { ?>
 		<li><a href="/c_dictation/ad_script" rel="external" class="ui-btn ui-btn-icon-left ui-icon-edit" style="color:#ff0;">ADMIN</a></li>

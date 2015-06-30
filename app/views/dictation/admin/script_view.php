@@ -94,6 +94,14 @@ function move_category() {
 	f.submit();
 }
 
+function mk_js() {
+	var f = document.fm;
+	f.code.value = $("#ccode option:selected").val();
+	f.action = "<?=base_url("c_dictation/ad_mk_js");?>";
+	f.target = "_self";
+	f.submit();
+}
+
 function edit(seq) {
 	window.open("", "wEdit", "width=300,height=200");
 	var f = document.fm;
@@ -165,7 +173,8 @@ body, table, td { font-size:10pt }
 				<option value="<?=htmlspecialchars($d3['code'])?>"><?=htmlspecialchars($d3['name'])?></option>
 			<? } ?>
 			</select>
-			<input type="button" value="MOVE" onclick="move_category();" />
+			<input type="button" value="MOVE" onclick="move_category();" />&nbsp;&nbsp;
+			<input type="button" value="MAKE JS (<?=(empty($js_file) ? "NO" : "EXIST" )?>)" onclick="mk_js();" />
 		</td>
 	</tr>
 	<tr>

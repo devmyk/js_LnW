@@ -34,7 +34,7 @@ function save() {
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<form name="setting" id="setting" method="post" action="setting_save.php">
+		<form name="setting" id="setting" method="post" action="<?=base_url("/c_dictation/setting_save")?>">
 
 		<ul data-role="listview" data-divider-theme="b" data-inset="false">
 		<li>

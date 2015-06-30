@@ -175,30 +175,6 @@ function play(o) {
 	if (data[curr].to) o.to = data[curr].to;
 
 	res.style.backgroundImage = "";
-
-//	o.whileplaying = function() {
-//		soundManager._writeDebug('position = ' + this.position);
-//		console.log("----------------------------");
-//		soundManager._writeDebug(this.waveformData);
-/*
-		var gScale = 32;
-		for (var i=0; i<256; i++) {
-			var tops = (gScale+Math.ceil(this.waveformData.left[i]*-gScale));
-			soundManager._writeDebug(tops);
-		}
-*/
-//	};
-/*
-   o.whileplaying = function() {
-		// Move 256 absolutely-positioned 1x1-pixel DIVs, for example (ugly, but works)
-		var gPixels = document.getElementById('graphPixels').getElementsByTagName('div');
-		var gScale = 32; // draw -32 to +32px from "zero" (i.e., center Y-axis point)
-		for (var i=0; i<256; i++) {
-			graphPixels[i].style.top = (gScale+Math.ceil(this.waveformData.left[i]*-gScale))+'px';
-		}
-	}
-*/
-
 	sm.play(o);
 }
 

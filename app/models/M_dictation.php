@@ -60,6 +60,12 @@ class M_Dictation extends CI_Model {
 		$this->db->update('user', array('login_dt' => $login_dt));
 		return $login_dt;
 	}
+
+	public function deco_dir($dir) {
+		$dir = preg_replace(array("/^\//", "/\/$/"), array("", ""), $dir);
+		return "/$dir/";
+	}
+
 	public function get_user_category($uid,$is_deco=true) {
 		$category = array();
 		$q_u = $this->db->query("select permit from user where seq='{$uid}'");
@@ -172,6 +178,7 @@ class M_Dictation extends CI_Model {
 					'ppcode' => $row->ppcode,
 					'ppname' => $row->ppname
 				);
+//				$res['dir'] = preg_replace(array("/^\//", "/\/$/"), array("", ""), $res['dir']);
 			}
 		}
 		return $res;

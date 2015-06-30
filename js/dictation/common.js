@@ -28,9 +28,9 @@ function setData() {
 			// dbseq / mp3 / speaker / from / to / script / trans
 			data[j].dbseq	= tmp2[0];
 			data[j].fn		= trim(tmp2[1]);
-			if (trim(tmp2[2]) != "") data[j].speaker = trim(tmp2[2]);
-			if (tmp2[3] != "") data[j].from = parseInt(tmp2[3]);
-			if (tmp2[4] != "") data[j].to = parseInt(tmp2[4]);
+			if (tmp2[2] != "") data[j].from = parseInt(tmp2[2]);
+			if (tmp2[3] != "") data[j].to = parseInt(tmp2[3]);
+			if (trim(tmp2[4]) != "") data[j].speaker = trim(tmp2[4]);
 			data[j].script	= trim(tmp2[5]);
 			if (trim(tmp2[6]) != "") data[j].trans = trim(tmp2[6]);
 			data[j].code = code + "_" + j;

@@ -7,7 +7,7 @@ var order = "asc";
 
 function init() {
 	sum = data.length;
-	getRecords();
+//	getRecords();
 	attachDialogList();
 	attachDialogList2();
 	setSm(data[curr]);

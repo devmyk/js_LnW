@@ -6,7 +6,7 @@ $w_corr		= round((40 / $w_total) * 100);
 $w_incorr	= round((30 / $w_total) * 100);
 $w_pass		= round((30 / $w_total) * 100);
 
-$is_nologs = empty($logs['total']);
+$is_no_logs = empty($logs['total']);
 
 ?>
 <!DOCTYPE html>
@@ -101,15 +101,15 @@ var myChart = new Chart(ctx).Doughnut(data);
 		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 	</div><!-- /header -->
 	<div role="main" class="ui-content">
-		<div id="chart" style="text-align:center;margin:0.5em;<?=($is_nologs ? "display:none;" : "")?>">
+		<div id="chart" style="text-align:center;margin:0.5em;<?=($is_no_logs ? "display:none;" : "")?>">
 			<canvas id="myChart" width="100" height="300"></canvas>
 		</div>
 		<a href="/c_dictation/dialog/<?=$code?>" rel="external" class="ui-btn ui-corner-all">DIALOG</a>
 		<a href="/c_dictation/dictation/<?=$code?>" rel="external" class="ui-btn ui-corner-all">DICTATION</a>
 		<? if($permit == 9) {
-			debug($logs, $is_nologs);
+			debug($logs, $is_no_logs);
 		?>
-		<a href="/c_dictation/edit/<?=$code?>" rel="external" class="ui-btn ui-corner-all">EDIT</a>	
+		<!-- a href="/c_dictation/edit/<?=$code?>" rel="external" class="ui-btn ui-corner-all">EDIT</a -->
 		<? } ?>
 	</div><!-- /main -->
 	<? require_once("./app/views/dictation/left.php"); ?>

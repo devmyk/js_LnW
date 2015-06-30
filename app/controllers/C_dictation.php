@@ -24,6 +24,15 @@ class C_Dictation extends CI_Controller {
 		}
 	}
 
+	public function js_redirect($url, $err) {
+		echo "<html><head><script>";
+		if (!empty($url)) {
+			echo sprintf("alert(\"%s\");\n",htmlspecialchars(implode("\n",$err)));
+		}
+		echo sprintf("document.location = \"%s\"\n", base_url($url));
+		echo "</script></head><body></body></html>";
+	}
+
 	public function login() {
 		// 받아온 값 유효성 체크
 		$post = $this->input->post();
@@ -50,6 +59,19 @@ class C_Dictation extends CI_Controller {
 		$this->session->set_userdata(array());
 		redirect('/c_dictation', 'refresh');
 	}
+
+	public function setting() {
+		$u = $this->session->userdata('u');
+		if (! isset($u['uid'])) {
+			redirect('/c_dictation', 'refresh');
+			exit;
+		}
+
+	}
+
+	public function setting_save() {
+	}
+
 	public function stat() {
 		$u = $this->session->userdata('u');
 		if (! isset($u['uid'])) {
@@ -83,6 +105,7 @@ class C_Dictation extends CI_Controller {
 		$this->load->view('dictation/stat',$data);
 		
 	}
+
 	public function dictation() {
 		$u = $this->session->userdata('u');
 		if (! isset($u['uid'])) {
@@ -92,20 +115,20 @@ class C_Dictation extends CI_Controller {
 		
 		$param = func_get_args();	// code 만 받기
 		if (sizeof($param) != 1) {
-			echo "ERROR : 잘못된 접근입니다";
+			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
 			exit;
 		}
 
 		$code = $param[0];
 		$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
 		if (! in_array($code, $c_code)) {
-			echo "ERROR : 권한이 없습니다";
+			$this->js_redirect("/c_dictation", "권한이 없습니다");
 			exit;
 		}
 
 		$ci = $this->md->get_category($code);
 		if (empty($ci)) {
-			echo "ERROR : 잘못된 접근입니다";
+			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
 			exit;
 		}
 
@@ -119,11 +142,15 @@ class C_Dictation extends CI_Controller {
 
 		$ci['dir'] = preg_replace(array("/^\//", "/\/$/"), array("", ""), $ci['dir']);
 		if (! is_file("./{$ci['dir']}/{$ci['js']}")) {
-			debug($data['info']);
-			echo "ERROR : 파일이 없습니다.";
+			if ($this->md->is_admin()) {
+				echo "ERROR : 파일이 없습니다.";
+				debug($data['info']);
+			} else {
+				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+			}
 			exit;
 		} else {
-			$this->load->view('dictation/dictaion',$data);
+			$this->load->view('dictation/dictation',$data);
 		}
 	}
 
@@ -136,25 +163,29 @@ class C_Dictation extends CI_Controller {
 		
 		$param = func_get_args();	// code 만 받기
 		if (sizeof($param) != 1) {
-			echo "ERROR : 잘못된 접근입니다";
+			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
 			exit;
 		}
 		$code = $param[0];
 
 		$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
 		if (! in_array($code, $c_code)) {
-			echo "ERROR : 권한이 없습니다";
+			$this->js_redirect("/c_dictation", "권한이 없습니다");
 			exit;
 		}
 
 		$ci = $this->md->get_category($code);
 		if (empty($ci)) {
-			echo "ERROR : 잘못된 접근입니다";
+			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
 			exit;
 		}
 		else if (! isset($ci['dir']) || empty($ci['dir']) || ! isset($ci['js']) || empty($ci['js'])) {
-			echo "ERROR : 파일 정보가 없습니다.";
-			debug($ci); 
+			if ($this->md->is_admin()) {
+				echo "ERROR : 파일 정보가 없습니다.";
+				debug($ci); 
+			} else {
+				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+			}
 			exit;
 		}
 		
@@ -162,7 +193,12 @@ class C_Dictation extends CI_Controller {
 		$path = "./{$ci['dir']}/{$ci['js']}";
 
 		if (! is_file($path)) {
-			echo "ERROR : 파일이 없습니다.<br>{$path}";
+			if ($this->md->is_admin()) {
+				echo "ERROR : 파일이 없습니다.";
+				debug($path); 
+			} else {
+				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+			}
 			exit;
 		}
 
@@ -197,8 +233,11 @@ class C_Dictation extends CI_Controller {
 		// 데이터 확인
 		$d = explode("\n", $txt);
 		
-		//$dt = date('Y-m-d H:i:s');
-		$dt = date("Y-m-d H:i:s",strtotime ("+9 hours")); // 한국 표준시 (KST)
+		if ($_SERVER['REMOTE_ADDR'] == '110.14.222.42') {
+			$dt = date('Y-m-d H:i:s');
+		} else {
+			$dt = date("Y-m-d H:i:s",strtotime ("+9 hours")); // 한국 표준시 (KST)
+		}
 		$save = array();
 		foreach ($d as $v) {
 			if (empty($v)) { continue; }
@@ -267,6 +306,7 @@ class C_Dictation extends CI_Controller {
 		$data['co'] = $this->session->userdata('co');
 		$data['category'] = $this->session->userdata('category');
 		$data['info'] = array('code'=>"", 'pcode'=>"", 'ppcode'=>"");
+		$data['js_file'] = "";
 		if (empty($code)) {
 			$data['list'] = array();
 		} else {
@@ -275,10 +315,72 @@ class C_Dictation extends CI_Controller {
 			foreach($data['co'] as $c) {
 				if ($c['code'] == $code) $data['info'] = $c;
 			}
+			if (isset($data['info']['js']) && !empty($data['info']['js'])) {
+				$dir = preg_replace(array("/^\//", "/\/$/"), array("", ""), $data['info']['dir']);
+				$path = "./{$dir}/{$data['info']['js']}";
+				$data['js_file'] = (int)is_file($path);
+			}
 		}
 		$this->load->view("dictation/admin/script_view",$data);
 	}
 
+	public function ad_mk_js() {
+		if (! $this->md->is_admin()) {
+			redirect('/c_dictation', 'refresh');
+			exit();
+		}
+		$code = $this->input->post('code');
+		// code 정보
+		$ci = $this->md->get_category($code);
+		if (empty($ci)) {
+			echo "ERROR : 잘못된 접근입니다";
+			exit;
+		}
+		// db 에 script 있는 지 확인
+		$q = $this->db->query("select * from script where code='{$code}' order by seq");
+		if($q->num_rows() < 1) {
+			echo "ERROR : no script";
+			exit;
+		}
+		$list = $q->result_array();
+
+		// js 파일 있으면 백업파일 만들기
+		$ci['dir'] = preg_replace(array("/^\//", "/\/$/"), array("", ""), $ci['dir']);
+		$path = "./{$ci['dir']}/{$ci['js']}";
+		if (is_file($path)) {
+			if ($_SERVER['REMOTE_ADDR'] == '110.14.222.42') {
+				$dt = date('Y-m-d H:i:s');
+			} else {
+				$dt = date("Ymd_His",strtotime ("+9 hours")); // 한국 표준시 (KST)
+			}
+			$fn = preg_replace("/\.js$/", "_$dt.js", $path);
+			copy($path, $fn);
+		}
+		// 새 js 파일 만들기
+		$data = array();
+		$data[] = "startSeq = 0;";
+		$data[] = "code = \"$code\";";
+		$n = 1;
+		$sum = sizeof($list);
+		foreach ($list as $k=>$l) {
+			// dbseq / mp3 / from / to / speaker / script / trans^n\
+			$txt = sprintf("%s\t%s\t%s\t%s\t%s\t%s\t%s"
+					,$l['seq'],$l['mp3'], $l['from'], (empty($l['to']) ? "" : $l['to']), $l['speaker']
+					,str_replace(array("'", '"', "\t", "\n"), array("\'",'\"', " ", " "), $l['script'])
+					,str_replace(array("'", '"', "\t", "\n"), array("\'",'\"', " ", " "), $l['trans'])
+			);
+			if ($n == 1) $txt = "var list = \"".$txt."^n\\";
+			else if ($n == sizeof($list)) $txt = $txt."\";";
+			else $txt = $txt."^n\\";
+			$data[] = $txt;
+			$n++;
+		}
+		$data[] = "setData();";
+		write_file($path, implode("\n",$data));
+		debug($data);
+		// script_view 로 이동
+
+	}
 	public function ad_script_edit() {
 		if (! $this->md->is_admin()) {
 			redirect('/c_dictation', 'refresh');
