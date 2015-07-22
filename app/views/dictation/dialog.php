@@ -7,6 +7,12 @@
 	<link rel="shortcut icon" href="/images/icon.ico">
 	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="/css/style.css">
+<style>
+.ui-content td {
+	padding-top: 0.4em;
+	padding-bottom: 0.4em;
+}
+</style>
 	<script language="javascript" src="/js/common.js"></script>
 	<script language="javascript" src="/js/jquery.js"></script>
 	<script language="javascript" src="/js/jquery.mobile-1.4.5.min.js"></script>
@@ -84,7 +90,7 @@ maxWord = <?=$_set['maxword']?>;
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<table id="list" style="width:100%;">
+		<table id="list" style="width:100%;border:0px none;" cellpadding=0 cellspacing=0>
 		</table>
 	</div><!-- /content -->
 

@@ -175,6 +175,9 @@ body, table, td { font-size:10pt }
 			</select>
 			<input type="button" value="MOVE" onclick="move_category();" />&nbsp;&nbsp;
 			<input type="button" value="MAKE JS (<?=(empty($js_file) ? "NO" : "EXIST" )?>)" onclick="mk_js();" />
+			<?	if (! empty($list)) { ?>
+			<a href="<?=base_url(sprintf('/c_dictation/ad_mk_irc?code=%s', $info['code']))?>" target="_blank">DOWN irc</a>
+			<? } ?> 
 		</td>
 	</tr>
 	<tr>

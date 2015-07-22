@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>DICTATION : [<?=$info['pname']?>] <?=$info['name']?></title>
+	<title>DICTATION : [언어] 제목</title>
 	<link rel="shortcut icon" href="/images/icon.ico">
 	<link rel="stylesheet" href="/css/jquery.mobile-1.4.5.min.css">
 	<link rel="stylesheet" href="/css/style.css">
@@ -12,95 +12,19 @@
 	<script language="javascript" src="/js/soundmanager2-js.min.js"></script>
 	<script language="javascript" src="/js/common.js"></script>
 	<script language="javascript" src="/js/dictation/common.js"></script>
+	<script language="javascript" src="<?=$info['dir']?><?=$info['js']?>"></script>
 	<script language="javascript" src="/js/dictation/dictation.js"></script>
 <script>
-var sum = <?=$scr_info['sum']?>;
-var curr = <?=$scr_info['curr']?>;
-var mode = "<?=($u['defaultmode']=="full") ? "full" : "word";?>";
-var autoplay = <?=empty($u['autoplay']) ? 0 : 1;?>;
-var autopass = <?=empty($u['autopass']) ? 0 : 1;?>;
-var playCount = <?=empty($u['autoplaycount']) ? 3 : $u['autoplaycount'];?>;
-var maxFull = <?=empty($u['maxfull']) ? 3 : $u['maxfull'];?>;
-var maxWord = <?=empty($u['maxword']) ? 3 : $u['maxword'];?>;
-var max = <?=($u['defaultmode']=='full' ? $u['maxfull'] : $u['maxword'])?>;
-var data = {
-	db_seq : '<?=$scr_info['seq']?>'
-	,code : '<?=$scr_info['code']?>'
-	,fn : "<?=trim($scr_info['mp3'])?>"
-	,from : <?=$scr_info['from']?>
-	,to : <?=$scr_info['to']?>
-	,script : "<?=trim($scr_info['script'])?>"
-	,trans : "<?=trim($scr_info['trans'])?>"
-	,word_no : 0
-	,full_no : 0
-	,answer : ""
-	,is_try : 0
-	,count : 0
-	,correct : 0
-};
-var mark_v = "<?=$mark?>";
-var mark = mark_v.split(",");
-var log_word_v = "<?=$log_word?>";
-var log_word = log_word_v.split(",");
-var log_full_v = "<?=$log_full?>";
-var log_full = log_full_v.split(",");
-
-function log() {
-	var f = document.result;
-	f.l_mode.value = mode;
-	f.l_answer.value = trim(data.answer);
-	f.l_correct.value = data.correct;
-	f.target = "iframe";
-	f.action = "<?=base_url('c_dictation/set_log/')?>";
-	f.submit();
-}
-function changeCurr(to) {
-	if (to < 0 || to > sum-1) return;
-	var url = "<?=base_url('c_dictation/dictation/'.$scr_info['code'])?>/"+to
-	document.location = url;
-}
-
-function changeListBgColor(mode) {
-	for (var i=0; i<sum; i++) {
-		var btn = document.getElementById("list"+i);
-		if (btn) {
-			var is_corr = (mode == "full" ? log_full[i] : log_word[i]);
-			if (is_corr === "1") {
-				btn.style.backgroundColor = colorBlue;
-			} else if (is_corr === "0") {
-				btn.style.backgroundColor = colorRed;
-			} else {
-				btn.style.backgroundColor = "";
-			}
-		}
-	}
-}
-
-function attachRightList() {
-	document.getElementById("list").innerHTML = "";
-	for (var i=0; i<sum; i++) {
-		var btn = document.createElement("a");
-		var cls = "ui-btn ui-corner-all ui-btn-inline ui-btn-b ui-mini listbtn";
-		for (var j=0; j<mark.length; j++) {
-			if (i == curr) {
-				cls += " shadow";
-			}
-			if (mark[j] == (i+1)) {
-				cls += " listbtn-marked";
-				break;
-			}
-			if (mark[j] > (i+1)) break;
-		}
-		btn.href = "#";
-		btn.setAttribute("id", "list"+i);
-		btn.setAttribute("data-rel", "close");
-		btn.setAttribute("class",cls);
-		btn.setAttribute("onclick", "changeCurr("+i+");$('[data-role=panel]').panel('close');");
-		btn.innerHTML = (i+1);
-		$("#list").append(btn);
-	}
-	changeListBgColor(mode);
-}
+dir = "<?=$info['dir']?>";
+file = "<?=$info['js']?>";
+path = "<?=$info['dir']?>";
+autoplay = <?=$u['autoplay'];?>;
+autopass = <?=$u['autopass'];?>;
+mode = "<?=($u['defaultmode']="full" ? "full" : "word");?>";
+playCount = <?=$u['autoplaycount']?>;
+maxFull = <?=$u['maxfull'];?>;
+maxWord = <?=$u['maxword']?>;
+max = <?=($u['defaultmode']=='full' ? $u['maxfull'] : $u['maxword'])?>;
 </script>
 </head>
 <body onload="init();attachRightList();">
@@ -112,26 +36,16 @@ function attachRightList() {
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content">
-		<iframe name="iframe" width="100%" height="150px" frameborder="0" style="margin:0;background:#888;<?=($u['permit']==9 ? "" : "display:none;")?>"></iframe>
-	<form name="result" method="post" target="_self" onsubmit="return false;">
-		<input type="hidden" name="l_code" value="<?=$scr_info['code']?>" />
-		<input type="hidden" name="l_db_seq" value="<?=$scr_info['seq']?>" />
-		<input type="hidden" name="l_no" value="<?=$scr_info['curr']?>" />
-		<input type="hidden" name="l_mode" value="" />
-		<input type="hidden" name="l_answer" value="" />
-		<input type="hidden" name="l_correct" value="" />
 		<table id="container" style="text-align:center;width:100%;min-height:50%;">
 			<tr>
 				<td style="vertical-align:top;text-align:left;">
 					<input type="checkbox" data-role="flipswitch" name="mode" id="mode" data-on-text="full" data-off-text="word" data-wrapper-class="custom-label-flipswitch" data-mini="true" onchange="changeMode(this);" <?=($u['defaultmode'] == "full" ? "checked=\"checked\"" : "")?>/>
 				</td>
 				<td style="vertical-align:top;text-align:right;" class="ui-nodisc-icon">
-					<!--
 					<a id="btnAuto" class="ui-btn ui-icon-audio ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeAuto();">autoplay</a>
 					<a id="btnMark" class="ui-btn ui-icon-star ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeMark();">mark</a>
+					<a class="ui-btn ui-icon-refresh ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="refresh();" alt="refresh">refresh</a>
 					<a id="btnRecycle" class="ui-btn ui-icon-recycle ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="changeRecycle();" alt="recyle">recycle</a>
-					-->
-					<a id="btnRefresh" class="ui-btn ui-icon-refresh ui-corner-all ui-btn-b ui-mini ui-btn-icon-notext ui-btn-inline ui-btn-nomargin" onclick="refresh();" alt="refresh">refresh</a>
 				</td>
 			</tr>
 			<tr>
@@ -162,16 +76,6 @@ function attachRightList() {
 				<div id="fld"></div>
 			</td></tr>
 		</table>
-		<?
-			echo "<div>";
-			if ($u['permit'] == 9) {
-//				debug($scr_info, $u);
-//				debug($mark, $log_word, $log_full);
-				debug($sess);
-			}
-			echo "</div>";
-		?>
-	</form>
 	</div><!-- /content -->
 
 	<div data-role="footer" data-position="fixed" data-tap-toggle="false" class="footer">
@@ -180,6 +84,20 @@ function attachRightList() {
 	</div><!-- /footer -->
 
 	<div data-role="panel" id="rightpanel" data-position="right" data-display="overlay" data-position-fixed="true" data-theme="b" data-dismissible="true">
+		<!--
+		<fieldset data-role="controlgroup" data-type="horizontal" data-mini="true" style="text-align:center;">
+			<input type="radio" name="sort" id="sort1" value="asc" checked="checked" onclick="changeSort('asc');"/>
+			<label for="sort1">asc</label>
+			<input type="radio" name="sort" id="sort5" value="desc" onclick="changeSort('desc');"/>
+			<label for="sort5">desc</label>
+			<input type="radio" name="sort" id="sort2" value="marked" onclick="changeSort('marked');"/>
+			<label for="sort2">marked</label>
+			<input type="radio" name="sort" id="sort3" value="incorrected" onclick="changeSort('incorrected');"/>
+			<label for="sort3">incorr</label>
+			<input type="radio" name="sort" id="sort4" value="shuffle" onclick="changeSort('shuffle');"/>
+			<label for="sort4">shuffle</label>
+		</fieldset>
+		-->
 		<div id="list" style="text-align:left;"></div>
 	</div><!-- /rightpanel -->
 

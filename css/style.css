@@ -21,6 +21,11 @@ div::-webkit-scrollbar-thumb {
 	background-image: url("../images/icons-svg/sm_play.svg");
 	background-size: contain;
 }
+.shadow{
+	-webkit-box-shadow:0 1px 10px #fd2;
+	-moz-box-shadow:0 1px 10px #fd2;
+	box-shadow:0 1px 10px #fd2;
+}
 
 .header span {
 	color: #999;

@@ -17,7 +17,6 @@ class C_Dictation extends CI_Controller {
 				'co'		=> $this->session->userdata('co'),
 				'category'	=> $this->session->userdata('category')
 			);
-			$data['test'] = $this->md->get_user_category($u['uid'], false);
 			$this->load->view('dictation/main', $data);
 		} else {
 			$this->load->view('dictation/login');
@@ -60,18 +59,6 @@ class C_Dictation extends CI_Controller {
 		redirect('/c_dictation', 'refresh');
 	}
 
-	public function setting() {
-		$u = $this->session->userdata('u');
-		if (! isset($u['uid'])) {
-			redirect('/c_dictation', 'refresh');
-			exit;
-		}
-
-	}
-
-	public function setting_save() {
-	}
-
 	public function stat() {
 		$u = $this->session->userdata('u');
 		if (! isset($u['uid'])) {
@@ -106,7 +93,213 @@ class C_Dictation extends CI_Controller {
 		
 	}
 
-	public function dictation() {
+	public function dictation() { // 스크립트 각각으로 실행할거임..
+		$u = $this->session->userdata('u');
+		if (! isset($u['uid'])) {
+			redirect('/c_dictation', 'refresh');
+			exit;
+		}
+		
+		$param = func_get_args();	// code, no 만 받기
+		if (sizeof($param) > 2 || sizeof($param) < 1) {
+			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+			exit;
+		}
+
+		$code = $param[0];
+		$no = (isset($param[1]) ? $param[1] : 0);
+		
+		$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
+		if (! in_array($code, $c_code)) {
+			$this->js_redirect("/c_dictation", "권한이 없습니다");
+			exit;
+		}
+
+		$ci = $this->md->get_category($code);
+		if (empty($ci)) {
+			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+			exit;
+		}
+		$script_info = $this->md->get_script($code, $no);
+
+		// log 를 문자열로
+		// 1. 세션에 log[code] 가 있는 지 확인
+		// 2. 있으면 문자열로 그대로 전송(ex 정답:1,오답:0,미시도:빈값)
+		$lw = $this->session->userdata('log_word');
+		$lf = $this->session->userdata('log_full');
+
+		// str_pad() 이건 문자열 자리수 채우기
+		if (isset($lw[$code])) $log_word = $lw[$code];
+		else {
+			$log_word = str_repeat(",", ($script_info['sum']-1));
+			$lw[$code] = $log_word;
+			$this->session->set_userdata('log_word', $lw);
+		}
+		if (isset($lf[$code])) $log_full = $lf[$code];
+		else {
+			$log_full = str_repeat(",", ($script_info['sum']-1));
+			$lf[$code] = $log_full;
+			$this->session->set_userdata('log_full', $lf);
+		}
+
+		// 3. 없으면 DB에서 최신으로 가져오기
+/*		if (empty($log) || ! isset($log[$code])) {
+		}
+		$dt = $this->md->get_date("Y-m-d");
+		$q = $this->db->query(sprintf("select * from user_logs "
+				." where user_seq='%s' and code='%s' and log_dt>'%s' "
+//				." group by script_seq "
+				." order by script_seq"
+				, $u['uid'], $code, $dt));
+
+		foreach ($script_info as $k=>$v) {
+		if ($q->num_rows() > 0) {
+			$logs = $q->result_array();
+		}
+		*/
+
+		// 북마크
+		$mark = "";
+		$q = $this->db->query(sprintf("select mark from user_mark where uid='%s' and code='%s'", $u['uid'], $code));
+		if ($q->num_rows() > 0) {
+			foreach ($q->result() as $row) {
+				$mark = $row->mark;
+			}
+		}
+
+		$data = array(
+			'u'			=> $u,
+			'info'		=> $ci,
+			'is_admin'	=> (bool)$this->md->is_admin(),
+			'co'		=> $this->session->userdata('co'),
+			'category'	=> $this->session->userdata('category'),
+			'scr_info'	=> $script_info,
+			'log_word'	=> $log_word,
+			'log_full'	=> $log_full,
+			'mark'		=> $mark
+			,'sess'		=> array("lw"=>$this->session->userdata('log_word'),
+								"lf"=>$this->session->userdata('log_full'))
+		);
+
+		$this->load->view('dictation/dictation',$data);
+	}
+
+	public function set_log() {
+		$u = $this->session->userdata('u');
+		$code = $this->input->post('l_code');
+
+		do {
+			if (! isset($u['uid'])) {
+				echo "세션만료";
+				break;
+			}
+
+			$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
+			if (empty($code) || ! in_array($code, $c_code))
+			{
+				echo "no code";
+				break;
+			}
+
+			$answer = trim($this->input->post('l_answer'));
+			$mode = $this->input->post('l_mode');
+			$seq = $this->input->post('l_db_seq');
+			$no = $this->input->post('l_no');
+			if (empty($no)) $no = "0";
+			$correct = $this->input->post('l_correct');
+			$correct = empty($correct) ? "0" : "1";
+
+			if (empty($seq)) {
+				echo "no script seq";
+				break;
+			}
+
+			// db 에 기록
+			$data = array(
+				"user_seq"=>$u['uid']
+				,"script_seq"=>$seq
+				,"code"=>$code
+				,"corr"=>$correct
+				,"answer"=>str_replace(array("'", '"', "\t", "\n"), array("\'", '\"', " ", " "), $answer)
+				,"mode"=>$mode
+			);
+			$this->md->set_log($data);
+
+			// 세션 log_word 나 log_full 에 기록
+			$sess = "log_full";
+			if ($mode == "word") {
+				$sess = "log_word";
+			}
+			$log = $this->session->userdata($sess);
+			$lo = $log[$code]; // log_org
+			$la = explode(",", $lo);
+			$la[$no] = $correct;
+			$log[$code] = implode(",", $la);
+			$this->session->set_userdata($sess, $log);
+		} while (0);
+	}
+
+	public function setting() {
+		$u = $this->session->userdata('u');
+		if (! isset($u['uid'])) {
+			redirect('/c_dictation', 'refresh');
+			exit;
+		}
+		$data = array(
+			'u'			=> $u,
+			'is_admin'	=> (bool)$this->md->is_admin(),
+			'co'		=> $this->session->userdata('co'),
+			'category'	=> $this->session->userdata('category'),
+		);
+		$this->load->view('dictation/setting',$data);
+	}
+
+	public function setting_save() {
+		$u = $this->session->userdata('u');
+		do {
+			if (! isset($u['uid'])) break;
+
+			//  wordMax / fullMax / defaultMode / mode
+			$mode = $this->input->post('mode');
+			$word = $this->input->post('wordMax');
+			$full = $this->input->post('fullMax');
+			if ($mode!="word" && $mode !="full") $mode = "word";
+			if(empty($word)) $word = 3;
+			else if($word > 10) $word = 10;
+			if(empty($full)) $full = 3;
+			else if($full > 10) $full = 10;
+
+			$u['defaultmode']	= $mode;
+			$u['maxfull']		= $full;
+			$u['maxword']		= $word;
+			$this->session->set_userdata('u', $u);
+
+			$this->md->set_user_info($u['uid'], array(
+				'defaultmode'	=> $mode,
+				'maxfull'		=> $full,
+				'maxword'		=> $word
+			));
+		} while(0);
+		redirect('/c_dictation', 'refresh');
+	}
+
+	public function ch_pwd() {
+		// 토큰확인
+		// 암호 복호화
+
+	}
+
+
+//////////////////////////////////////////
+
+	public function set_mark() {
+		$u = $this->session->userdata('u');
+		$code = $this->input->post('l_code');
+		$marks = $this->input->post('l_marks');
+		// 있는지 확인 하고 insert or update
+	}
+
+	public function dictation_org() {
 		$u = $this->session->userdata('u');
 		if (! isset($u['uid'])) {
 			redirect('/c_dictation', 'refresh');
@@ -233,11 +426,7 @@ class C_Dictation extends CI_Controller {
 		// 데이터 확인
 		$d = explode("\n", $txt);
 		
-		if ($_SERVER['REMOTE_ADDR'] == '110.14.222.42') {
-			$dt = date('Y-m-d H:i:s');
-		} else {
-			$dt = date("Y-m-d H:i:s",strtotime ("+9 hours")); // 한국 표준시 (KST)
-		}
+		$dt = $this->md->get_date();
 		$save = array();
 		foreach ($d as $v) {
 			if (empty($v)) { continue; }
@@ -253,7 +442,7 @@ class C_Dictation extends CI_Controller {
 				'corr'		=> (empty($tmp[1]) ? "0" : $tmp[1]),
 				'answer'	=> (empty($tmp[2]) ? "" : $tmp[2]),
 				'log_dt'	=> $dt,
-				'mode'		=> ($mode == 'full') ? 'full' : 'words'
+				'mode'		=> ($mode == 'full') ? 'full' : 'word'
 			);
 		}
 		
@@ -348,11 +537,7 @@ class C_Dictation extends CI_Controller {
 		$ci['dir'] = preg_replace(array("/^\//", "/\/$/"), array("", ""), $ci['dir']);
 		$path = "./{$ci['dir']}/{$ci['js']}";
 		if (is_file($path)) {
-			if ($_SERVER['REMOTE_ADDR'] == '110.14.222.42') {
-				$dt = date('Y-m-d H:i:s');
-			} else {
-				$dt = date("Ymd_His",strtotime ("+9 hours")); // 한국 표준시 (KST)
-			}
+			$dt = $this->md->get_date("Ymd_His");
 			$fn = preg_replace("/\.js$/", "_$dt.js", $path);
 			copy($path, $fn);
 		}
@@ -381,6 +566,52 @@ class C_Dictation extends CI_Controller {
 		// script_view 로 이동
 
 	}
+
+	public function ad_mk_irc() {
+		if (! $this->md->is_admin()) {
+			redirect('/c_dictation', 'refresh');
+			exit();
+		}
+		$code = $this->input->get('code');
+		// code 정보
+		$ci = $this->md->get_category($code);
+		if (empty($ci)) {
+			echo "ERROR : 잘못된 접근입니다";
+			exit;
+		}
+		// db 에 script 있는 지 확인
+		$q = $this->db->query("select * from script where code='{$code}' order by seq");
+		if($q->num_rows() < 1) {
+			echo "ERROR : no script";
+			exit;
+		}
+		$list = $q->result_array();
+		if ($list[0]['from'] == $list[0]['to']) {
+			echo "ERROR : from == to";
+			exit;
+		}
+
+		$data = array();
+		foreach ($list as $k=>$l) {
+			$txt = sprintf("[%02d:%05.2f]%s"
+					,($l['from']/60000), (($l['from']%60000)/1000)
+					,str_replace(array("\t", "\n"), array(" ", " "), $l['script'])
+			);
+			$data[] = $txt;
+		}
+		if ($this->input->get('debug') == 1) {
+			echo implode("<br>", $data);
+			exit;
+		}
+
+		header("Content-type: text/plain"); 
+		header("Pragma: no-cache"); 
+		header("Expires: 0");
+		header("Content-disposition: filename=$code.irc"); 
+		header("Content-Disposition: attachment; filename=$code.irc");
+		echo implode("\n", $data);
+	}
+
 	public function ad_script_edit() {
 		if (! $this->md->is_admin()) {
 			redirect('/c_dictation', 'refresh');
