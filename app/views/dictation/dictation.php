@@ -44,7 +44,16 @@ var log_word_v = "<?=$log_word?>";
 var log_word = log_word_v.split(",");
 var log_full_v = "<?=$log_full?>";
 var log_full = log_full_v.split(",");
+var validity_v = "<?=$validity?>";
+var validity = validity_v.split(",");
 
+function inputChar(e) {
+	var put = document.getElementById("put");
+	var c = e.innerText;
+	if (put && trim(c) != "") {
+		put.value = put.value + c;
+	}
+}
 function log() {
 	var f = document.result;
 	f.l_mode.value = mode;
@@ -91,6 +100,7 @@ function attachRightList() {
 			}
 			if (mark[j] > (i+1)) break;
 		}
+		if (validity[i] != "1") cls += " ui-state-disabled";
 		btn.href = "#";
 		btn.setAttribute("id", "list"+i);
 		btn.setAttribute("data-rel", "close");
@@ -150,26 +160,44 @@ function attachRightList() {
 				</td>
 			</tr>
 			<tr>
-				<td style="vertical-align:bottom;" colspan="2"><div id="count" style="text-align:left;color:#999;"></div></td>
+				<td style="vertical-align:bottom;">
+					<div id="count" style="text-align:left;color:#999;"></div>
+				</td>
+				<td style="vertical-align:bottom;">
+					<div id="chars" style="text-align:right;">
+					<?
+						$lang = substr($scr_info['code'],0,2);
+						if ($lang == "de") {
+					?>
+						<a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-btn-char" onclick="inputChar(this);">ä</a>
+						<a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-btn-char" onclick="inputChar(this);">ö</a>
+						<a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-btn-char" onclick="inputChar(this);">ü</a>
+						<a href="#" class="ui-btn ui-corner-all ui-btn-inline ui-btn-char" onclick="inputChar(this);">ß</a>
+					<? } else if ($lang == "it") { ?>
+					<? } ?>
+					</div>
+				</td>
 			</tr>
 			<tr><td colspan="2">
 				<div id="full">
 					<a href="#" id="btnSubmit" class="ui-btn ui-btn-icon-notext ui-icon-action ui-nodisc-icon ui-btn-inline" style="width:2.5em;height:2em;float:right;margin:.55em 0;" onclick="check_full();">enter</a>
 					<div style="overflow:hidden; padding-right:.1em;">
-					<input id="put" name="put" type="text" data-clear-btn="false" placeholder="" style="font-size:11pt;" onkeydown="check(event, this);" value="" />
+					<!--input id="put" name="put" type="text" data-clear-btn="false" placeholder="" style="font-size:11pt;" onkeydown="check(event, this);" value="" / -->
+					<textarea id="put" name="put" style="font-size:11pt;" onkeydown="check(event, this);"></textarea>
 					</div>
 				</div>
 				<div id="fld"></div>
 			</td></tr>
 		</table>
 		<?
-			echo "<div>";
 			if ($u['permit'] == 9) {
+				echo "<div>";
 //				debug($scr_info, $u);
 //				debug($mark, $log_word, $log_full);
+//				debug($validity ,$sess);
 				debug($sess);
+				echo "</div>";
 			}
-			echo "</div>";
 		?>
 	</form>
 	</div><!-- /content -->

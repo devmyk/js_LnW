@@ -44,6 +44,11 @@ div::-webkit-scrollbar-thumb {
 .ui-btn-nomargin {
 	margin: 0;
 }
+.ui-btn-char {
+	margin: 0;
+	margin-left: .1em;
+	padding:.3em .5em;
+}
 .ui-btn-icon-notext.ui-btn-left {
 	left: .7em;
 }

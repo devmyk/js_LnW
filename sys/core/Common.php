@@ -852,8 +852,19 @@ if ( ! function_exists('debug')) {
 		$args = func_get_args();
 		echo "<xmp>";
 		foreach ($args as $arg) {
-			var_dump($arg);
+//			var_dump($arg);
+			print_r($arg);
+			echo "\n";
 		}
 		echo "</xmp>";
+	}
+}
+
+if ( ! function_exists('is_test')) {
+	function is_test() {
+		if (strpos($_SERVER['SERVER_ADDR'], '110.14.222.16') !== false)
+			return true;
+		else
+			return false;
 	}
 }

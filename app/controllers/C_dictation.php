@@ -24,12 +24,11 @@ class C_Dictation extends CI_Controller {
 	}
 
 	public function js_redirect($url, $err) {
-		echo "<html><head><script>";
-		if (!empty($url)) {
-			echo sprintf("alert(\"%s\");\n",htmlspecialchars(implode("\n",$err)));
-		}
-		echo sprintf("document.location = \"%s\"\n", base_url($url));
-		echo "</script></head><body></body></html>";
+		$data = array(
+			"err" => htmlspecialchars($err),
+			"url" => base_url($url)
+		);
+		$this->load->view('dictation/redirect', $data);
 	}
 
 	public function login() {
@@ -61,127 +60,164 @@ class C_Dictation extends CI_Controller {
 
 	public function stat() {
 		$u = $this->session->userdata('u');
-		if (! isset($u['uid'])) {
-			redirect('/c_dictation', 'refresh');
-			exit;
-		}
+		$err = "";
+		do {
+			if (! isset($u['uid'])) {
+				$err = "ERROR: 없는 유저이거나 세션만료";
+				break;
+			}
 
-		$param = func_get_args();	// code 만 받기
-		if (sizeof($param) != 1) {
-			echo "ERROR : 잘못된 접근입니다";
-			exit;
+			$param = func_get_args();	// code 만 받기
+			if (sizeof($param) != 1) {
+				$err = "ERROR : 잘못된 접근입니다";
+				break;
+			}
+			$code = $param[0];
+			$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
+			if (! in_array($code, $c_code)) {
+				$err = "ERROR : 권한이 없습니다";
+				break;
+			}
+			// 그동안 통계 정보 뿌리고
+			//		full, word : 정답 / 오답 (추후)/ 패스
+			//		(추후)월별 통계
+			//		(추후)목표도 넣어야하나 D-day 같은
+			$total_log = $this->md->get_week_log($u['uid'], $code);
+			// seq / script_seq / corr / mode / log_dt / log_ts
+
+
+			$now_day = date("d");
+
+			/* 4 종류가 필요함
+			   full + corr / full + incorr
+			   word + corr / word + incorr
+			*/
+			$logs = array(
+				"w_corr"	=> array(0,0,0,0,0,0,0)
+				,"w_incorr"	=> array(0,0,0,0,0,0,0)
+				,"f_corr"	=> array(0,0,0,0,0,0,0)
+				,"f_incorr"	=> array(0,0,0,0,0,0,0)
+			);
+			foreach ($total_log as $k=>$v) {
+				// 모드로 나누고
+				if ($v['mode'] == "full") $fname = "f_";
+				else $fname = "w_";
+				if (empty($v['corr'])) $fname .= "incorr";
+				else $fname .= "corr";
+
+				// 3. corr 로 정답, 오답 (패스는 추후 추가하자)
+				$log_ts = (int)$v['log_ts'];
+//				if (!is_test()) $log_ts += (60*60*9);
+				$log_day = date("d", $log_ts);
+				$idx = $now_day - $log_day;
+				if ($idx > 6 || $idx < 0) continue;
+
+				$logs[$fname][$idx]++;
+			}
+			foreach ($logs as $k=>$v) {
+				$logs[$k] = implode(",", $v);
+			}
+
+		} while(0);
+		if (empty($err)) {
+			$data = array(
+				'u'			=> $u,
+				'is_admin'	=> (bool)$this->md->is_admin(),
+				'code'		=> $code,
+				'category'	=> $this->session->userdata('category'),
+				'logs'		=> $logs
+			);
+			$this->load->view('dictation/stat',$data);
+		} else {
+			if ($this->md->is_admin()) {
+				echo $err;
+			} else {
+				redirect('/c_dictation', 'refresh');
+			}
 		}
-		$code = $param[0];
-		$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
-		if (! in_array($code, $c_code)) {
-			echo "ERROR : 권한이 없습니다";
-			exit;
-		}
-		// 그동안 통계 정보 뿌리고
-		//		full, word : 정답 / 오답 / 패스 (총공부양)
-		//		월별 통계
-		//		목표도 넣어야하나 D-day 같은 <- 추후 추가하자
-		$logs = $this->md->get_logs($u['uid'], $code);
-		$data = array(
-			'is_admin'	=> (bool)$this->md->is_admin(),
-			'code'		=> $code,
-			'category'	=> $this->session->userdata('category'),
-			'permit'	=> $u['permit'],
-			'logs'		=> $logs
-		);
-		$this->load->view('dictation/stat',$data);
-		
 	}
 
 	public function dictation() { // 스크립트 각각으로 실행할거임..
 		$u = $this->session->userdata('u');
-		if (! isset($u['uid'])) {
-			redirect('/c_dictation', 'refresh');
-			exit;
-		}
-		
-		$param = func_get_args();	// code, no 만 받기
-		if (sizeof($param) > 2 || sizeof($param) < 1) {
-			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
-			exit;
-		}
-
-		$code = $param[0];
-		$no = (isset($param[1]) ? $param[1] : 0);
-		
-		$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
-		if (! in_array($code, $c_code)) {
-			$this->js_redirect("/c_dictation", "권한이 없습니다");
-			exit;
-		}
-
-		$ci = $this->md->get_category($code);
-		if (empty($ci)) {
-			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
-			exit;
-		}
-		$script_info = $this->md->get_script($code, $no);
-
-		// log 를 문자열로
-		// 1. 세션에 log[code] 가 있는 지 확인
-		// 2. 있으면 문자열로 그대로 전송(ex 정답:1,오답:0,미시도:빈값)
-		$lw = $this->session->userdata('log_word');
-		$lf = $this->session->userdata('log_full');
-
-		// str_pad() 이건 문자열 자리수 채우기
-		if (isset($lw[$code])) $log_word = $lw[$code];
-		else {
-			$log_word = str_repeat(",", ($script_info['sum']-1));
-			$lw[$code] = $log_word;
-			$this->session->set_userdata('log_word', $lw);
-		}
-		if (isset($lf[$code])) $log_full = $lf[$code];
-		else {
-			$log_full = str_repeat(",", ($script_info['sum']-1));
-			$lf[$code] = $log_full;
-			$this->session->set_userdata('log_full', $lf);
-		}
-
-		// 3. 없으면 DB에서 최신으로 가져오기
-/*		if (empty($log) || ! isset($log[$code])) {
-		}
-		$dt = $this->md->get_date("Y-m-d");
-		$q = $this->db->query(sprintf("select * from user_logs "
-				." where user_seq='%s' and code='%s' and log_dt>'%s' "
-//				." group by script_seq "
-				." order by script_seq"
-				, $u['uid'], $code, $dt));
-
-		foreach ($script_info as $k=>$v) {
-		if ($q->num_rows() > 0) {
-			$logs = $q->result_array();
-		}
-		*/
-
-		// 북마크
-		$mark = "";
-		$q = $this->db->query(sprintf("select mark from user_mark where uid='%s' and code='%s'", $u['uid'], $code));
-		if ($q->num_rows() > 0) {
-			foreach ($q->result() as $row) {
-				$mark = $row->mark;
+		do {
+			if (! isset($u['uid'])) {
+				redirect('/c_dictation', 'refresh');
+				break;
 			}
-		}
+			
+			$param = func_get_args();	// code, no 만 받기
+			if (sizeof($param) > 2 || sizeof($param) < 1) {
+				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+				break;
+			}
 
-		$data = array(
-			'u'			=> $u,
-			'info'		=> $ci,
-			'is_admin'	=> (bool)$this->md->is_admin(),
-			'co'		=> $this->session->userdata('co'),
-			'category'	=> $this->session->userdata('category'),
-			'scr_info'	=> $script_info,
-			'log_word'	=> $log_word,
-			'log_full'	=> $log_full,
-			'mark'		=> $mark
-			,'sess'		=> array("lw"=>$this->session->userdata('log_word'),
-								"lf"=>$this->session->userdata('log_full'))
-		);
+			$code = $param[0];
+			$no = (isset($param[1]) ? $param[1] : 0);
+			
+			$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
+			if (! in_array($code, $c_code)) {
+				$this->js_redirect("/c_dictation", "권한이 없습니다");
+				break;
+			}
 
-		$this->load->view('dictation/dictation',$data);
+			$ci = $this->md->get_category($code);
+			if (empty($ci)) {
+				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+				break;
+			}
+			$script_info = $this->md->get_script($code, $no);
+			if (empty($script_info)) {
+				$this->js_redirect("/c_dictation", "스크립트가 없습니다.");
+				break;
+			}
+
+			// log 를 문자열로
+			// 1. 세션에 log[code] 가 있는 지 확인
+			// 2. 있으면 문자열로 그대로 전송(ex 정답:1,오답:0,미시도:빈값)
+			$lw = $this->session->userdata('log_word');
+			$lf = $this->session->userdata('log_full');
+
+			if (isset($lw[$code]) && !empty($lw[$code])) {
+				$log_word = $lw[$code];
+			} else {
+				$log_word = str_repeat(",", ($script_info['sum']-1));
+				$lw[$code] = $log_word;
+				$this->session->set_userdata('log_word', $lw);
+			}
+			if (isset($lf[$code]) && !empty($lf[$code])) {
+				$log_full = $lf[$code];
+			} else {
+				$log_full = str_repeat(",", ($script_info['sum']-1));
+				$lf[$code] = $log_full;
+				$this->session->set_userdata('log_full', $lf);
+			}
+
+			// 북마크
+			$mark = $this->md->get_mark($u['uid'], $code);
+			// 같은 코드 스크립트들 유효성
+			$validity = $this->md->get_script_validity($code, "str");
+			// 6시간 이내 체점 로그
+			$log = $this->md->get_log_by_script_seq($u['uid'], $script_info['seq']);
+
+			$data = array(
+				'u'			=> $u,
+				'info'		=> $ci,
+				'is_admin'	=> (bool)$this->md->is_admin(),
+				'co'		=> $this->session->userdata('co'),
+				'category'	=> $this->session->userdata('category'),
+				'scr_info'	=> $script_info,
+				'log_word'	=> $log_word,
+				'log_full'	=> $log_full,
+				'mark'		=> $mark,
+				'validity'	=> $validity
+				,'sess'		=> array(
+									"log"=>$log
+									// "lw"=>$this->session->userdata('log_word')
+									// ,"lf"=>$this->session->userdata('log_full')
+								)
+			);
+			$this->load->view('dictation/dictation', $data);
+		} while(0);
 	}
 
 	public function set_log() {
@@ -241,17 +277,19 @@ class C_Dictation extends CI_Controller {
 
 	public function setting() {
 		$u = $this->session->userdata('u');
-		if (! isset($u['uid'])) {
-			redirect('/c_dictation', 'refresh');
-			exit;
-		}
-		$data = array(
-			'u'			=> $u,
-			'is_admin'	=> (bool)$this->md->is_admin(),
-			'co'		=> $this->session->userdata('co'),
-			'category'	=> $this->session->userdata('category'),
-		);
-		$this->load->view('dictation/setting',$data);
+		do {
+			if (! isset($u['uid'])) {
+				redirect('/c_dictation', 'refresh');
+				break;
+			}
+			$data = array(
+				'u'			=> $u,
+				'is_admin'	=> (bool)$this->md->is_admin(),
+				'co'		=> $this->session->userdata('co'),
+				'category'	=> $this->session->userdata('category')
+			);
+			$this->load->view('dictation/setting',$data);
+		} while(0);
 	}
 
 	public function setting_save() {
@@ -283,10 +321,70 @@ class C_Dictation extends CI_Controller {
 		redirect('/c_dictation', 'refresh');
 	}
 
-	public function ch_pwd() {
+	public function change_pwd() {
 		// 토큰확인
 		// 암호 복호화
 
+	}
+
+	public function dialog() {
+		$u = $this->session->userdata('u');
+		do {
+			if (! isset($u['uid'])) {
+				redirect('/c_dictation', 'refresh');
+				break;
+			}
+			
+			$param = func_get_args();	// code 만 받기
+			if (sizeof($param) != 1) {
+				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+				break;
+			}
+			$code = $param[0];
+
+			$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
+			if (! in_array($code, $c_code)) {
+				$this->js_redirect("/c_dictation", "권한이 없습니다");
+				break;
+			}
+
+			$ci = $this->md->get_category($code);
+			if (empty($ci)) {
+				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+				break;
+			}
+			else if (! isset($ci['dir']) || empty($ci['dir']) || ! isset($ci['js']) || empty($ci['js'])) {
+				if ($this->md->is_admin()) {
+					echo "ERROR : 파일 정보가 없습니다.";
+					debug($ci); 
+				} else {
+					$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+				}
+				break;
+			}
+			
+			$ci['dir'] = preg_replace(array("/^\//", "/\/$/"), array("", ""), $ci['dir']);
+			$path = "./{$ci['dir']}/{$ci['js']}";
+
+			if (! is_file($path)) {
+				if ($this->md->is_admin()) {
+					echo "ERROR : 파일이 없습니다.";
+					debug($path); 
+				} else {
+					$this->js_redirect("/c_dictation", "잘못된 접근입니다");
+				}
+				break;
+			}
+
+			$data = array(
+				'u'			=> $u,
+				'ci'		=> $ci,
+				'is_admin'	=> (bool)$this->md->is_admin(),
+				'category'	=> $this->session->userdata('category'),
+				'info'		=> array('dir'=>"/{$ci['dir']}/", 'js'=>$ci['js'])
+			);
+			$this->load->view('dictation/dialog',$data);
+		} while(0);
 	}
 
 
@@ -345,64 +443,6 @@ class C_Dictation extends CI_Controller {
 		} else {
 			$this->load->view('dictation/dictation',$data);
 		}
-	}
-
-	public function dialog() {
-		$u = $this->session->userdata('u');
-		if (! isset($u['uid'])) {
-			redirect('/c_dictation', 'refresh');
-			exit;
-		}
-		
-		$param = func_get_args();	// code 만 받기
-		if (sizeof($param) != 1) {
-			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
-			exit;
-		}
-		$code = $param[0];
-
-		$c_code = $this->md->get_user_category_by_fld($u['uid'], 'code');
-		if (! in_array($code, $c_code)) {
-			$this->js_redirect("/c_dictation", "권한이 없습니다");
-			exit;
-		}
-
-		$ci = $this->md->get_category($code);
-		if (empty($ci)) {
-			$this->js_redirect("/c_dictation", "잘못된 접근입니다");
-			exit;
-		}
-		else if (! isset($ci['dir']) || empty($ci['dir']) || ! isset($ci['js']) || empty($ci['js'])) {
-			if ($this->md->is_admin()) {
-				echo "ERROR : 파일 정보가 없습니다.";
-				debug($ci); 
-			} else {
-				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
-			}
-			exit;
-		}
-		
-		$ci['dir'] = preg_replace(array("/^\//", "/\/$/"), array("", ""), $ci['dir']);
-		$path = "./{$ci['dir']}/{$ci['js']}";
-
-		if (! is_file($path)) {
-			if ($this->md->is_admin()) {
-				echo "ERROR : 파일이 없습니다.";
-				debug($path); 
-			} else {
-				$this->js_redirect("/c_dictation", "잘못된 접근입니다");
-			}
-			exit;
-		}
-
-		$data = array(
-			'u'			=> $u,
-			'ci'		=> $ci,
-			'is_admin'	=> (bool)$this->md->is_admin(),
-			'category'	=> $this->session->userdata('category'),
-			'info'		=> array('dir'=>"/{$ci['dir']}/", 'js'=>$ci['js'])
-		);
-		$this->load->view('dictation/dialog',$data);
 	}
 
 	public function setlog() {

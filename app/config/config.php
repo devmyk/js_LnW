@@ -361,7 +361,7 @@ $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
 $config['sess_expire_on_close'] = TRUE;
-if ($_SERVER['REMOTE_ADDR'] == "110.14.222.42") {
+if (is_test()) {
 	$config['sess_save_path'] = "/usr/tmp/";
 }
 /*

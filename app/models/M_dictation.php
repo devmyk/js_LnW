@@ -19,9 +19,10 @@ class M_Dictation extends CI_Model {
 		}
 		return $res;
 	}
+
 	public function get_date($fm="Y-m-d H:i:s") {
-		$dt = date($fm,strtotime ("+9 hours")); // 한국 표준시 (KST)
-		if (strpos($_SERVER['SERVER_ADDR'], '110.14.222.16') !== false) {
+		$dt = date($fm, strtotime("+9 hours")); // 한국 표준시 (KST)
+		if (is_test() !== false) {
 			$dt = date($fm);
 		}
 		return $dt;
@@ -34,11 +35,16 @@ class M_Dictation extends CI_Model {
 			return false;
 		}
 		// DB 검사
-		$q_user = $this->db->query("select * from user where email='{$data['id']}' and pwd=password('{$data['pw']}')");
+		$q_user = $this->db->query(
+			sprintf("select * from user where email='%s' and pwd=password('%s')", $data['id'], $data['pw']));
 		if($q_user->num_rows() != 1) {
 			return false;
 		} else {
 			$row = $q_user->row();
+			$p_dt= $row->login_dt;
+			if (is_test() == false) {
+//				$p_dt = date("Y-m-d H:i:s", strtotime($p_dt) + (60*60*9));
+			}
 			$res = array(
 				'u' => array(
 					'uid'		=> $row->seq,
@@ -51,7 +57,7 @@ class M_Dictation extends CI_Model {
 					'defaultmode'	=> $row->defaultmode,
 					'maxfull'		=> $row->maxfull,
 					'maxword'		=> $row->maxword,
-					'pre_login_dt'	=> $row->login_dt,
+					'pre_login_dt'	=> $p_dt,
 					'login_dt'		=> ''
 				),
 				'category'		=> array(),
@@ -63,14 +69,13 @@ class M_Dictation extends CI_Model {
 		}
 	}
 	public function set_user_login_dt($uid) {
-//		$login_dt = date("Y-m-d H:i:s",strtotime ("+9 hours")); // 한국 표준시 (KST)
-		$login_dt = $this->get_date("Y-m-d H:i:s");
+		$login_dt = date("Y-m-d H:i:s");
 		$this->db->where('seq', $uid);
 		$this->db->update('user', array('login_dt' => $login_dt));
 		return $login_dt;
 	}
 
-	public function ch_user_pw($uid, $pwd) {
+	public function update_user_pw($uid, $pwd) {
 		$this->db->query(sprintf("update user set pwd=password('%s')", $pwd));
 	}
 
@@ -86,7 +91,8 @@ class M_Dictation extends CI_Model {
 
 	public function get_user_category($uid,$is_deco=true) {
 		$category = array();
-		$q_u = $this->db->query("select permit from user where seq='{$uid}'");
+		$this->db->where('seq', $uid);
+		$q_u = $this->db->get('user');
 		if ($q_u->num_rows() != 1) return $category;
 		$permit = 1;
 		foreach($q_u->result() as $v) {
@@ -95,7 +101,7 @@ class M_Dictation extends CI_Model {
 		$is_admin = ($permit == 9);
 //		$is_admin = $this->is_admin(); // 세션으로 확인하기 때문에 로그인 시 미작동
 		
-		$qi_uc = " select code from user_category uc where uc.user='{$uid}' ";
+		$qi_uc = sprintf(" select code from user_category uc where uc.user='%s' ", $uid);
 		$qi_file = " and a.dir <> '' and a.js <> '' ";
 		if ($is_admin) {
 			$qi_uc = " select code from category where depth='3' ";
@@ -168,32 +174,79 @@ class M_Dictation extends CI_Model {
 		return $category;
 	}
 
-	public function get_script($code, $no = 0, $is_no_seq = false) {
+	public function get_script($code, $no = 0) {
 		$res = array();
 //		$q = $this->db->query("select * from script where code='{$code}' order by seq limit {$no}, 1");
-		$q = $this->db->query("select * from script where code='{$code}' order by no");
+//		$q = $this->db->query("select * from script where code='{$code}' order by no");
+		$this->db->where('code', $code);
+		$this->db->order_by("no", "asc");
+		$q = $this->db->get('script');
 		if ($q->num_rows() > 0) {
 			$info = $q->result_array();
-			$res = $info[$no];
-			$res['sum'] = $q->num_rows();
-			$res['curr'] = $no;
+//			$res = $info[$no];
+			foreach ($info as $row) {
+				if ($row['no'] == ($no+1)) {
+					$res = $row;
+					break;
+				}
+			}
+			if (! empty($res)) {
+				$last = array_pop($info);
+				$res['sum'] = (int)$last['no'];
+				$res['curr'] = $no;
+			}
 		}
 		return $res;
 	}
 
+	// 코드의 스크립트 유효성
+	// type : str , arr
+	public function get_script_validity($code, $type="str") {
+		$this->db->where('code', $code);
+		$this->db->where("script <> ''");
+		$this->db->where("mp3 <> ''");
+		$this->db->order_by("no", "asc");
+		$q = $this->db->get('script');
+		$res_arr = array();
+		if ($q->num_rows() > 0) {
+			$info = $q->result_array();
+			$tmp = array();
+			foreach ($info as $row) {
+				$tmp[] = (int)$row['no'];
+			}
+			$last = array_pop($info);
+			$total = (int)$last['no'];
+//			$total = (int)$info[(sizeof($info)-1)]['no'];
+
+			for ($i=0; $i<$total; $i++) {
+				// i == v 일 때 1 / 없으면 0
+				if (in_array(($i+1), $tmp)) {
+					$res_arr[$i] = 1;
+				} else {
+					$res_arr[$i] = 0;
+				}
+			};
+		}
+		if ($type == "str") return implode(",", $res_arr);
+		else if ($type == "arr") return $res_arr;
+		else return $res_arr;
+	}
+
 	public function get_category($code) {
 		$res = array();
-		$q = $this->db->query("select c.*, d.name as ppname"
+		$q = $this->db->query(sprintf(
+			"select c.*, d.name as ppname"
 			." from ("
 				." select a.*, b.name as pname, b.pcode as ppcode"
 				." from ("
-					." select * from category where code='{$code}'"
+					." select * from category where code='%s'"
 				." ) a "
 				." left join category b"
 				." on b.code=a.pcode"
 			." ) as c"
 			." left join category d"
-			." on d.code=c.ppcode");
+			." on d.code=c.ppcode"
+			,$code));
 				
 		if ($q->num_rows() > 0) {
 			foreach ($q->result() as $row) {
@@ -227,16 +280,28 @@ class M_Dictation extends CI_Model {
 			return $category;
 		}
 	}
+
+	public function get_mark($uid, $code) {
+		$mark = "";
+//		$q = $this->db->query(sprintf("select mark from user_mark where uid='%s' and code='%s'", $u['uid'], $code));
+		$this->db->select('mark');
+		$this->db->where("uid", $uid);
+		$this->db->where("code", $code);
+		$q = $this->db->get("user_mark");
+		if ($q->num_rows() > 0) {
+			foreach ($q->result() as $row) {
+				$mark = $row->mark;
+			}
+		}
+		return $mark;
+	}
+
 	public function set_log($data) {
 		$data['ip'] = $_SERVER['REMOTE_ADDR'];
-		$data['log_dt'] = $this->get_date();
-/*		$q = sprintf("INSERT INTO user_logs(user_seq, script_seq, code, corr, answer, log_dt, mode, ip)"
-					." VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s')"
-					,$data['uid'], $data['script_seq'], $data['code'], $data['corr'], $data['answer'], $data['log_dt'], $data['mode'], $data['ip']);
-*/
+		$data['log_dt'] = date("Y-m-d H:i:s"); // 기록은 서버기준으로
+		// user_seq, script_seq, code, corr, answer, log_dt, mode, ip
 		$q = $this->db->insert_string('user_logs', $data);
 		$this->db->query($q);
-//		echo $q;
 	}
 
 	public function get_all_logs($uid, $code) // code의 path는 3
@@ -246,9 +311,63 @@ class M_Dictation extends CI_Model {
 		return $this->db->get('user_logs')->result_array();
 	}
 
+	public function get_log_by_script_seq($uid, $seq, $add_ts=0) { // 60*60*6 = -21600
+		$now = date("Y-m-d");
+		if (is_test() == false) {
+			$add_ts = $add_ts - (60*60*9);
+		}
+		$ts = strtotime($now) + $add_ts;
+
+		// mode 로 그룹해야함
+		$this->db->where("user_seq", $uid);
+		$this->db->where("script_seq", $seq);
+		$this->db->where("log_dt >", date("Y-m-d H:i:s", $ts));
+		$this->db->order_by("seq", "desc");
+		$q = $this->db->get('user_logs', 1);
+
+		$res = array();
+		if ($q->num_rows() > 0) {
+			$arr = $q->result_array();
+			$res = array_pop($arr);
+			if (is_test() == false) {
+				$res['log_dt'] = date("Y-m-d H:i:s", (strtotime($res['log_dt']) + (60*60*9)));
+			}
+		}
+		return $res;
+	}
+
+	public function get_week_log($uid, $code)
+	{
+		$res = array();
+		$query = "select seq, script_seq, corr, mode, log_dt, unix_timestamp(log_dt) as log_ts "
+			." from user_logs where user_seq='$uid' and code='$code'";
+
+		$dt = date("Y-m-d H:i:s", strtotime("-1 week"));
+		$query .= " and log_dt >= '$dt'";
+
+		$q = $this->db->query($query);
+		if ($q->num_rows() > 0) {
+			$res = $q->result_array();
+		}
+		return $res;
+	}
+
 	public function get_logs($uid, $code, $is_detail=false) // code의 path는 3
 	{
+		$res = array();
+		$query = "select * from user_logs where user_seq='$uid' and code='$code'";
+
+		$dt = date("Y-m-d H:i:s", strtotime("-1 week"));
+		$query .= " and log_dt >= '$dt'";
+
+		$q = $this->db->query($query);
+		if ($q->num_rows() > 0) {
+			$res = $q->result_array();
+		}
+		return $res;
+
 		// 아 맞다 날짜로 그룹화 해야한다..
+		/*
 		$this->db->where("user_seq", $uid);
 		$this->db->where("code", $code);
 		$q = $this->db->get('user_logs');
@@ -265,6 +384,7 @@ class M_Dictation extends CI_Model {
 			}
 			return $res;
 		}
+		*/
 	}
 	public function is_admin() {
 		$u = $this->session->userdata('u');
@@ -284,7 +404,13 @@ class M_Dictation extends CI_Model {
 	}
 	public function make_js($code) {
 		// category 있는지 확인
-		$qc = $this->db->query("select * from category where dir<>'' and js<>'' and depth='3' and code='{$code}'");
+//		$qc = $this->db->query("select * from category where dir<>'' and js<>'' and depth='3' and code='{$code}'");
+		$this->db->where("dir <> ''");
+		$this->db->where("js <> ''");
+		$this->db->where("depth", 3);
+		$this->db->where("code", $code);
+		$qc = $this->db->get('category');
+
 		if ($qc->num_rows() !== 1)
 			return "ERROR : wrong code";
 
@@ -301,7 +427,12 @@ class M_Dictation extends CI_Model {
 		}
 
 		// script 있는지 확인
-		$qs = $this->db->query("select * from script where code='{$code}' and mp3<>'' order by no asc");
+//		$qs = $this->db->query("select * from script where code='{$code}' and mp3<>'' order by no asc");
+		$this->db->where("code", $code);
+		$this->db->where("mp3 <> ''");
+		$this->db->order_by("no", "asc");
+		$qs = $this->db->get('script');
+
 		$num_rows = $qs->num_rows();
 		if ($num_rows <= 0)
 			return "ERROR : empty script";
@@ -311,8 +442,7 @@ class M_Dictation extends CI_Model {
 
 		// 있으면 <파일명.js>.YYYYMMDD.HH.ii.ss.bak 로 변경하여 백업
 		if (is_file($path)) {
-//			$dt = date('Ymd.H.i.s', strtotime("+9 hours"));
-			$dt = $this->get_date('Ymd.H.i.s');
+			$dt = date('Ymd.H.i.s');
 			$new_path = "{$path}.{$dt}.bak";
 			if (! copy($path, $new_path)) {
 				return "ERROR : file to back up file ({$path} -> {$new_path})";

@@ -6,8 +6,7 @@ $w_corr		= round((40 / $w_total) * 100);
 $w_incorr	= round((30 / $w_total) * 100);
 $w_pass		= round((30 / $w_total) * 100);
 
-$is_no_logs = empty($logs['total']);
-
+$mode = $u['defaultmode'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,19 +22,34 @@ $is_no_logs = empty($logs['total']);
 	<script type="text/javascript" src="/js/common.js"></script>
 	<script type="text/javascript" src="/js/Chart.min.js"></script>
 <script>
+var corr_color = "34,170,221";
+var incorr_color = "204,51,51";
+var pass_color = "110,110,110";
+
 function init() {
 var w = $("#chart").width();
 var h = Math.round(w*0.6);
 if (h > 300 && ! isMobile) h = 300;
 $("#myChart").width(w+"px");
 $("#myChart").height(h+"px");
-$("#cart").height(h+"px");
+$("#chart").height(h+"px");
+<? if ($is_admin) { ?>
+$("#myChart").height("100px");
+$("#chart").height("100px");
+<? } ?>
 
-var corr_color = "34,170,221";
-var incorr_color = "204,51,51";
-var pass_color = "110,110,110";
+var d_corr = [<?=($mode == "word" ? $logs['w_corr'] : $logs['f_corr'])?>];
+var d_incorr = [<?=($mode == "word" ? $logs['w_incorr'] : $logs['f_incorr'])?>];
+
+var week = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+var lb = [];
+var d = (new Date()).getDay();
+for (var i=1; i<8; i++) {
+	lb.push(week[((d+i)%7)]);
+}
+
 var data = {
-labels: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
+labels: lb,
 datasets: [
 {	label: "CORR",
 	fillColor: "rgba("+corr_color+",0.2)",
@@ -44,7 +58,7 @@ datasets: [
 	pointStrokeColor: "rgba("+corr_color+",1)",
 	pointHighlightFill: "#000",
 	pointHighlightStroke: "rgba("+corr_color+",1)",
-	data: [65, 59, 80, 81, 56, 55, 40]
+	data: d_corr
 },
 {	label: "INCORR",
 	fillColor: "rgba("+incorr_color+",0.2)",
@@ -53,17 +67,18 @@ datasets: [
 	pointStrokeColor: "rgba("+incorr_color+",1)",
 	pointHighlightFill: "#000",
 	pointHighlightStroke: "rgba("+incorr_color+",1)",
-	data: [28, 48, 40, 19, 86, 27, 90]
-},
-{	label: "PASS",
+	data: d_incorr
+}
+/*
+,{	label: "PASS",
 	fillColor: "rgba("+pass_color+",0.2)",
 	strokeColor: "rgba("+pass_color+",1)",
 	pointColor: "rgba("+pass_color+",1)",
 	pointStrokeColor: "rgba("+pass_color+",1)",
 	pointHighlightFill: "#000",
 	pointHighlightStroke: "rgba("+pass_color+",1)",
-	data: [5, 8, 4, 0, 18, 17, 10]
-}
+	data: d_pass
+}*/
 ]};
 var option = {
 	responsive: true,
@@ -101,13 +116,14 @@ var myChart = new Chart(ctx).Doughnut(data);
 		<a href="#leftpanel" class="ui-btn ui-btn-icon-notext ui-corner-all ui-icon-bars ui-nodisc-icon ui-alt-icon ui-btn-left">Menu</a>
 	</div><!-- /header -->
 	<div role="main" class="ui-content">
-		<div id="chart" style="text-align:center;margin:0.5em;<?=($is_no_logs ? "display:none;" : "")?>">
-			<canvas id="myChart" width="100" height="300"></canvas>
+		<input type="checkbox" data-role="flipswitch" name="defaultMode" id="defaultMode" data-on-text="full" data-off-text="word" data-wrapper-class="custom-label-flipswitch" <?=($u['defaultmode'] == "word" ? "" : "checked=\"checked\"");?> />
+		<div id="chart" style="text-align:center;margin:0.5em;">
+			<canvas id="myChart" width="100" height="60"></canvas>
 		</div>
 		<a href="/c_dictation/dialog/<?=$code?>" rel="external" class="ui-btn ui-corner-all">DIALOG</a>
 		<a href="/c_dictation/dictation/<?=$code?>" rel="external" class="ui-btn ui-corner-all">DICTATION</a>
-		<? if($permit == 9) {
-			debug($logs, $is_no_logs);
+		<? if ($is_admin) {
+			debug($logs);
 		?>
 		<!-- a href="/c_dictation/edit/<?=$code?>" rel="external" class="ui-btn ui-corner-all">EDIT</a -->
 		<? } ?>

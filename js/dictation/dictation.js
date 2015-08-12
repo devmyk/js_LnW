@@ -19,9 +19,11 @@ function init() {
 		document.getElementById("put").value = "";
 		document.getElementById("put").disabled = '';
 		document.getElementById("full").style.display = "";
+		document.getElementById("chars").style.display = "";
 	} else {
 		document.getElementById("put").style.display = "none";
 		document.getElementById("full").style.display = "none";
+		document.getElementById("chars").style.display = "none";
 	}
 
 	// book mark
@@ -178,7 +180,7 @@ function check_word(o) {
 
 		if (o.innerText != undefined) data.answer += o.innerText + " ";
 
-		if (data.word_no < data.sum) { // 미완료
+		if (data.word_no < sc.length) { // 미완료
 			document.getElementById("count").innerHTML = "[ 0 / " + max + " ]";
 		} else { // 완료
 			var dt = new Date();
